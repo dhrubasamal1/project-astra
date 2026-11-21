@@ -246,19 +246,36 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartPlanning }) => 
             </div>
           </div>
 
-          {/* Right 3D Earth Globe Canvas (Behind text on mobile, right column on desktop) */}
-          <div className="lg:col-span-6 h-[460px] sm:h-[540px] lg:h-[680px] w-full relative flex items-center justify-center">
-            {/* Ambient cyan lighting under the globe */}
-            <div className="absolute w-72 h-72 md:w-96 md:h-96 rounded-full bg-cyan-500/15 blur-[100px] pointer-events-none" />
+          {/* Right 3D Earth Globe Canvas (Circular Orbital Portal Framing) */}
+          <div className="lg:col-span-6 w-full flex items-center justify-center py-4 lg:py-0 relative">
+            {/* Ambient cyan lighting under the circular portal */}
+            <div className="absolute w-80 h-80 sm:w-96 sm:h-96 md:w-[520px] md:h-[520px] rounded-full bg-cyan-500/15 blur-[120px] pointer-events-none" />
 
-            {/* Suspense wrapper with custom glowing circle skeleton */}
-            <Suspense fallback={<EarthFallback />}>
-              <EarthGlobe3D
-                isTargeting={isTargeting}
-                onCrossFade={handleCrossFade}
-                onComplete={handleZoomComplete}
+            {/* Circular Orbital Aperture Boundary */}
+            <div className="relative aspect-square w-[340px] sm:w-[440px] md:w-[480px] lg:w-[540px] xl:w-[580px] max-w-full rounded-full p-2 flex items-center justify-center">
+              {/* Outer Decorative Concentric Orbital Rings */}
+              <div
+                className="absolute inset-0 rounded-full border border-dashed border-cyan-400/30 pointer-events-none animate-spin"
+                style={{ animationDuration: '70s' }}
               />
-            </Suspense>
+              <div className="absolute -inset-2.5 sm:-inset-3.5 rounded-full border border-cyan-500/20 pointer-events-none" />
+              <div
+                className="absolute -inset-5 sm:-inset-7 rounded-full border border-dotted border-emerald-400/20 pointer-events-none animate-spin"
+                style={{ animationDuration: '100s', animationDirection: 'reverse' }}
+              />
+
+              {/* Inner Circular Viewport Frame (Strictly Circular Boundary) */}
+              <div className="w-full h-full rounded-full overflow-hidden border-2 border-cyan-400/50 shadow-[0_0_50px_rgba(6,182,212,0.3),inset_0_0_30px_rgba(6,182,212,0.2)] bg-slate-950/80 relative">
+                {/* Suspense wrapper with custom glowing circle skeleton */}
+                <Suspense fallback={<EarthFallback />}>
+                  <EarthGlobe3D
+                    isTargeting={isTargeting}
+                    onCrossFade={handleCrossFade}
+                    onComplete={handleZoomComplete}
+                  />
+                </Suspense>
+              </div>
+            </div>
           </div>
         </div>
 

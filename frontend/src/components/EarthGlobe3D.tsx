@@ -368,9 +368,9 @@ export const EarthGlobe3D: React.FC<{
   }, []);
 
   return (
-    <div className="w-full h-full relative cursor-grab active:cursor-grabbing">
+    <div className="w-full h-full relative cursor-grab active:cursor-grabbing rounded-full overflow-hidden">
       <Canvas
-        camera={{ position: [0, 0.4, 4.8], fov: 45 }}
+        camera={{ position: [0, 0, 6.2], fov: 45 }}
         dpr={isMobile ? [1, 1.25] : [1, 2]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
