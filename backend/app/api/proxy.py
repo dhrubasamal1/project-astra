@@ -41,19 +41,22 @@ async def proxy_bhuvan(path: str, request: Request):
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.get(upstream_url, params=query_params)
-            return Response(
-                content=resp.content,
-                status_code=resp.status_code,
-                media_type=resp.headers.get("content-type", "image/png"),
-                headers={"Cache-Control": "public, max-age=86400"}
-            )
+            if resp.status_code == 200:
+                return Response(
+                    content=resp.content,
+                    status_code=200,
+                    media_type=resp.headers.get("content-type", "image/png"),
+                    headers={"Cache-Control": "public, max-age=86400"}
+                )
     except Exception:
-        # Graceful fallback to transparent PNG on upstream network error
-        return Response(
-            content=TRANSPARENT_PNG,
-            media_type="image/png",
-            headers={"X-TerraCity-Proxy": "fallback-transparent"}
-        )
+        pass
+
+    # Graceful fallback to transparent PNG on upstream error or non-200
+    return Response(
+        content=TRANSPARENT_PNG,
+        media_type="image/png",
+        headers={"X-TerraCity-Proxy": "fallback-transparent"}
+    )
 
 
 @router.get("/proxy/vedas/wms", tags=["Proxy"])
@@ -81,15 +84,18 @@ async def proxy_vedas_wms(request: Request):
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.get(vedas_url, params=query_params)
-            return Response(
-                content=resp.content,
-                status_code=resp.status_code,
-                media_type=resp.headers.get("content-type", "image/png"),
-                headers={"Cache-Control": "public, max-age=86400"}
-            )
+            if resp.status_code == 200:
+                return Response(
+                    content=resp.content,
+                    status_code=200,
+                    media_type=resp.headers.get("content-type", "image/png"),
+                    headers={"Cache-Control": "public, max-age=86400"}
+                )
     except Exception:
-        return Response(
-            content=TRANSPARENT_PNG,
-            media_type="image/png",
-            headers={"X-TerraCity-Proxy": "fallback-transparent"}
-        )
+        pass
+
+    return Response(
+        content=TRANSPARENT_PNG,
+        media_type="image/png",
+        headers={"X-TerraCity-Proxy": "fallback-transparent"}
+    )

@@ -17,6 +17,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.pa
 CACHE_DIR = os.path.join(BASE_DIR, "data", "cache", "regions")
 FIXTURES_DIR = os.path.join(BASE_DIR, "data", "fixtures")
 
+# Credentials
+BHUVAN_USER = os.getenv("BHUVAN_USER", "")
+BHUVAN_PASSWORD = os.getenv("BHUVAN_PASSWORD", "")
+BHUVAN_WMS_URL = os.getenv("BHUVAN_WMS_URL", "https://bhuvan-vec2.nrsc.gov.in/bhuvan")
+
 # LULC Class Mapping
 LULC_CLASSES = {
     1: "Built-up",
