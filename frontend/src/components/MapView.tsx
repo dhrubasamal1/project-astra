@@ -272,6 +272,41 @@ export const MapView: React.FC<MapViewProps> = ({
         onSelectSiteCode(site.code);
       });
 
+      // Synchronize custom vertex editing and dragging directly to state & rescore
+      polygon.on('pm:edit pm:dragend', (e: any) => {
+        const latlngs = e.target.getLatLngs();
+        const rawCoords = Array.isArray(latlngs[0]) ? latlngs[0] : latlngs;
+        const coords: [number, number][] = rawCoords.map((ll: any) => [
+          Number(ll.lat.toFixed(5)),
+          Number(ll.lng.toFixed(5)),
+        ]);
+
+        // Calculate polygon area in km² using planar projection
+        let areaSum = 0;
+        for (let i = 0; i < coords.length; i++) {
+          const j = (i + 1) % coords.length;
+          areaSum += coords[i][1] * coords[j][0] - coords[j][1] * coords[i][0];
+        }
+        const degArea = Math.abs(areaSum) / 2;
+        const approxKm2 = Math.max(1.0, Math.round(degArea * 111 * 98 * 10) / 10);
+
+        const currentSites = candidateSitesRef.current;
+        const updated = currentSites.map((s) =>
+          s.code === site.code ? { ...s, coordinates: coords, areaKm2: approxKm2 } : s
+        );
+        onUpdateCandidateSites(updated);
+      });
+
+      // Handle layer removal: restore preset demo geometry safely
+      polygon.on('pm:remove', () => {
+        const defaultSite = currentRegionRef.current.candidateSites.find((s) => s.code === site.code);
+        if (defaultSite) {
+          const currentSites = candidateSitesRef.current;
+          const updated = currentSites.map((s) => (s.code === site.code ? defaultSite : s));
+          onUpdateCandidateSites(updated);
+        }
+      });
+
       // Tooltip label
       polygon.bindTooltip(
         `<div class="px-2.5 py-1.5 text-xs font-bold text-slate-800 bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-slate-200">

@@ -1457,13 +1457,13 @@ export function generateStressTest(
   const siteName = siteId === 'site_a' ? (isJewar ? 'Jewar Greenfield Hub' : 'Dholera Industrial Core') : 'Candidate Site';
 
   // Base parameters
-  const pop0 = assumptions.pop0; // 150,000 in 2026
-  const targetPop = population; // e.g. 450,000 in 2050
-  const lpcd = assumptions.lpcd; // 135 L/capita/day
+  const pop0 = assumptions.pop0 || 150000;
+  const targetPop = Math.max(1000, population || 150000);
+  const lpcd = assumptions.lpcd || 135;
 
-  // Growth rate calculation between 2026 and horizon
-  const yearsSpan = horizon - 2026;
-  const cagr = Math.pow(targetPop / pop0, 1 / (yearsSpan || 1)) - 1;
+  // Growth rate calculation between 2026 and horizon (with division by zero & zero pop guards)
+  const yearsSpan = Math.max(1, horizon - 2026);
+  const cagr = Math.pow(Math.max(0.01, targetPop / pop0), 1 / yearsSpan) - 1;
 
   // Catchment & Rainfall base supply calculation
   // Area approx 24 km² * 3.0 catchment multiplier = 72 km²

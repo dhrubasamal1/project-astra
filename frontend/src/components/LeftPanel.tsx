@@ -183,7 +183,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
             max={1000000}
             step={25000}
             value={targetPopulation}
-            onChange={(e) => onChangeTargetPopulation(Number(e.target.value))}
+            onChange={(e) => onChangeTargetPopulation(Math.max(10000, Number(e.target.value) || 150000))}
             className="w-full accent-blue-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
           />
 

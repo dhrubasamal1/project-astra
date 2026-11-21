@@ -266,3 +266,43 @@ def test_report_and_export_geojson():
     feat = geojson["features"][0]
     assert feat["properties"]["site_id"] == "site_a"
     assert feat["properties"]["overall_score"] == scorecard["overall_score"]
+
+
+def test_api_edge_cases():
+    # 1. MultiPolygon geometry support
+    mp_geom = {
+        "type": "MultiPolygon",
+        "coordinates": [
+            [[[77.52, 28.21], [77.53, 28.21], [77.53, 28.22], [77.52, 28.22], [77.52, 28.21]]],
+            [[[77.54, 28.21], [77.55, 28.21], [77.55, 28.22], [77.54, 28.22], [77.54, 28.21]]]
+        ]
+    }
+    r_mp = client.post("/api/analyze", json={"site": mp_geom, "region_id": "up_jewar"})
+    assert r_mp.status_code == 200
+    assert r_mp.json()["area_km2"] > 0
+
+    # 2. Unknown region_id raises 400
+    r_reg = client.post("/api/analyze", json={
+        "site": {"type": "Polygon", "coordinates": [[[77.52, 28.21], [77.53, 28.21], [77.53, 28.22], [77.52, 28.22], [77.52, 28.21]]]},
+        "region_id": "non_existent_region"
+    })
+    assert r_reg.status_code == 400
+    assert "Unknown or unsupported region" in r_reg.json()["message"]
+
+    # 3. Negative population raises 422
+    r_pop = client.post("/api/analyze", json={
+        "site": {"type": "Polygon", "coordinates": [[[77.52, 28.21], [77.53, 28.21], [77.53, 28.22], [77.52, 28.22], [77.52, 28.21]]]},
+        "population": -500
+    })
+    assert r_pop.status_code == 422
+
+    # 4. Compare with >3 sites raises 400
+    dummy = {"site": {"type": "Polygon", "coordinates": [[[77.52, 28.21], [77.53, 28.21], [77.53, 28.22], [77.52, 28.22], [77.52, 28.21]]]}}
+    r_cmp = client.post("/api/compare", json={"sites": [dummy, dummy, dummy, dummy]})
+    assert r_cmp.status_code == 400
+    assert "maximum of 3" in r_cmp.json()["message"]
+
+    # 5. Scenarios with horizon earlier than start raises 400
+    r_scen = client.post("/api/scenarios/run", json={"site_ids": ["site_a"], "start_year": 2050, "horizon_year": 2026})
+    assert r_scen.status_code == 400
+

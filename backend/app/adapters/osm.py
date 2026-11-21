@@ -33,30 +33,30 @@ def _approx_distance_km(geom1, geom2, ref_lat: float = 25.0) -> float:
     Computes minimum Euclidean distance in kilometers between two Shapely geometries
     scaled by local latitude degree-to-meter factor.
     """
+    try:
+        if geom1.intersects(geom2):
+            return 0.0
+    except Exception:
+        pass
+
     # Degree to km scale factors
     lat_scale = 110.574
     lon_scale = 111.320 * math.cos(math.radians(ref_lat))
     
-    # Check if geometries intersect
-    if geom1.intersects(geom2):
-        return 0.0
-        
     p1 = geom1.centroid
     p2 = geom2.centroid
     
-    # Distance between centroids as baseline or exact geometry distance
-    # For accurate line/polygon distance, we transform coordinates
     dx = (p1.x - p2.x) * lon_scale
     dy = (p1.y - p2.y) * lat_scale
     centroid_dist = math.sqrt(dx * dx + dy * dy)
     
-    # Bound with Shapely minimum distance
-    deg_dist = geom1.distance(geom2)
-    # Average km per degree
-    avg_scale = (lat_scale + lon_scale) / 2.0
-    geom_dist_km = deg_dist * avg_scale
-    
-    return min(centroid_dist, geom_dist_km)
+    try:
+        deg_dist = geom1.distance(geom2)
+        avg_scale = (lat_scale + lon_scale) / 2.0
+        geom_dist_km = deg_dist * avg_scale
+        return min(centroid_dist, geom_dist_km)
+    except Exception:
+        return centroid_dist
 
 
 def fetch_osm_indicators(region_id: str, polygon_geojson: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -72,9 +72,15 @@ def fetch_osm_indicators(region_id: str, polygon_geojson: Optional[Dict[str, Any
     target_geom = None
     ref_lat = 25.0
     if polygon_geojson:
+        from shapely.validation import make_valid
         raw_geom = polygon_geojson.get("geometry", polygon_geojson)
-        target_geom = shape(raw_geom)
-        ref_lat = target_geom.centroid.y
+        try:
+            target_geom = shape(raw_geom)
+            if not target_geom.is_valid:
+                target_geom = make_valid(target_geom)
+            ref_lat = target_geom.centroid.y
+        except Exception:
+            target_geom = None
 
     dist_highway = 999.0
     dist_substation = 999.0

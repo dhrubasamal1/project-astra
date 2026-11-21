@@ -37,18 +37,30 @@ def get_region_config(region_id: str) -> Dict[str, Any]:
 
 def compute_polygon_area_hectares(polygon_geojson: Dict[str, Any]) -> float:
     """
-    Computes geodesic area of polygon in hectares.
+    Computes geodesic area of polygon in hectares using WGS84 ellipsoid.
+    Gracefully handles self-intersecting geometries and multipolygons.
     """
     try:
-        geom = shape(polygon_geojson.get("geometry", polygon_geojson))
-        centroid_lat = geom.centroid.y
-        lat_m = 110574.0
-        lon_m = 111320.0 * math.cos(math.radians(centroid_lat))
-        # Approximate projected area
-        deg_area = geom.area
-        sq_meters = deg_area * lat_m * lon_m
-        hectares = sq_meters / 10000.0
-        return round(hectares, 1)
+        from shapely.validation import make_valid
+        raw_geom = polygon_geojson.get("geometry", polygon_geojson)
+        geom = shape(raw_geom)
+        if not geom.is_valid:
+            geom = make_valid(geom)
+
+        try:
+            from pyproj import Geod
+            geod = Geod(ellps="WGS84")
+            area_m2, _ = geod.geometry_area_perimeter(geom)
+            hectares = abs(area_m2) / 10000.0
+            return round(hectares, 1)
+        except Exception:
+            centroid_lat = geom.centroid.y
+            lat_m = 110574.0
+            lon_m = 111320.0 * math.cos(math.radians(centroid_lat))
+            deg_area = geom.area
+            sq_meters = deg_area * lat_m * lon_m
+            hectares = sq_meters / 10000.0
+            return round(hectares, 1)
     except Exception:
         return 150.0
 

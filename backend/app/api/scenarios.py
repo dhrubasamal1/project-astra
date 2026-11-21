@@ -22,6 +22,24 @@ router = APIRouter()
 @router.post("/scenarios/run", response_model=ScenarioRunResponse, tags=["Scenarios"])
 async def post_run_scenarios(request: ScenarioRunRequest):
     """Run 2026-2050 physical water balance simulation for candidate sites."""
+    if request.horizon_year < request.start_year:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Horizon year ({request.horizon_year}) cannot be earlier than start year ({request.start_year})."
+        )
+
+    if request.target_population < 0:
+        raise HTTPException(
+            status_code=422,
+            detail="Target population cannot be negative."
+        )
+
+    if request.lpcd <= 0:
+        raise HTTPException(
+            status_code=422,
+            detail="LPCD standard must be greater than 0."
+        )
+
     # Look up any scorecards from SQLite store if site_ids are provided
     scorecards_dict: Dict[str, SiteScorecard] = {}
 

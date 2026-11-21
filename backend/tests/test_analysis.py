@@ -136,3 +136,48 @@ def test_full_analysis_engine(jewar_candidate_site):
     print(f"Full multi-portal site analysis completed in {res['execution_time_ms']} ms")
     assert res["execution_time_ms"] < 500.0  # Well within sub-second responsiveness
 
+
+def test_polygon_outside_raster_bounds():
+    """Ensure graceful handling when a candidate parcel is drawn outside regional raster bounds."""
+    outside_polygon = {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [70.10, 20.10],
+                [70.20, 20.10],
+                [70.20, 20.20],
+                [70.10, 20.20],
+                [70.10, 20.10]
+            ]
+        ]
+    }
+    # Must not raise RasterioMaskError or unhandled exception
+    res = run_site_analysis("up_jewar", outside_polygon)
+    assert res["region_id"] == "up_jewar"
+    assert res["area_hectares"] > 0
+    assert len(res["indicators"]) >= 10
+    assert "mean_slope_deg" in res["indicators"]
+    # Check that fallback indicator has low confidence
+    assert res["indicators"]["mean_slope_deg"]["confidence"] == "low"
+
+
+def test_self_intersecting_polygon_handling():
+    """Ensure self-intersecting/invalid geometries are repaired by shapely make_valid."""
+    bowtie_polygon = {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [77.52, 28.21],
+                [77.56, 28.25],
+                [77.56, 28.21],
+                [77.52, 28.25],
+                [77.52, 28.21]
+            ]
+        ]
+    }
+    res = run_site_analysis("up_jewar", bowtie_polygon)
+    assert res["region_id"] == "up_jewar"
+    assert res["area_hectares"] > 0
+    assert len(res["indicators"]) >= 10
+
+

@@ -184,12 +184,38 @@ def execute_site_analysis(
     site_geojson = {"type": "Feature", "geometry": req.site}
     site_id = req.site_id or f"site_{uuid.uuid4().hex[:6]}"
 
+    if req.population < 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Target population cannot be negative."
+        )
+
+    # Validate region availability
+    loaded_regions = regional_cache.get_loaded_regions()
+    if req.region_id not in loaded_regions:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unknown or unsupported region '{req.region_id}'. Available demo regions: {', '.join(loaded_regions)}"
+        )
+
     # Load region configuration
     regions_data = load_yaml_config(REGIONS_CONFIG_PATH).get("regions", {})
     region_cfg = regions_data.get(req.region_id, {})
 
     # Run multi-portal geospatial analysis pipeline
-    analysis_output = run_site_analysis(req.region_id, site_geojson, region_cfg)
+    try:
+        analysis_output = run_site_analysis(req.region_id, site_geojson, region_cfg)
+    except FileNotFoundError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Spatial data raster not found for region '{req.region_id}': {str(e)}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Spatial zonal analysis failed: {str(e)}"
+        )
+
     all_raw_indicators = analysis_output.get("indicators", {})
     deal_breaker_zones = analysis_output.get("deal_breaker_zones")
 

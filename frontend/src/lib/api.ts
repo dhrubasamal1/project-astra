@@ -27,13 +27,21 @@ export const getApiBase = (): string => {
     const custom = localStorage.getItem('TERRA_API_BASE');
     if (custom) return custom.replace(/\/$/, '');
 
-    // If served directly from a full-stack container on Render, Railway, or Google Cloud Run
     const host = window.location.hostname;
+    // Local development
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api').replace(/\/$/, '');
+    }
+
+    // Direct container hosting
     if (host.endsWith('.onrender.com') || host.endsWith('.railway.app') || host.endsWith('.run.app')) {
       return `${window.location.origin}/api`;
     }
+
+    // Cloudflare Pages or external web deployments: connect directly to live Render backend
+    return (import.meta.env.VITE_API_BASE_URL || 'https://project-astra-8yiu.onrender.com/api').replace(/\/$/, '');
   }
-  return (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api').replace(/\/$/, '');
+  return (import.meta.env.VITE_API_BASE_URL || 'https://project-astra-8yiu.onrender.com/api').replace(/\/$/, '');
 };
 
 const API_BASE = getApiBase();

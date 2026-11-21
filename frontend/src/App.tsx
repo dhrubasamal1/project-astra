@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ChevronRight, SlidersHorizontal } from 'lucide-react';
 import { Navbar } from './components/Navbar';
 import { LeftPanel } from './components/LeftPanel';
@@ -75,8 +75,13 @@ export function App() {
     });
   }, []);
 
+  // Track active region ref to avoid stale async state under rapid switching
+  const selectedRegionIdRef = useRef(selectedRegionId);
+  selectedRegionIdRef.current = selectedRegionId;
+
   // Recalculate analysis
   const executeAnalysis = useCallback(async (overrideSites?: CandidateSite[]) => {
+    const requestRegion = selectedRegionIdRef.current;
     setIsAnalyzing(true);
 
     try {
@@ -86,9 +91,12 @@ export function App() {
       const siteB = sitesToUse.find((s) => s.code === 'B');
       const siteC = sitesToUse.find((s) => s.code === 'C');
 
-      const cardA = await ApiClient.analyzeSite(selectedRegionId, 'A', priorityPreset, assumptions, siteA);
-      const cardB = await ApiClient.analyzeSite(selectedRegionId, 'B', priorityPreset, assumptions, siteB);
-      const cardC = await ApiClient.analyzeSite(selectedRegionId, 'C', priorityPreset, assumptions, siteC);
+      const cardA = await ApiClient.analyzeSite(requestRegion, 'A', priorityPreset, assumptions, siteA);
+      const cardB = await ApiClient.analyzeSite(requestRegion, 'B', priorityPreset, assumptions, siteB);
+      const cardC = await ApiClient.analyzeSite(requestRegion, 'C', priorityPreset, assumptions, siteC);
+
+      // Guard against race conditions if user switched regions while requests were in flight
+      if (requestRegion !== selectedRegionIdRef.current) return;
 
       const newScorecards: Record<string, SiteScorecard> = {
         [siteA?.id || 'site_a']: cardA,
@@ -102,20 +110,22 @@ export function App() {
       setScorecards(newScorecards);
 
       // Multi-site comparison with user's active sites
-      const comp = await ApiClient.compareSites(selectedRegionId, priorityPreset, scenarioPreset, assumptions, sitesToUse);
+      const comp = await ApiClient.compareSites(requestRegion, priorityPreset, scenarioPreset, assumptions, sitesToUse);
+      if (requestRegion !== selectedRegionIdRef.current) return;
       setCompareResult(comp);
 
       // Water balance stress test for active site
       const activeSite = sitesToUse.find((s) => s.code === selectedSiteCode) || siteA;
       const stress = await ApiClient.runStressTest(
         activeSite?.id || 'site_a',
-        selectedRegionId,
+        requestRegion,
         horizon,
         targetPopulation,
         scenarioPreset,
         assumptions,
         activeSite
       );
+      if (requestRegion !== selectedRegionIdRef.current) return;
       setStressTestResult(stress);
     } catch (err) {
       console.error('Analysis execution error:', err);
@@ -125,7 +135,6 @@ export function App() {
       }, 300);
     }
   }, [
-    selectedRegionId,
     candidateSites,
     selectedSiteCode,
     priorityPreset,
@@ -149,11 +158,12 @@ export function App() {
   // Handle region switch
   const handleSelectRegion = (regionId: RegionId) => {
     if (regionId === selectedRegionId) return;
-    setSelectedRegionId(regionId);
     const newReg = regions.find((r) => r.id === regionId);
+    setSelectedRegionId(regionId);
     if (newReg) {
       setCandidateSites(newReg.candidateSites);
       setSelectedSiteCode('A');
+      executeAnalysis(newReg.candidateSites);
     }
   };
 

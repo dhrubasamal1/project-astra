@@ -57,9 +57,9 @@ def compute_physical_water_balance(
         preset_clean = "baseline"
     p_info = presets_cfg[preset_clean]
 
-    pop0 = float(custom_pop0 or wb_cfg.get("pop0", 150000))
-    base_lpcd = float(custom_lpcd or wb_cfg.get("lpcd", 135.0))
-    catchment_mult = float(catchment_multiplier or wb_cfg.get("catchment_area_multiplier", 3.0))
+    pop0 = max(100.0, float(custom_pop0 if custom_pop0 is not None and custom_pop0 > 0 else wb_cfg.get("pop0", 150000)))
+    base_lpcd = max(10.0, float(custom_lpcd if custom_lpcd is not None and custom_lpcd > 0 else wb_cfg.get("lpcd", 135.0)))
+    catchment_mult = max(0.1, float(catchment_multiplier if catchment_multiplier is not None and catchment_multiplier > 0 else wb_cfg.get("catchment_area_multiplier", 3.0)))
 
     yield_map = wb_cfg.get("yield_fraction", {
         "Good": 0.20,
@@ -112,7 +112,7 @@ def compute_physical_water_balance(
         frac = dt / float(total_horizon_years)
 
         # population(t) = pop0 * (1 + growth_rate) ** (t - 2026)
-        pop_t = int(round(pop0 * ((1.0 + growth_rate) ** dt)))
+        pop_t = int(round(pop0 * (max(0.001, 1.0 + growth_rate) ** dt)))
 
         # demand_MLD(t) = population(t) * lpcd / 1_000_000
         demand_t = round(pop_t * effective_lpcd / 1_000_000.0, 3)
@@ -148,8 +148,8 @@ def compute_physical_water_balance(
         stress_idx = round(demand_t / max(supply_t, 1e-6), 3)
 
         # Uncertainty bands: varying rainfall by -20% / 0% / +10% and growth by -1 / 0 / +1 pp
-        pop_low = pop0 * ((1.0 + max(0.005, growth_rate - 0.01)) ** dt)
-        pop_high = pop0 * ((1.0 + growth_rate + 0.01) ** dt)
+        pop_low = pop0 * ((max(0.001, 1.0 + max(0.005, growth_rate - 0.01))) ** dt)
+        pop_high = pop0 * ((max(0.001, 1.0 + growth_rate + 0.01)) ** dt)
 
         dem_low = round(pop_low * (base_lpcd * 0.85) / 1_000_000.0, 3)
         dem_high = round(pop_high * (base_lpcd * 1.15) / 1_000_000.0, 3)

@@ -216,3 +216,33 @@ def test_tie_check_detection():
     assert cmp_res.tie_detected is True
     assert cmp_res.tie_note is not None
     assert "< 5.0 pt threshold" in cmp_res.tie_note
+
+
+def test_scoring_edge_cases():
+    # 1. Empty indicators
+    card_empty = score_site("empty", "Empty Site", {})
+    assert card_empty.overall_score == 0.0
+    assert card_empty.site_confidence_pct == 0.0
+    assert card_empty.site_confidence_label == "Low"
+
+    # 2. NaN, Inf, and unrecognized strings
+    weird_inds = {
+        "slope_buildable_share": make_ind("slope_buildable_share", float("nan")),
+        "terrain_roughness": make_ind("terrain_roughness", float("inf")),
+        "land_cover_conversion": make_ind("land_cover_conversion", -500),
+        "geomorphology_constraint": make_ind("geomorphology_constraint", "UnknownType"),
+        "rainfall_mean_annual": make_ind("rainfall_mean_annual", "N/A"),
+    }
+    card_weird = score_site("weird", "Weird Site", weird_inds)
+    assert isinstance(card_weird.overall_score, float)
+    assert 0.0 <= card_weird.overall_score <= 100.0
+
+    # 3. Empty comparison
+    cmp_empty = compare_sites([])
+    assert len(cmp_empty.rankings) == 0
+    assert cmp_empty.tie_detected is False
+
+    # 4. Single site comparison
+    cmp_single = compare_sites([card_weird])
+    assert len(cmp_single.rankings) == 1
+    assert cmp_single.tie_detected is False
