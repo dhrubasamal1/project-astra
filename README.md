@@ -192,6 +192,97 @@ These external APIs provide the core satellite imagery, geospatial datasets, env
 - Enables map location search and smooth fly-to animations.
 - Helps users identify and select potential development sites.
 
+---
+
+## Part 2: Platform Backend REST APIs & Functions
+
+The TerraCity AI backend is built on **FastAPI** (`backend/app/main.py`), exposing asynchronous, validated REST endpoints for polygon spatial analysis, multi-criteria scoring, climate stress testing, generative AI urban reviews, and GIS reporting.
+
+| Endpoint | Method | Tag / Category | Function / Handler | Description & Key Operations |
+|---|:---:|---|---|---|
+| `/api/analyze` | `POST` | Analysis | `post_analyze` | Ingests a GeoJSON site polygon, rasterizes against CartoDEM 30m, queries ISRO datasets, computes 7-pillar MCA scores, checks statutory deal-breakers, and returns an evaluated scorecard. |
+| `/api/compare` | `POST` | Comparison | `post_compare` | Takes multiple evaluated sites ($A, B, C$), applies selected priority weights (`balanced`, `climate_resilient`, `infra_first`), computes score margins, identifies top-3 gap drivers, and flags tie-checks. |
+| `/api/scenarios/run` | `POST` | Scenarios | `post_run_scenarios` | Executes multi-decade physical water balance simulations ($2026\text{--}2050$) comparing municipal demand against rainfall recharge under SSP2-4.5 (Baseline) and SSP5-8.5 (Stressed) climate trajectories. |
+| `/api/ai/review` | `POST` | AI Review | `review_site_analysis` | Dispatches parcel geometry, centroid, and 15+ satellite indicators to Google Gemini 3.8 Flash to synthesize executive critiques, parametric zoning allocations, and phased CapEx roadmaps ($2026\text{--}2050$). |
+| `/api/geocode` | `GET` | Geocoding | `search_locations` | Handles location searches across India via coordinate regex parsing (`lat, lon`), cached OpenStreetMap Nominatim proxy, and instant presets for major industrial corridors. |
+| `/api/report` | `POST` | Reporting | `post_generate_report` | Compiles site scorecards, radar charts, deal-breaker audits, and ISRO provenance tables into a self-contained, print-optimized HTML dossier with `@media print` support. |
+| `/api/export/geojson` | `POST` | Export | `post_export_geojson` | Serializes candidate parcel polygons, centroid coordinates, overall scores, and exclusion zones into RFC 7946 compliant GeoJSON for import into QGIS, ArcGIS, or CAD. |
+| `/api/regions` | `GET` | Regions | `get_regions` | Returns metadata for configured demonstration corridors (**Dholera SIR**, Gujarat and **Jewar Corridor**, UP) including bounds, center coordinates, and preset candidate sites. |
+| `/api/regions/{region_id}` | `GET` | Regions | `get_region_by_id` | Fetches comprehensive boundary geometries, candidate site polygons ($A, B, C$), baseline water balances, and default simulation parameters for a specific region. |
+| `/api/layers` | `GET` | Layers | `get_layers` | Returns the thematic map layer catalog (CartoDEM slopes, Bhuvan LULC, flood zones, GHI solar) for Leaflet client-side layer toggling and legend rendering. |
+| `/api/sources` | `GET` | Sources | `get_sources` | Serves the 4-portal ISRO geospatial data provenance matrix, recording source portals, sensor platforms, spatial resolutions, vintages, and verification status. |
+| `/api/proxy/bhuvan/{path}` | `GET` | Proxy | `proxy_bhuvan` | Secure caching proxy for Bhuvan WMS / TMS tile services, injecting user-agents and defending against SSRF. |
+| `/api/proxy/vedas/wms` | `GET` | Proxy | `proxy_vedas_wms` | Secure server-side proxy for VEDAS WMS requests, securely injecting server-side `VEDAS_API_KEY` credentials. |
+| `/api/health` | `GET` | Health | `get_health` | Returns system operational status, cache mode (`live_backend` vs. `offline_fixtures`), API version, and 4-portal connectivity indicators. |
+
+### Detailed Endpoint Capabilities & Functional Logic
+
+#### 1. Site Analysis Engine (`POST /api/analyze`)
+- **Handler**: `post_analyze(request: AnalyzeRequest)`
+- **Core Logic**:
+  1. **Geometry Validation**: Parses GeoJSON Polygon/MultiPolygon coordinates, checks coordinate validity, self-intersections, and computes geodesic surface area in $\text{km}^2$ and hectares via latitude-scaled spherical trigonometry.
+  2. **Statutory Deal-Breaker Screening**: Evaluates hard-stop thresholds:
+     - *Active Floodways*: Bhuvan 10-year flood zone overlap or CartoDEM HAND $< 2\text{m}$.
+     - *Slope Exclusion*: Mean slope $> 15\%$ or rugged terrain relief.
+     - *Environmental Exclusions*: Protected wetlands or eco-sensitive buffer zones.
+     - If triggered, assigns an instant zero-tolerance disqualification (`verdictTier: "D"`).
+  3. **7-Pillar Multi-Criteria Analysis (MCA)**: Computes deterministic scores ($0\text{--}100$) across:
+     - Terrain & Elevation (CartoDEM 30m)
+     - Geology & Soil Bearing (VEDAS lithology)
+     - Water Availability & Hydrology (MOSDAC precipitation & aquifer potential)
+     - Climate Stress Vulnerability (2026–2050 deficit projections)
+     - Disaster Hazards & Safety (Seismic Zone & flood buffer)
+     - Renewable Energy Potential (VEDAS solar GHI insolation)
+     - Infrastructure & Connectivity (Proximity to highways, rail, and power grid)
+  4. **Radar & Indicator Synthesis**: Generates spider radar vectors ($0\text{--}100$) and itemized provenance citations.
+
+#### 2. Multi-Site Comparison & Tie-Checking (`POST /api/compare`)
+- **Handler**: `post_compare(request: CompareRequest)`
+- **Core Logic**:
+  - Compares up to 3 candidate parcels simultaneously.
+  - Dynamically recalculates overall scores based on user-selected priority presets:
+    - `balanced`: Equal pillar weights ($14.3\%$ each).
+    - `climate_resilient`: Water, hazards, and climate pillars weighted at $60\%$.
+    - `infra_first`: Transport, grid proximity, and terrain weighted at $60\%$.
+  - Computes score margins ($\Delta$) between Rank #1 and Rank #2.
+  - **Tie-Check Sensitivity Note**: If score delta $< 5.0\text{ points}$, triggers an automated sensitivity advisory explaining which specific pillar weights drive the margin.
+  - Identifies top-3 decisive gap drivers differentiating the winning parcel from runners-up.
+
+#### 3. Climate Stress & Water Balance Simulation (`POST /api/scenarios/run`)
+- **Handler**: `post_run_scenarios(request: ScenariosRequest)`
+- **Core Logic**:
+  - Models municipal water demands from $2026$ to $2050$ based on target population, per-capita consumption ($135\text{ LPCD}$ as per Indian CPHEEO standards), commercial/industrial adders ($+20\%$), and distribution transmission losses ($15\%$).
+  - Evaluates sustainable surface and groundwater yields calibrated against MOSDAC annual rainfall climatology and runoff coefficients.
+  - Compares **SSP2-4.5 (Moderate / Baseline)** against **SSP5-8.5 (High Growth / Severe Climate Stress)** trajectories.
+  - Calculates annual net balance (surplus/deficit in $\text{MLD}$), storage replenishment timelines, and resilience indices ($0.0\text{--}1.0$).
+
+#### 4. Gemini 3.8 Flash AI Urban Co-Pilot (`POST /api/ai/review`)
+- **Handler**: `review_site_analysis(request: AiReviewRequest)`
+- **Core Logic**:
+  - Ingests the evaluated parcel's exact boundary coordinates, centroid, area, and 15+ satellite indicators into a structured prompt.
+  - Calls `gemini-3.8-flash` (with automated fallback to `gemini-2.5-flash`).
+  - Returns a strictly structured JSON response containing:
+    - **Executive Critique**: Urban planning suitability verdict and key opportunities.
+    - **Parametric Land-Use Allocation**: Quantified zoning distribution in hectares and percentages (Residential, Commercial/IT, Industrial, Green/Sponge Parks, Clean Microgrid, Transit/Roads).
+    - **Phased CapEx Roadmap**: Actionable 3-stage infrastructure plan ($2026\text{--}2030$, $2031\text{--}2040$, $2041\text{--}2050$).
+    - **Climate Countermeasures**: Nature-based urban drainage, bioswales, and microgrid locations.
+  - Includes full token transparency and round-trip latency metrics for the frontend API Inspector.
+
+#### 5. Geocoding & Coordinate Location Discovery (`GET /api/geocode`)
+- **Handler**: `search_locations(q: str = Query(...))`
+- **Core Logic**:
+  - **Coordinate Direct Parsing**: Instantly detects and parses `lat, lon` or `lat lon` inputs (e.g. `22.25, 72.19`).
+  - **Nominatim Integration**: Queries OpenStreetMap Nominatim with `TerraCityAI-SmartCity-Planner/1.0` user-agent, localized to India (`countrycodes=in`).
+  - **Offline Smart City Cache**: Features pre-indexed smart city corridors (Dholera, Jewar, GIFT City, Noida, Bengaluru, etc.) ensuring instant zero-latency responses even during offline demonstrations.
+
+#### 6. Printable Executive Dossier & GIS Export (`POST /api/report` & `POST /api/export/geojson`)
+- **Handlers**: `post_generate_report(payload: ReportPayload)` & `post_export_geojson(payload: ExportPayload)`
+- **Core Logic**:
+  - `/api/report`: Generates a self-contained, single-file HTML document formatted for browser printing (`window.print()`) or saving as PDF, complete with inline SVG charts, URDPFI compliance tables, executive summaries, and ISRO dataset provenance records.
+  - `/api/export/geojson`: Converts candidate sites, centroid markers, and statutory exclusion zones into standardized GeoJSON (`FeatureCollection`), ready for immediate drag-and-drop import into QGIS, ArcGIS, or AutoCAD Map 3D.
+
+---
+
 ## Overall API Integration Workflow
 
 ```mermaid
