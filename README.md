@@ -420,12 +420,6 @@ Perplexity was used as an additional research assistant.
 | ChatGPT | Research, Planning, and Technical Guidance |
 | Perplexity AI | Research and Information Verification |
 
-## Acknowledgement
-
-We acknowledge the developers and organizations behind these tools and platforms for providing resources that supported the development of TerraCity AI.
-
-Our goal was to combine AI-assisted development, satellite-based intelligence, geospatial analysis, and modern visualization technologies to explore a smarter and more sustainable approach to future urban planning.
-
 ---
 
 ## Local Run Instructions
