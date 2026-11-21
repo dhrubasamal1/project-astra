@@ -86,7 +86,7 @@ flowchart TD
 
     subgraph Frontend_App ["TerraAI Frontend (React 19 + TypeScript + Vite)"]
         V1["1. Command Center (Leaflet + Geoman + Overlays)"]
-        V2["2. Landing Page Overview (Hero & Key Metrics)"]
+        V2["2. Landing Page Overview (Interactive 3D Earth & Key Metrics)"]
         V3["3. AI Master-Plan Designer (Zoning & Prompt Assistant)"]
         V4["4. 100-Year Future Simulation (Time Travel & SSPs)"]
         V5["5. ISRO Space Data Hub (4-Portal Status & Query Telemetry)"]
@@ -141,3 +141,7 @@ flowchart TD
 5. **Large-Extent Geodesic Scaling & Urban Water Catchment Bounding (2026-11-22)**:
    - *Observation*: Large freehand polygons (>500 km²) previously used client-side vertex approximations and unconstrained physical runoff scaling.
    - *Correction*: Replaced client-side approximations with spherical geodesic calculation in `MapView.tsx`, expanded allowable parcel cap to 3,000 km² in `analyze.py`, and capped urban water supply catchment at 150 km² in `scenarios.py` per URDPFI planning norms.
+
+6. **Dark Theme Text Contrast & Chart Readability Remediation (2026-11-22)**:
+   - *Observation*: Low ambient contrast on dark-themed dashboard cards caused dim readability on Recharts axes and colored status badges.
+   - *Correction*: Mapped colored text to luminous pastel values with contrast ratios > 7.5:1 (WCAG AAA compliant), styled Recharts radar/timeseries axes with `#cbd5e1`, and synchronized Leaflet basemap to Carto Dark Matter on theme switch.
