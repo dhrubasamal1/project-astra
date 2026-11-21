@@ -25,20 +25,29 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { SiteScorecard, CandidateSite, PriorityPreset } from '../types';
+import { AiReviewSection } from './AiReviewSection';
 
 interface ScorecardTabProps {
+  regionId?: string;
   scorecards: Record<string, SiteScorecard>;
   candidateSites: CandidateSite[];
   selectedSiteCode: 'A' | 'B' | 'C';
   onSelectSiteCode: (code: 'A' | 'B' | 'C') => void;
   priorityPreset: PriorityPreset;
+  waterStressIndex?: number;
+  targetPopulation?: number;
+  horizonYear?: number;
 }
 
 export const ScorecardTab: React.FC<ScorecardTabProps> = ({
+  regionId,
   scorecards,
   candidateSites,
   selectedSiteCode,
   onSelectSiteCode,
+  waterStressIndex,
+  targetPopulation,
+  horizonYear,
 }) => {
   const [selectedPillarFilter, setSelectedPillarFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -248,6 +257,18 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
             );
           })}
         </div>
+      </div>
+
+      {/* Gemini AI Urban Review & Masterplan Synthesis */}
+      <div id="gemini-ai-review">
+        <AiReviewSection
+          regionId={regionId || activeSite.regionId}
+          activeSite={activeSite}
+          scorecard={scorecard}
+          waterStressIndex={waterStressIndex}
+          targetPopulation={targetPopulation}
+          horizonYear={horizonYear}
+        />
       </div>
 
       {/* 7 Multi-Intelligence Pillars Accordion/Strip (Directive #17) */}

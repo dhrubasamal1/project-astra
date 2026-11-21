@@ -134,11 +134,15 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       <div className="flex-1 overflow-y-auto p-5 bg-slate-50/50">
         {activeTab === 'scorecard' && (
           <ScorecardTab
+            regionId={currentRegion.id}
             scorecards={scorecards}
             candidateSites={candidateSites}
             selectedSiteCode={selectedSiteCode}
             onSelectSiteCode={onSelectSiteCode}
             priorityPreset={priorityPreset}
+            waterStressIndex={stressTestResult.stressIndex}
+            targetPopulation={targetPopulation}
+            horizonYear={horizon}
           />
         )}
 

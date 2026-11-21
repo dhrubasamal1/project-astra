@@ -194,6 +194,13 @@ export function App() {
         health={health}
         onOpenAssumptions={() => setIsAssumptionsOpen(true)}
         onOpenReport={() => setActiveTab('report')}
+        onOpenAiReview={() => {
+          setActiveTab('scorecard');
+          setTimeout(() => {
+            const el = document.getElementById('gemini-ai-review');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 150);
+        }}
       />
 
       {/* Main 3-Column Layout */}

@@ -184,3 +184,66 @@ export interface LayerOverlay {
   color: string;
   legend: { label: string; color: string }[];
 }
+
+export interface SmartZoning {
+  residential_pct: number;
+  residential_ha: number;
+  commercial_it_pct: number;
+  commercial_it_ha: number;
+  sponge_parks_pct: number;
+  sponge_parks_ha: number;
+  renewable_microgrid_pct: number;
+  renewable_microgrid_ha: number;
+  transit_civic_pct: number;
+  transit_civic_ha: number;
+  rationale: string;
+}
+
+export interface RoadmapPhase {
+  phase: string;
+  years: string;
+  focus: string;
+  key_interventions: string[];
+  estimated_capex_share_pct: number;
+}
+
+export interface ResilienceItem {
+  domain: string;
+  threat: string;
+  countermeasure: string;
+  space_sensor: string;
+}
+
+export interface AiReviewResponse {
+  status: string;
+  model_used: string;
+  site_code: string;
+  site_name: string;
+  overall_score: number;
+  verdict: string;
+  executive_critique: string;
+  key_strengths: string[];
+  critical_vulnerabilities: string[];
+  recommended_zoning: SmartZoning;
+  phased_roadmap: RoadmapPhase[];
+  climate_resilience_playbook: ResilienceItem[];
+  custom_answer?: string | null;
+}
+
+export interface AiReviewRequest {
+  region_id: string;
+  site_code: string;
+  site_name?: string;
+  area_km2?: number;
+  overall_score?: number;
+  verdict?: string;
+  has_dealbreaker?: boolean;
+  dealbreakers?: string[];
+  pillars?: Record<string, any>;
+  key_indicators?: Record<string, any>;
+  water_stress_index?: number;
+  target_population?: number;
+  horizon_year?: number;
+  user_query?: string;
+  api_key?: string;
+}

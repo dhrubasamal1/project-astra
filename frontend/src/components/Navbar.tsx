@@ -24,6 +24,7 @@ interface NavbarProps {
   health: HealthStatus;
   onOpenAssumptions: () => void;
   onOpenReport: () => void;
+  onOpenAiReview?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -33,6 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   health,
   onOpenAssumptions,
   onOpenReport,
+  onOpenAiReview,
 }) => {
   const [showBackendModal, setShowBackendModal] = useState(false);
   const [customApiUrl, setCustomApiUrl] = useState(() => {
@@ -134,7 +136,19 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Right Action Buttons */}
-        <div className="flex items-center space-x-2.5">
+        <div className="flex items-center space-x-2">
+          {/* Gemini AI Review Action */}
+          {onOpenAiReview && (
+            <button
+              onClick={onOpenAiReview}
+              className="flex items-center space-x-1.5 px-3.5 py-2 text-xs font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-full transition-all shadow-xs active:scale-95 cursor-pointer"
+              title="Launch Gemini Urban Intelligence Review & Masterplan"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
+              <span>Gemini Review</span>
+            </button>
+          )}
+
           {/* Assumptions Drawer Trigger */}
           <button
             onClick={onOpenAssumptions}
