@@ -137,3 +137,7 @@ flowchart TD
 4. **AI Planning Review & Dual-Mode Synthesis (2026-11-22)**:
    - *Observation*: Live Gemini API calls may experience network latency or lack API keys in offline/air-gapped evaluation environments.
    - *Correction*: Implemented `backend/app/api/ai_review.py` with dual-mode synthesis: queries Google Gemini 3.8 Flash (`gemini-3.8-flash`) with full polygon geometry and 15+ satellite indicators when `GEMINI_API_KEY` is configured, and falls back gracefully to a deterministic spatial synthesis engine aligned with URDPFI standards, ensuring 100% offline uptime and zero unhandled errors.
+
+5. **Large-Extent Geodesic Scaling & Urban Water Catchment Bounding (2026-11-22)**:
+   - *Observation*: Large freehand polygons (>500 km²) previously used client-side vertex approximations and unconstrained physical runoff scaling.
+   - *Correction*: Replaced client-side approximations with spherical geodesic calculation in `MapView.tsx`, expanded allowable parcel cap to 3,000 km² in `analyze.py`, and capped urban water supply catchment at 150 km² in `scenarios.py` per URDPFI planning norms.
