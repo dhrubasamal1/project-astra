@@ -27,11 +27,30 @@ class BhoonidhiClient:
     Implements session lifecycle with token cache and try/finally logout.
     """
     def __init__(self, api_url: Optional[str] = None, username: Optional[str] = None, password: Optional[str] = None):
-        self.api_url = api_url or os.getenv("BHOONIDHI_API_URL", "https://bhoonidhi.nrsc.gov.in/api/v1")
-        self.username = username or os.getenv("BHOONIDHI_USERNAME")
+        self._load_env()
+        self.api_url = api_url or os.getenv("BHOONIDHI_API_URL", "https://bhoonidhi-api.nrsc.gov.in")
+        self.username = username or os.getenv("BHOONIDHI_USER") or os.getenv("BHOONIDHI_USERNAME")
         self.password = password or os.getenv("BHOONIDHI_PASSWORD")
         self.token = None
+        self.refresh_token = None
         self.token_expiry = 0
+
+    def _load_env(self):
+        env_file = os.path.join(BASE_DIR, ".env")
+        if os.path.exists(env_file):
+            try:
+                with open(env_file, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith("#") and "=" in line:
+                            k, v = line.split("=", 1)
+                            if "#" in v:
+                                v = v.split("#", 1)[0]
+                            k, v = k.strip(), v.strip().strip('"').strip("'")
+                            if k and k not in os.environ:
+                                os.environ[k] = v
+            except Exception:
+                pass
 
     def _load_cached_token(self) -> Optional[str]:
         if os.path.exists(TOKEN_CACHE_FILE):
@@ -39,16 +58,22 @@ class BhoonidhiClient:
                 with open(TOKEN_CACHE_FILE, "r") as f:
                     data = json.load(f)
                     if data.get("expires_at", 0) > time.time() + 60:
-                        return data.get("token")
+                        self.token = data.get("token")
+                        self.refresh_token = data.get("refresh_token")
+                        return self.token
             except Exception:
                 pass
         return None
 
-    def _save_cached_token(self, token: str, ttl_seconds: int = 3600):
+    def _save_cached_token(self, token: str, refresh_token: Optional[str] = None, ttl_seconds: int = 1200):
         os.makedirs(os.path.dirname(TOKEN_CACHE_FILE), exist_ok=True)
         try:
             with open(TOKEN_CACHE_FILE, "w") as f:
-                json.dump({"token": token, "expires_at": time.time() + ttl_seconds}, f)
+                json.dump({
+                    "token": token,
+                    "refresh_token": refresh_token,
+                    "expires_at": time.time() + ttl_seconds
+                }, f)
         except Exception:
             pass
 
@@ -63,18 +88,19 @@ class BhoonidhiClient:
             # Running in offline fixture mode
             return None
 
-        # Live authentication simulated/attempted
         try:
             import httpx
-            with httpx.Client(timeout=10.0) as client:
+            with httpx.Client(timeout=10.0, verify=False) as client:
                 resp = client.post(
-                    f"{self.api_url}/auth/login",
-                    json={"username": self.username, "password": self.password}
+                    f"{self.api_url}/auth/token",
+                    json={"userId": self.username, "password": self.password, "grant_type": "password"}
                 )
                 if resp.status_code == 200:
                     data = resp.json()
-                    self.token = data.get("token")
-                    self._save_cached_token(self.token, data.get("expires_in", 3600))
+                    self.token = data.get("access_token") or data.get("token")
+                    self.refresh_token = data.get("refresh_token")
+                    expires_in = data.get("expires_in", 1200)
+                    self._save_cached_token(self.token, self.refresh_token, expires_in)
                     return self.token
         except Exception:
             pass
@@ -82,20 +108,22 @@ class BhoonidhiClient:
 
     def logout(self):
         """Invalidates active token on server and clears local cache."""
-        if not self.token:
+        token_to_revoke = self.refresh_token or self.token
+        if not token_to_revoke:
             return
         try:
-            if self.token and self.username and self.password:
+            if self.username and self.password:
                 import httpx
-                with httpx.Client(timeout=5.0) as client:
+                with httpx.Client(timeout=5.0, verify=False) as client:
                     client.post(
                         f"{self.api_url}/auth/logout",
-                        headers={"Authorization": f"Bearer {self.token}"}
+                        headers={"Authorization": f"Bearer {token_to_revoke}"}
                     )
         except Exception:
             pass
         finally:
             self.token = None
+            self.refresh_token = None
             if os.path.exists(TOKEN_CACHE_FILE):
                 try:
                     os.remove(TOKEN_CACHE_FILE)

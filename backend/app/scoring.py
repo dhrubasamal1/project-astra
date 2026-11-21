@@ -599,8 +599,24 @@ def compare_sites(
                 f"is strongly advised before final site acquisition."
             )
 
-    from backend.app.narrative import generate_comparison_narrative
-    narrative_text = generate_comparison_narrative(rankings, scorecards, preset, tie_note)
+    from backend.app.narrative import (
+        generate_comparison_narrative,
+        generate_guarded_narrative,
+        get_llm_callable
+    )
+    import os
+    in_pytest = bool(os.getenv("PYTEST_CURRENT_TEST"))
+    llm_func = get_llm_callable() if not in_pytest else None
+    if llm_func:
+        narrative_text, used_llm, _ = generate_guarded_narrative(
+            rankings=rankings,
+            scorecards=scorecards,
+            preset=preset,
+            tie_note=tie_note,
+            llm_callable=llm_func
+        )
+    else:
+        narrative_text = generate_comparison_narrative(rankings, scorecards, preset, tie_note)
 
     sites_dict = {s.site_id: s for s in scorecards}
 

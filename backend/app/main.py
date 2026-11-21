@@ -30,6 +30,28 @@ FRONTEND_DIST = PROJECT_ROOT / "frontend" / "dist"
 STATIC_DIR = PROJECT_ROOT / "data" / "static"
 
 
+def load_env_file():
+    """Load .env file into environment variables on startup."""
+    env_file = PROJECT_ROOT / ".env"
+    if env_file.exists():
+        try:
+            with open(env_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        if "#" in v:
+                            v = v.split("#", 1)[0]
+                        k, v = k.strip(), v.strip().strip('"').strip("'")
+                        if k:
+                            os.environ[k] = v
+        except Exception:
+            pass
+
+
+load_env_file()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup and shutdown lifecycle management."""

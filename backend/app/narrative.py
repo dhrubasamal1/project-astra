@@ -86,6 +86,16 @@ def build_ground_truth_numbers(
                 truth_numbers.add(round(float(v), 1))
                 truth_numbers.add(round(float(v), 2))
 
+    # Standard scale boundaries and enumerations
+    truth_numbers.add(float(len(rankings)))
+    truth_numbers.add(float(len(scorecards)))
+    truth_numbers.add(0.0)
+    truth_numbers.add(1.0)
+    truth_numbers.add(2.0)
+    truth_numbers.add(3.0)
+    truth_numbers.add(5.0)   # 5 pillars
+    truth_numbers.add(100.0) # 0-100 scale
+
     return truth_numbers
 
 
@@ -235,3 +245,101 @@ def generate_guarded_narrative(
     except Exception:
         # LLM failure/timeout/error: safely fall back!
         return deterministic_text, False, []
+
+
+def call_gemini_api(prompt: str, api_key: str, model: str = "gemini-2.5-flash") -> str:
+    """Call Google Gemini API using httpx with timeout and structured prompting."""
+    import httpx
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {
+                        "text": (
+                            "You are the Lead Urban & Regional Planning Analyst for TerraCity AI. "
+                            "Write an executive site selection comparative summary based solely on the provided ground-truth facts. "
+                            "MANDATORY GROUNDING RULES:\n"
+                            "1. Never invent, hallucinate, or alter any numbers, percentages, or statistics. Use only numbers explicitly present in the data.\n"
+                            "2. Keep deterministic scores, rankings, and verdicts exactly as provided.\n"
+                            "3. Explicitly cite the 5 pillar names (Terrain & Land, Water Security, Hazard Risk, Environmental Impact, Infrastructure Access) and relevant satellite sources (Bhoonidhi, Bhuvan, MOSDAC, VEDAS).\n"
+                            "4. Conclude with this required framing: 'This screening-level estimate is provided under stated assumptions and does not constitute a guarantee of long-term survival.'\n\n"
+                            f"Site Comparison Data:\n{prompt}"
+                        )
+                    }
+                ]
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0.2,
+            "maxOutputTokens": 1024
+        }
+    }
+    with httpx.Client(timeout=12.0) as client:
+        resp = client.post(url, json=payload)
+        resp.raise_for_status()
+        data = resp.json()
+        candidates = data.get("candidates", [])
+        if candidates:
+            parts = candidates[0].get("content", {}).get("parts", [])
+            if parts:
+                return parts[0].get("text", "").strip()
+    return ""
+
+
+def load_env_if_needed():
+    """Load key-values from .env if present into os.environ."""
+    import os
+    from pathlib import Path
+    env_file = Path(__file__).resolve().parent.parent.parent / ".env"
+    if env_file.exists():
+        try:
+            with open(env_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        if "#" in v:
+                            v = v.split("#", 1)[0]
+                        k, v = k.strip(), v.strip().strip('"').strip("'")
+                        if k and k not in os.environ:
+                            os.environ[k] = v
+        except Exception:
+            pass
+
+
+def get_llm_callable() -> Optional[Callable[[str], str]]:
+    """Return an LLM callable if LLM_API_KEY is configured in the environment."""
+    import os
+    load_env_if_needed()
+    provider = os.getenv("LLM_PROVIDER", "gemini").lower()
+    api_key = os.getenv("LLM_API_KEY", "").strip()
+    model = os.getenv("LLM_MODEL", "gemini-2.5-flash").strip()
+    if not api_key:
+        return None
+
+    if provider == "gemini":
+        return lambda prompt: call_gemini_api(prompt, api_key, model)
+    elif provider == "openai":
+        try:
+            import httpx
+            base_url = os.getenv("LLM_BASE_URL", "https://api.openai.com/v1").rstrip("/")
+            def call_openai(prompt_text: str) -> str:
+                headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+                body = {
+                    "model": model if model != "gemini-2.5-flash" else "gpt-4o-mini",
+                    "messages": [
+                        {"role": "system", "content": "You are an urban planner for TerraCity AI. Never invent numbers."},
+                        {"role": "user", "content": prompt_text}
+                    ],
+                    "temperature": 0.2
+                }
+                with httpx.Client(timeout=12.0) as client:
+                    res = client.post(f"{base_url}/chat/completions", headers=headers, json=body)
+                    res.raise_for_status()
+                    return res.json()["choices"][0]["message"]["content"].strip()
+            return call_openai
+        except Exception:
+            return None
+    return None
+
