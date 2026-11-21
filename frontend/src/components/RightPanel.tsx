@@ -63,23 +63,19 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       id: 'compare' as RightPanelTab,
       label: 'Compare',
       icon: GitCompare,
-      badge: compareResult.isTie ? 'Tie' : undefined,
+      hasDot: compareResult.isTie,
+      dotTooltip: 'Tie Check: Sites within 1.5 pts',
     },
-    {
-      id: 'stress' as RightPanelTab,
-      label: 'Stress',
-      icon: TrendingUp,
-      badge: `${stressTestResult.stressIndex.toFixed(2)}`,
-    },
+    { id: 'stress' as RightPanelTab, label: 'Stress', icon: TrendingUp },
     { id: 'sources' as RightPanelTab, label: 'Sources', icon: Database },
     { id: 'report' as RightPanelTab, label: 'Report', icon: FileText },
   ];
 
   return (
-    <aside className="right-panel w-[480px] lg:w-[495px] xl:w-[540px] h-full bg-white border-l border-slate-200 flex flex-col shrink-0 overflow-hidden shadow-sm z-20">
+    <aside className="right-panel w-[480px] lg:w-[495px] xl:w-[540px] h-full bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 flex flex-col shrink-0 overflow-hidden shadow-sm z-20">
       {/* Floating Pill Tabs Bar */}
-      <div className="right-panel-tabs no-print px-3 py-2.5 bg-white border-b border-slate-100 shrink-0">
-        <div className="bg-slate-100/90 p-1 rounded-full border border-slate-200/80 flex items-center justify-between gap-1 shadow-xs overflow-x-auto scrollbar-none">
+      <div className="right-panel-tabs no-print px-3 py-2.5 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shrink-0">
+        <div className="bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-full border border-slate-200/80 dark:border-slate-700/80 grid grid-cols-5 gap-1 shadow-xs">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -87,29 +83,22 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               <button
                 key={tab.id}
                 onClick={() => onChangeTab(tab.id)}
-                className={`min-w-0 flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 px-1 sm:px-1.5 rounded-full text-[11px] xl:text-xs font-bold transition-all cursor-pointer select-none whitespace-nowrap ${
+                className={`w-full flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-full text-xs font-bold transition-all cursor-pointer select-none whitespace-nowrap ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60 font-semibold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 font-semibold'
                 }`}
                 title={tab.id === 'stress' ? 'Stress Test (Water Balance)' : tab.label}
               >
                 <Icon className="w-3.5 h-3.5 shrink-0" />
-                <span className="whitespace-nowrap font-bold">
-                  {tab.label}
-                </span>
-                {tab.badge && (
+                <span className="truncate">{tab.label}</span>
+                {tab.hasDot && (
                   <span
-                    className={`shrink-0 ml-0.5 px-1.5 py-0.5 text-[8.5px] rounded-full font-mono font-bold leading-none ${
-                      isActive
-                        ? 'bg-blue-800 text-blue-100'
-                        : tab.badge === 'Tie'
-                        ? 'bg-amber-100 text-amber-800 border border-amber-300/60'
-                        : 'bg-slate-200 text-slate-700'
+                    className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                      isActive ? 'bg-amber-300' : 'bg-amber-500 animate-pulse'
                     }`}
-                  >
-                    {tab.badge}
-                  </span>
+                    title={tab.dotTooltip}
+                  />
                 )}
               </button>
             );
@@ -118,7 +107,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       </div>
 
       {/* Tab Content Body */}
-      <div className="flex-1 overflow-y-auto p-5 bg-slate-50/50">
+      <div className="flex-1 overflow-y-auto p-5 bg-slate-50/50 dark:bg-slate-900/50">
         {activeTab === 'scorecard' && (
           <ScorecardTab
             regionId={currentRegion.id}
