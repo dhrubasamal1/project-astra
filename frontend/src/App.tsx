@@ -158,7 +158,7 @@ export function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-slate-950 text-slate-100 overflow-hidden font-sans">
+    <div className="app-container flex flex-col h-screen w-screen bg-slate-950 text-slate-100 overflow-hidden font-sans">
       {/* Top Navigation Bar */}
       <Navbar
         currentRegion={currentRegion}
@@ -191,7 +191,7 @@ export function App() {
         />
 
         {/* Center Canvas: Leaflet Map with Geoman Drawing & Overlays */}
-        <main className="flex-1 h-full relative overflow-hidden">
+        <main className="map-container flex-1 h-full relative overflow-hidden">
           <MapView
             currentRegion={currentRegion}
             candidateSites={candidateSites}

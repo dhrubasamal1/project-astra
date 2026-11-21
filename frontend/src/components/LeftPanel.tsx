@@ -61,7 +61,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
   const waterDemandMLD = ((targetPopulation * 135) / 1000000).toFixed(1);
 
   return (
-    <aside className="w-80 h-full bg-slate-950/90 backdrop-blur-xl border-r border-slate-800/80 flex flex-col shrink-0 overflow-y-auto z-20 shadow-xl">
+    <aside className="left-panel no-print w-80 h-full bg-slate-950/90 backdrop-blur-xl border-r border-slate-800/80 flex flex-col shrink-0 overflow-y-auto z-20 shadow-xl">
       <div className="p-4 space-y-4">
         {/* 1. Target Region Selector */}
         <div>

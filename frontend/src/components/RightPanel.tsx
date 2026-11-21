@@ -77,9 +77,9 @@ export const RightPanel: React.FC<RightPanelProps> = ({
   ];
 
   return (
-    <aside className="w-[480px] xl:w-[540px] h-full bg-slate-900 border-l border-slate-800 flex flex-col shrink-0 overflow-hidden shadow-2xl z-20">
+    <aside className="right-panel w-[480px] xl:w-[540px] h-full bg-slate-900 border-l border-slate-800 flex flex-col shrink-0 overflow-hidden shadow-2xl z-20">
       {/* Tab Navigation Header */}
-      <div className="h-12 bg-slate-900/90 border-b border-slate-800 px-3 flex items-center space-x-1 shrink-0 overflow-x-auto">
+      <div className="right-panel-tabs no-print h-12 bg-slate-900/90 border-b border-slate-800 px-3 flex items-center space-x-1 shrink-0 overflow-x-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

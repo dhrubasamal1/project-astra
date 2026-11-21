@@ -134,7 +134,7 @@ export const ReportTab: React.FC<ReportTabProps> = ({
       </div>
 
       {/* Printable Report Sheet Container */}
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 space-y-6 shadow-2xl text-slate-100 print:bg-white print:text-black print:p-0 print:border-none print:shadow-none">
+      <div className="printable-sheet bg-slate-900 border border-slate-700 rounded-2xl p-6 space-y-6 shadow-2xl text-slate-100">
         {/* Document Header */}
         <div className="border-b border-slate-700 pb-4 print:border-black">
           <div className="flex items-start justify-between">

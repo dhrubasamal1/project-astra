@@ -116,20 +116,120 @@
   background: rgba(56, 189, 248, 0.6);
 }
 
-/* Clean Media Print Styles for Report Export */
+/* Clean Media Print Styles for Report & Dossier Export */
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm 12mm 12mm;
+  }
+
+  html,
   body {
     background: #ffffff !important;
-    color: #000000 !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
     overflow: visible !important;
+    height: auto !important;
+    width: 100% !important;
+    font-size: 11pt !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  .no-print {
-    display: none !important;
-  }
-  aside, header, main, nav {
-    display: none !important;
-  }
-  .print-only {
+
+  /* Reset outer viewport and flex containers so they expand cleanly */
+  .app-container,
+  #root,
+  #root > div,
+  .app-container > div {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    height: auto !important;
+    width: 100% !important;
+    overflow: visible !important;
     display: block !important;
+    position: static !important;
+    color: #0f172a !important;
+  }
+
+  /* Hide interactive UI, navigation, sidebars, and maps */
+  header,
+  nav,
+  main,
+  .no-print,
+  .left-panel,
+  .map-container,
+  .right-panel-tabs,
+  .leaflet-container,
+  .leaflet-control-container {
+    display: none !important;
+  }
+
+  /* Unfold right panel to occupy the entire printed page width */
+  .right-panel {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Printable Dossier Sheet Styling */
+  .printable-sheet {
+    display: block !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    border-radius: 4px !important;
+    padding: 24px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    page-break-inside: auto !important;
+  }
+
+  .printable-sheet * {
+    color: #0f172a !important;
+    background-color: transparent !important;
+    border-color: #cbd5e1 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .printable-sheet h1,
+  .printable-sheet h2,
+  .printable-sheet h3 {
+    color: #0369a1 !important;
+    font-weight: 800 !important;
+  }
+
+  .printable-sheet table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border: 1px solid #94a3b8 !important;
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .printable-sheet th {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #94a3b8 !important;
+    padding: 6px 10px !important;
+    font-weight: 700 !important;
+    font-size: 10pt !important;
+  }
+
+  .printable-sheet td {
+    border: 1px solid #cbd5e1 !important;
+    padding: 6px 10px !important;
+    font-size: 10pt !important;
   }
 }

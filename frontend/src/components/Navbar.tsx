@@ -71,7 +71,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <header className="h-14 bg-slate-950/85 backdrop-blur-xl border-b border-slate-800/80 px-4 flex items-center justify-between z-30 shrink-0 sticky top-0 shadow-2xl">
+      <header className="no-print h-14 bg-slate-950/85 backdrop-blur-xl border-b border-slate-800/80 px-4 flex items-center justify-between z-30 shrink-0 sticky top-0 shadow-2xl">
         {/* Brand & Mission Title */}
         <div className="flex items-center space-x-3">
           <div className="relative flex items-center justify-center">
