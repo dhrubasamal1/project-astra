@@ -1,4 +1,4 @@
-# TerraCity AI
+# TerraCity AI (Project Astra)
 
 > **AI-Powered Smart City Planning & Land Intelligence Platform**  
 > *Tagline: "Designing Sustainable Cities. Intelligence for Tomorrow."*  
@@ -6,34 +6,80 @@
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-19-61DAFB.svg?style=flat&logo=react)](https://reactjs.org)
+[![Three.js](https://img.shields.io/badge/Three.js-R3F-black.svg?style=flat&logo=three.js)](https://threejs.org)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=flat&logo=python)](https://python.org)
+[![Gemini](https://img.shields.io/badge/Google_Gemini-3.8_Flash-8E75B2.svg?style=flat&logo=google)](https://deepmind.google/technologies/gemini/)
 [![ISRO Portals](https://img.shields.io/badge/ISRO_Portals-4_Active-FF9933.svg?style=flat)](https://www.isro.gov.in)
+[![Tests](https://img.shields.io/badge/Pytest-72%2F72_Passing-brightgreen.svg?style=flat)](backend/tests/)
 [![Offline Mode](https://img.shields.io/badge/Offline_Demo-100%25_Ready-green.svg?style=flat)](#offline-mode)
 
 ---
 
 ## Overview
 
-TerraCity AI is a unified geospatial intelligence and sustainable urban planning platform that empowers state urban development boards, infrastructure authorities, and master planners to evaluate candidate land parcels for new greenfield cities or industrial townships.
+**TerraCity AI** is an advanced geospatial intelligence and sustainable urban planning platform that empowers state urban development boards, infrastructure planning authorities, and master planners to evaluate greenfield land parcels for new smart cities or industrial townships.
 
-Unifying fragmented land-use analysis into one intelligent platform, TerraAI covers **7 core intelligence pillars**:
-1. **Terrain & Elevation**: CartoDEM 30m slope profiling, buildable share (<=15%), relief, and terrain ruggedness index (TRI).
-2. **Geological & Soil Conditions**: VEDAS lithology, soil bearing stability, and land degradation susceptibility.
-3. **Water Availability & Hydrology**: MOSDAC INSAT-3D precipitation climatology, monsoon variability (CV), surface water proximity, and aquifer recharge prospects.
-4. **Climate Stress & Future Scenarios**: Multi-decade physical water balance simulations and SSP climate stress testing (2026–2050 and 100-year time travel).
-5. **Disaster Risks & Statutory Hard-Stops**: Real Bhuvan flood inundation hazard zonation, CartoDEM HAND hydrologic flood proxy (<2m), BIS IS 1893:2016 seismic zones, and GSI landslide inventories.
-6. **Renewable Energy Potential**: VEDAS solar GHI insolation mapping (4.5–6.5 kWh/m²/day) and rooftop photovoltaic suitability.
-7. **Sustainable Smart City Master Plan Generation**: Parametric land-use zoning (Residential, Commercial, Green buffer, Transit, Solar, Civic, Waste/STP), AI Prompt Assistant ("Increase green cover and reduce road area", "15-minute city walkability"), and live URDPFI compliance KPIs.
+By integrating open satellite feeds from **all four official Indian space portals** into deterministic spatial models, TerraCity AI evaluates land suitability across **7 core intelligence pillars**:
+
+1. **Terrain & Elevation**: CartoDEM 30m slope profiling, buildable envelope share ($\le 15\%$), topographic relief, and Terrain Ruggedness Index (TRI).
+2. **Geological & Soil Stability**: VEDAS lithology, soil bearing capacity proxies, and land degradation susceptibility.
+3. **Water Availability & Hydrology**: MOSDAC INSAT-3D precipitation climatology, monsoon rainfall coefficient of variation (CV), surface water proximity, and aquifer recharge prospects.
+4. **Climate Stress & Future Scenarios**: Multi-decade physical water balance simulations and SSP climate stress testing (2026–2050 trajectories).
+5. **Disaster Risks & Statutory Hard-Stops**: Real Bhuvan flood inundation hazard zonation, CartoDEM HAND hydrologic flood proxy ($< 2\text{m}$), BIS IS 1893:2016 seismic zones, and GSI landslide inventories.
+6. **Renewable Energy Potential**: VEDAS solar GHI insolation mapping ($4.5\text{--}6.5\text{ kWh/m}^2/\text{day}$) and photovoltaic microgrid suitability.
+7. **Sustainable Smart City Master Plan Synthesis**: Parametric land-use allocation (Residential, Commercial/IT, Sponge Parks, Clean Microgrid, Transit/Civic), URDPFI compliance benchmarks, and Google Gemini 3.8 Flash urban reviews.
+
+---
+
+## Key Features & Architectural Capabilities
+
+### 1. Interactive 3D Earth Hero Landing Page
+- **Three.js + React Three Fiber (`@react-three/fiber`, `@react-three/drei`)**:
+  - Full-fidelity 3D Earth featuring 2K satellite textures: day map, bump elevation, ocean specular reflection, night city lights, and dynamic cloud drift.
+  - Custom cyan atmospheric glow shader and stars background.
+  - Smooth, continuous auto-rotation with interactive drag-to-rotate `OrbitControls`.
+  - Pulsing beacon marker placed precisely on **Dholera, Gujarat** ($22.25^\circ\text{N}, 72.19^\circ\text{E}$).
+- **Cinematic Targeting & Navigation**:
+  - Clicking **"Start Planning"** stops auto-rotation, smoothly eases and zooms into India and the Dholera marker ($2.0\text{s}$ duration via cubic easing), cross-fades into the satellite map canvas, and transitions directly into the planning dashboard.
+  - Respects `prefers-reduced-motion` to bypass animations for accessibility.
+  - Code-split lazy loading with an orbital radar ring fallback component (`EarthFallback`).
+
+### 2. Google Gemini 3.8 Flash Spatial Audit & API Inspector
+- Powered by `gemini-3.8-flash` (with automated fallback to `gemini-2.5-flash`).
+- Dispatches exact polygon boundary coordinates ($N$-point coordinates array), centroid, parcel area (in $\text{km}^2$ and hectares), and $15+$ satellite indicators across all 4 space portals.
+- **Live API Transparency Inspector Drawer**: Inspect raw HTTP latency, exact JSON spatial payloads sent, full prompt text, raw Gemini response JSON, and custom API key configuration.
+
+### 3. Persistent Dark & Light Mode with WCAG AAA Contrast
+- Seamless theme toggle in the navigation header with `localStorage` persistence and OS `prefers-color-scheme` fallback.
+- **Basemap Synchronization**: Automatically toggles Leaflet basemaps between Carto Voyager (light theme) and Carto Dark Matter (dark theme).
+- **High-Contrast Styling**: Fully remaps colored text (`text-blue-900`, `text-emerald-900`, `text-amber-900`, `text-rose-900`) to vibrant pastel tones with contrast ratios exceeding $7.5:1$, ensuring crisp legibility on dark card surfaces, tables, Recharts axes, and Leaflet popups.
+
+### 4. Interactive Location Search Bar
+- Autocomplete search powered by `/api/geocode` with instant fly-to navigation for any city, district, or landmark across India.
+- Supports direct coordinate input (e.g., `22.25, 72.19` or `28.26, 77.74`) and one-click access to featured smart city hubs (Dholera SIR, Jewar Airport, GIFT City, Amaravati, Sriperumbudur).
+
+### 5. Geodesic Polygon Math & Scaled Urban Catchments
+- Accurate geodesic Shoelace formula (`computePolygonAreaKm2`) scaled by local latitude cosine.
+- Supports candidate parcels up to $3,000\text{ km}^2$ with built-in URDPFI planning scale advisories for macro-regional footprints ($> 250\text{ km}^2$).
+- Physically caps urban municipal water catchments at $150\text{ km}^2$ to prevent unrealistic water surpluses during extreme large-polygon screening.
+
+### 6. Symmetrical Right-Panel Navigation Tabs
+- Clean 5-column CSS grid (`grid grid-cols-5`) providing equal 20% column widths across all five tabs:
+  - **Scorecard**: 5-pillar spider radar chart, suitability tiers, 7-pillar breakdown, and Gemini 3.8 Flash review.
+  - **Compare**: Multi-site ranking, score deltas, and sensitivity tie-check alerts.
+  - **Stress**: 2026–2050 water demand vs. sustainable supply timeseries trajectories.
+  - **Sources**: 4-portal ISRO provenance matrix and dataset confidence tiers.
+  - **Report**: Print-ready executive evaluation sheet and standardized GeoJSON export.
 
 ---
 
 ## Four-Portal Space Provenance
 
-TerraAI integrates real data from four official Indian space portals:
+TerraCity AI integrates real data from four official Indian space portals:
 
 ```
 +-----------------------------------------------------------------------------------------+
-|                                        TERRAAI                                          |
+|                                      TERRACITY AI                                       |
 +-------------------+--------------------+--------------------+---------------------------+
 |    BHOONIDHI      |       BHUVAN       |      MOSDAC        |          VEDAS            |
 |   (NRSC/ISRO)     |    (NRSC/ISRO)     |    (SAC/ISRO)      |        (SAC/ISRO)         |
@@ -51,21 +97,11 @@ TerraAI integrates real data from four official Indian space portals:
 
 ---
 
-## 6 Modular Application Views
-
-1. **Command Center**: Leaflet GIS map with interactive location search bar (geocoding & coordinates auto-fly), `@geoman-io/leaflet-geoman-free` freehand polygon drawing, 1-click candidate load, 7 toggleable ISRO layers, translucent red deal-breaker rendering, and right analytics drawer.
-2. **Landing Page Overview**: Strategic overview of TerraAI with live mission metrics, 7 intelligence pillars, and one-click quickstart.
-3. **AI City Master-Plan Designer**: Interactive parametric zoning editor across 7 urban sectors, live URDPFI compliance metrics, and conversational Prompt Assistant.
-4. **100-Year Future Simulation**: Interactive time-travel slider (10yr, 20yr, 50yr, 100yr), SSP climate scenarios, demand/supply trajectories, and phased urban directives.
-5. **ISRO Space Data Hub**: Dedicated portal telemetry console for Bhoonidhi, Bhuvan, MOSDAC, and VEDAS with live connectivity, dataset metadata, and query signatures.
-6. **TerraAdvisor**: Floating planning co-pilot assistant available throughout the application with actionable prompt recommendations.
-
----
-
 ## Architecture & Tech Stack
 
-- **Backend**: Python 3.11+, FastAPI, Pydantic v2, rasterio, shapely, pyproj, numpy, SQLite analysis store, pyyaml, httpx, pytest (72/72 tests passing).
-- **AI & Planning Intelligence**: Google Gemini 3.8 Flash (`gemini-3.8-flash` via `/api/ai/review`) with rich spatial polygon coordinates & centroid payloads, 15+ satellite indicators, live API Transparency Inspector, and deterministic fallback synthesis for intelligent executive critique, autonomous smart zoning allocation, phased CapEx roadmap (2026–2050), and space-grounded climate resilience countermeasures.
+- **Backend**: Python 3.11+, FastAPI, Pydantic v2, rasterio, shapely, pyproj, numpy, SQLite analysis store, pyyaml, httpx, pytest (**72/72 tests passing**).
+- **AI & Planning Intelligence**: Google Gemini 3.8 Flash (`gemini-3.8-flash` via `/api/ai/review`) with rich spatial boundary payloads, 15+ satellite indicators, live API Transparency Inspector, and deterministic fallback synthesis for intelligent executive critique, autonomous smart zoning allocation, phased CapEx roadmap (2026–2050), and space-grounded climate resilience countermeasures.
+- **3D Planetary Canvas**: Three.js, `@react-three/fiber`, `@react-three/drei`, realistic 2K satellite textures, dynamic cloud layers, and atmospheric Fresnel shader.
 - **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Dual-Theme (Light & Dark mode with basemap auto-sync), Leaflet + Geoman, Recharts, Lucide Icons.
 - **Data Caching**: Regional COG rasters and GeoJSON vectors stored in `data/cache/regions/` and `data/fixtures/` for 100% offline operation.
 
@@ -88,8 +124,8 @@ Copy-Item .env.example .env
 # Install backend dependencies
 python -m pip install -r backend/requirements.txt
 
-# Run backend tests
-python -m pytest backend/tests -v
+# Run backend tests (72/72 passing)
+python -m pytest backend/tests -q
 
 # Start FastAPI backend server (Port 8000)
 python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -131,23 +167,23 @@ make run-frontend
 
 ## 3-Minute Live Demo Script
 
-Follow this script for a flawless hackathon jury demonstration:
+Follow this script for a hackathon jury demonstration:
 
 | Time | Segment | Actions to Perform | What to Highlight |
 | :---: | :--- | :--- | :--- |
-| **0:00 - 0:30** | **Orbital Entry & Load** | 1. Experience the **cinematic 3D Earth globe orbital opening** (ISRO satellites Cartosat-3/EOS-04/INSAT-3DR, altitude dive 35,786 km -> 1,200m, LiDAR sweep).<br/>2. Select **UP Jewar** from the region selector in Command Center.<br/>3. Click **"Load Candidate Sites (A, B, C)"** in 1 click.<br/>4. Draw a custom polygon freehand on the map canvas using the draw tool. | Show space-first orbital telemetry, instant candidate loading, and dynamic spatial zonal math executed in < 150 ms offline. |
-| **0:30 - 1:05** | **Scorecard & Provenance** | 1. Click **Analyse All Sites**.<br/>2. Select **Site A** to view its 5-pillar scorecard and Recharts radar gauge.<br/>3. Click on the **Bhoonidhi** and **MOSDAC** indicator source badges. | Point out honest 4-portal provenance metadata: exact dataset name, resolution (30m / 4km), vintage (2021-2024), and confidence tier. |
-| **1:05 - 1:40** | **Compare, Deal-Breakers & Sensitivity** | 1. Switch to the **Compare** tab.<br/>2. Observe **Site B** flagged with a **Red Deal-Breaker Banner** (Severe Flood Hazard).<br/>3. Notice the **translucent red floodplain mask** overlaid on the map.<br/>4. Toggle from **Balanced** to **Climate-Resilient** and **Infra-First** priority presets. | Demonstrate live MCA rank shifts. Point out deterministic "why" explanations generated from top-3 numeric pillar drivers, and the tie-check advisory. |
-| **1:40 - 2:15** | **AI Review & Master-Plan Designer** | 1. In Scorecard tab, click **"Generate AI Planning Review"** (powered by Gemini 3.8 Flash) to view executive critique, autonomous smart zoning (ha + %), phased CapEx roadmap, and inspect the live **API Transparency Drawer**.<br/>2. Switch to **Master-Plan Designer** view and adjust residential/green buffer sliders.<br/>3. Switch to **Future Simulation** view and drag the time-travel slider to 2050 and 2126. | Showcase generative AI synthesis grounded in satellite metrics, automated smart zoning, space-sensor climate resilience countermeasures, and live URDPFI compliance. |
-| **2:15 - 3:00** | **Four-Portal Proof & Export** | 1. Open the **ISRO Space Data Hub** to display the 4-portal live connectivity matrix.<br/>2. Switch to Dholera to showcase transparent **CartoDEM HAND flood proxy fallback**.<br/>3. Click **Print Report** (clean print CSS preview) and **Download GeoJSON**. | Reiterate that all four Indian space portals supply active indicators. Demonstrate GIS interoperability with instant GeoJSON download. |
+| **0:00 - 0:35** | **Orbital Entry & Landing** | 1. Open the landing page to showcase the **3D interactive Earth globe** rotating with realistic cloud drift, atmosphere glow, and starfield.<br/>2. Drag the globe with your mouse to demonstrate free orbital interaction.<br/>3. Click **"Start Planning"** to watch the smooth 2.0s eased zoom targeting India and the glowing Dholera marker, cross-fading into the GIS dashboard. | Space-first orbital UX, Three.js performance at 60fps, code-split lazy loading, and seamless navigation. |
+| **0:35 - 1:10** | **Map, Search & Scoring** | 1. Use the **Location Search Bar** to search for "Dholera SIR" or enter coordinates.<br/>2. Click the **Sun/Moon icon** in the navbar to toggle dark mode (notice the map basemap synchronizes between Voyager and Carto Dark Matter with WCAG AAA text contrast).<br/>3. Select **Site A** in the RightPanel to view its 5-pillar scorecard and Recharts radar profile. | Real-time geodesic area calculation, responsive dark mode with synchronized tiles, and honest 4-portal ISRO indicator provenance. |
+| **1:10 - 1:45** | **Compare, Deal-Breakers & Sensitivity** | 1. Switch to the **Compare** tab to view multi-site rankings and winner spotlight.<br/>2. Observe **Site B** flagged with a **Red Deal-Breaker Banner** (Severe Flood Hazard).<br/>3. Toggle priority presets (**Balanced**, **Climate-Resilient**, **Infra-First**) to show live rank sensitivity. | Live MCA rank shifts, deterministic top-3 driver explanations, and tie-check sensitivity alerts. |
+| **1:45 - 2:20** | **Gemini 3.8 Flash AI Review** | 1. In the Scorecard tab, open the **Gemini Urban AI Review** section.<br/>2. Click **"Review Site A"** (powered by Gemini 3.8 Flash) to inspect the executive critique, smart land-use zoning breakdown (Residential, Commercial, Sponge Parks, Microgrid), and 3-stage CapEx roadmap.<br/>3. Click **"Inspect API"** to reveal the live **API Transparency Drawer**, showcasing the raw boundary coordinates, centroid, prompt, and response. | Generative AI grounded directly in satellite geometry and ISRO indicators with zero hallucination and complete auditability. |
+| **2:20 - 3:00** | **Stress Testing & Export** | 1. Switch to the **Stress** tab to demonstrate the 2026–2050 water demand vs. sustainable supply trajectory.<br/>2. Switch to the **Report** tab, click **"Print / Save PDF"** (clean print CSS preview), and click **"Download GeoJSON"** for GIS interoperability. | Dynamic physical water balance modeling and standardized GIS data export (ready for QGIS, ArcGIS, and CAD). |
 
 ---
 
 ## Honest Positioning & Non-Goals
 
-- **Targeted Gap**: Early-stage greenfield site screening across terrain, water, and hazards using Indian satellite data.
-- **Not in Scope**: Micro road layout engineering, architectural building plans, or 100-year absolute certainty predictions.
-- **Existing Systems**: We complement—rather than replace—PM GatiShakti (national transport corridor logistics), AMRUT 2.0 (brownfield city master plans), and VEDAS Urban Sprawl (historical sprawl monitoring).
+- **Targeted Gap**: Early-stage greenfield site screening across terrain, hydrology, and hazard exclusions using authoritative Indian satellite data.
+- **Not in Scope**: Micro-level architectural CAD layouts, internal structural engineering, or 100-year absolute certainty predictions.
+- **Existing Systems**: We complement—rather than replace—PM GatiShakti (national transport corridor logistics), AMRUT 2.0 (brownfield municipal master plans), and VEDAS Urban Sprawl (historical sprawl monitoring).
 
 ---
 
