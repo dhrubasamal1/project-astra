@@ -67,11 +67,17 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="TerraCity AI API",
+    title="TerraAI API",
     description=(
-        "Space-Driven Greenfield Urban Site Screening & Resilience Stress-Testing. "
-        "Integrates Bhoonidhi (CartoDEM 30m), Bhuvan (LULC & Flood Hazards), "
-        "MOSDAC (INSAT-3D Rainfall Climatology), and VEDAS (Sentinel-2 NDVI)."
+        "TerraAI – AI-Powered Smart City Planning and Land Intelligence Platform. "
+        "Unifies fragmented land-use analysis into one intelligent platform covering: "
+        "1. Terrain & Elevation (CartoDEM 30m), "
+        "2. Geological & Soil Conditions (VEDAS Lithology), "
+        "3. Water Availability & Hydrology (MOSDAC precipitation & aquifer balance), "
+        "4. Climate Stress & Future Scenarios (2026-2050 SSP projections), "
+        "5. Disaster Risks & Statutory Hard-Stops (Bhuvan Flood Inundation & Seismic Zones), "
+        "6. Renewable Energy Potential (VEDAS Solar GHI insolation), and "
+        "7. Sustainable Smart City Master Plan Generation."
     ),
     version="1.0.0",
     docs_url="/docs",
@@ -186,7 +192,8 @@ else:
     @app.get("/")
     async def root():
         return {
-            "name": "TerraCity AI API Server",
+            "name": "TerraAI API Server",
+            "tagline": "Designing Sustainable Cities. Intelligence for Tomorrow.",
             "status": "online",
             "version": "1.0.0",
             "docs": "/docs",

@@ -124,6 +124,39 @@ async def get_layers():
             }
         },
         {
+            "id": "vedas_solar_ghi",
+            "title": "VEDAS Solar Insolation & Rooftop GHI Potential",
+            "portal": "VEDAS",
+            "agency": "SAC / ISRO",
+            "type": "raster",
+            "resolution": "1km (Interpolated)",
+            "vintage": "2023",
+            "proxy_url": None,
+            "legend": {
+                "unit": "kWh/m²/day",
+                "min": 4.5,
+                "max": 6.5,
+                "color_ramp": ["#ffeda0", "#feb24c", "#f03b20"]
+            }
+        },
+        {
+            "id": "vedas_lithology_soil",
+            "title": "VEDAS Soil Degradation & Geological Lithology",
+            "portal": "VEDAS",
+            "agency": "SAC / ISRO",
+            "type": "vector",
+            "resolution": "50m",
+            "vintage": "2022",
+            "proxy_url": None,
+            "legend": {
+                "classes": [
+                    {"label": "Alluvial Silt / High Foundation Stability", "color": "#78c679"},
+                    {"label": "Clay Loam / Moderate Bearing Capacity", "color": "#fe9929"},
+                    {"label": "Saline Soil / Foundation Precaution", "color": "#d95f0e"}
+                ]
+            }
+        },
+        {
             "id": "seismic_zones",
             "title": "BIS IS 1893 Seismic Hazard Zones",
             "portal": "Static / BIS",

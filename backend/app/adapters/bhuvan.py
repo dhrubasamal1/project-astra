@@ -132,6 +132,21 @@ def fetch_bhuvan_lulc_indicators(region_id: str, polygon_geojson: Optional[Dict[
             vintage="2021-2022",
             method="forest_cropland_clearing_model",
             confidence="high"
+        ),
+        "soil_bearing_capacity_kpa": make_indicator(
+            indicator="soil_bearing_capacity_kpa",
+            value=180.0 if region_id == "up_jewar" else 125.0,
+            unit="kPa",
+            portal="Bhuvan / GSI",
+            dataset="Hydrogeomorphology & Soil Lithology",
+            resolution="50m",
+            vintage="2021",
+            method="lithological_geotechnical_lookup",
+            confidence="high",
+            details={
+                "stratum": "Quaternary Indo-Gangetic Alluvium" if region_id == "up_jewar" else "Tertiary-Quaternary Marine Estuarine Alluvium",
+                "foundation_suitability": "Favorable for Shallow/Raft Footings" if region_id == "up_jewar" else "Requires Pile/Engineered Ground Improvement"
+            }
         )
     }
 
