@@ -462,77 +462,84 @@ export const MapView: React.FC<MapViewProps> = ({
       {/* Underlying Map Div */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-      {/* Floating Top-Left Location Search Bar (Independent & Never Overlapped) */}
-      <div className="absolute top-3 left-14 z-30">
-        <MapSearchBar onSelectLocation={handleSelectLocation} />
-      </div>
-
-      {/* Floating Top-Right Map Controls & Layer Overlays */}
-      <div className="absolute top-3 right-3 z-20 flex flex-col items-end space-y-2">
-        <div className="flex items-center space-x-1 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 p-1 rounded-full shadow-md text-xs">
-          {/* Basemap Switcher Chips */}
-          <button
-            onClick={() => setActiveBasemap('voyager')}
-            className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
-              activeBasemap === 'voyager'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            Voyager
-          </button>
-          <button
-            onClick={() => setActiveBasemap('satellite')}
-            className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
-              activeBasemap === 'satellite'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            <span className="hidden sm:inline">Satellite</span>
-            <span className="sm:hidden">Sat</span>
-          </button>
-          <button
-            onClick={() => setActiveBasemap('carto_dark')}
-            className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
-              activeBasemap === 'carto_dark'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            <span className="hidden sm:inline">Dark Matter</span>
-            <span className="sm:hidden">Dark</span>
-          </button>
-          <button
-            onClick={() => setActiveBasemap('osm')}
-            className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
-              activeBasemap === 'osm'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            Terrain
-          </button>
-
-          <span className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-0.5"></span>
-
-          {/* Toggle Layers Menu Button */}
-          <button
-            onClick={() => setShowLayersMenu(!showLayersMenu)}
-            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
-              showLayersMenu
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Overlays</span>
-          </button>
+      {/* Unified Floating Top Controls Header (Search Bar + Basemaps & Overlays - Never Collide) */}
+      <div className="absolute top-3 left-14 right-3 z-30 pointer-events-none flex flex-wrap items-start justify-between gap-2.5">
+        {/* Location Search Bar */}
+        <div className="pointer-events-auto shrink-0 max-w-full">
+          <MapSearchBar onSelectLocation={handleSelectLocation} />
         </div>
 
-        {/* Floating Overlays Drawer Popover */}
-        {showLayersMenu && (
-          <div className="w-80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-4 text-xs space-y-3 animate-in fade-in slide-in-from-top-2">
+        {/* Floating Top-Right Map Controls & Layer Overlays */}
+        <div className="pointer-events-auto shrink-0 ml-auto flex flex-col items-end space-y-2">
+          <div className="flex items-center space-x-1 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 p-1 rounded-full shadow-md text-xs">
+            {/* Basemap Switcher Chips */}
+            <button
+              onClick={() => setActiveBasemap('voyager')}
+              className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
+                activeBasemap === 'voyager'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+            >
+              Voyager
+            </button>
+            <button
+              onClick={() => setActiveBasemap('satellite')}
+              className={`px-2 sm:px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer ${
+                activeBasemap === 'satellite'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+            >
+              <span className="hidden xl:inline">Satellite</span>
+              <span className="xl:hidden">Sat</span>
+            </button>
+            <button
+              onClick={() => setActiveBasemap('carto_dark')}
+              className={`px-2 sm:px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer ${
+                activeBasemap === 'carto_dark'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+            >
+              <span className="hidden xl:inline">Dark Matter</span>
+              <span className="xl:hidden">Dark</span>
+            </button>
+            <button
+              onClick={() => setActiveBasemap('osm')}
+              className={`px-2 sm:px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer ${
+                activeBasemap === 'osm'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+            >
+              Terrain
+            </button>
+
+            <span className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-0.5"></span>
+
+            {/* Toggle Layers Menu Button */}
+            <button
+              onClick={() => setShowLayersMenu(!showLayersMenu)}
+              className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
+                showLayersMenu
+                  ? 'bg-indigo-600 text-white shadow-sm'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>Overlays</span>
+              {layerOverlays.filter((l) => l.visible).length > 0 && (
+                <span className="w-4 h-4 rounded-full bg-blue-500 text-white text-[9px] font-black flex items-center justify-center">
+                  {layerOverlays.filter((l) => l.visible).length}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Floating Overlays Drawer Popover */}
+          {showLayersMenu && (
+            <div className="w-72 sm:w-80 max-w-[calc(100vw-40px)] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-3.5 sm:p-4 text-xs space-y-3 animate-in fade-in slide-in-from-top-2">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
               <span className="font-extrabold text-slate-900 dark:text-slate-100 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
@@ -611,6 +618,7 @@ export const MapView: React.FC<MapViewProps> = ({
             </div>
           </div>
         )}
+        </div>
       </div>
 
       {/* Floating Bottom-Center Quick Site Selector & Live Telemetry HUD */}

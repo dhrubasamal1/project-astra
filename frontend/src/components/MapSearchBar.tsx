@@ -101,7 +101,7 @@ export const MapSearchBar: React.FC<MapSearchBarProps> = ({
   return (
     <div ref={dropdownRef} className={`relative select-none ${className}`}>
       {/* Search Input Box Capsule */}
-      <div className="flex items-center space-x-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 hover:border-blue-400 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-500/20 px-3 py-1.5 rounded-full shadow-md text-xs transition-all w-52 sm:w-64 md:w-72 max-w-[calc(100vw-360px)]">
+      <div className="flex items-center space-x-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 hover:border-blue-400 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-500/20 px-3 py-1.5 rounded-full shadow-md text-xs transition-all w-48 sm:w-56 md:w-64 max-w-[calc(100vw-80px)]">
         <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
         <input
           ref={inputRef}
@@ -113,8 +113,8 @@ export const MapSearchBar: React.FC<MapSearchBarProps> = ({
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder="Search city, region, or coordinates..."
-          className="flex-1 bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 font-medium focus:outline-none text-xs"
+          placeholder="Search city or coordinates..."
+          className="flex-1 min-w-0 bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 font-medium focus:outline-none text-xs"
         />
         {isLoading && <Loader2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 animate-spin shrink-0" />}
         {query && !isLoading && (
@@ -130,7 +130,7 @@ export const MapSearchBar: React.FC<MapSearchBarProps> = ({
 
       {/* Autocomplete Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-72 sm:w-80 md:w-96 max-w-[calc(100vw-40px)] bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-2 z-50 text-xs animate-in fade-in slide-in-from-top-1">
+        <div className="absolute top-full left-0 mt-2 w-64 sm:w-72 md:w-80 max-w-[calc(100vw-40px)] bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-2 z-50 text-xs animate-in fade-in slide-in-from-top-1">
           {/* Quick Shortcuts (when search box is empty or focused) */}
           {!query.trim() && (
             <div className="p-2 space-y-2">
