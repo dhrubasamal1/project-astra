@@ -22,6 +22,7 @@ import {
   Trees,
   Compass,
   Zap,
+  Sparkles,
 } from 'lucide-react';
 import { SiteScorecard, CandidateSite, PriorityPreset } from '../types';
 
@@ -246,6 +247,100 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* 7 Multi-Intelligence Pillars Accordion/Strip (Directive #17) */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-5 space-y-3 shadow-xs">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-4 h-4 text-blue-600" />
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              7 Multi-Intelligence Land Pillars
+            </h3>
+          </div>
+          <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-50 text-blue-800 rounded-full border border-blue-200">
+            ISRO Unified Stack
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <div className="p-2.5 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-start space-x-2.5">
+            <div className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 font-bold text-[10px]">1</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900 text-xs truncate">Terrain & Elevation</span>
+                <span className="text-[9px] font-bold font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded">Bhoonidhi</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-0.5">CartoDEM 30m • 98.4% buildable slope &lt;2%</p>
+            </div>
+          </div>
+
+          <div className="p-2.5 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-start space-x-2.5">
+            <div className="w-6 h-6 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 font-bold text-[10px]">2</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900 text-xs truncate">Geology & Soil Stability</span>
+                <span className="text-[9px] font-bold font-mono text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded">VEDAS</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-0.5">Lithology Atlas • Alluvial terrace, non-degraded</p>
+            </div>
+          </div>
+
+          <div className="p-2.5 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-start space-x-2.5">
+            <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center shrink-0 font-bold text-[10px]">3</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900 text-xs truncate">Water & Hydrology</span>
+                <span className="text-[9px] font-bold font-mono text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded">MOSDAC</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-0.5">INSAT-3D 785 mm/yr • 15km surface water buffer</p>
+            </div>
+          </div>
+
+          <div className="p-2.5 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-start space-x-2.5">
+            <div className="w-6 h-6 rounded-lg bg-purple-100 text-purple-800 flex items-center justify-center shrink-0 font-bold text-[10px]">4</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900 text-xs truncate">Climate Stress Scenarios</span>
+                <span className="text-[9px] font-bold font-mono text-purple-700 bg-purple-50 px-1.5 py-0.2 rounded">2026–2050</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-0.5">SSP2-4.5 water balance • Stress Index 0.74 (Safe)</p>
+            </div>
+          </div>
+
+          <div className="p-2.5 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-start space-x-2.5">
+            <div className="w-6 h-6 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center shrink-0 font-bold text-[10px]">5</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900 text-xs truncate">Disaster & Hard-Stops</span>
+                <span className="text-[9px] font-bold font-mono text-rose-700 bg-rose-50 px-1.5 py-0.2 rounded">Bhuvan / BIS</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-0.5">Historical Flood Mask &lt;1.2% • Seismic Zone IV</p>
+            </div>
+          </div>
+
+          <div className="p-2.5 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-start space-x-2.5">
+            <div className="w-6 h-6 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 font-bold text-[10px]">6</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900 text-xs truncate">Renewable Energy (GHI)</span>
+                <span className="text-[9px] font-bold font-mono text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded">VEDAS Solar</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-0.5">5.42 kWh/m²/day GHI • High solar yield potential</p>
+            </div>
+          </div>
+
+          <div className="p-2.5 bg-slate-50 rounded-2xl border border-slate-200/70 sm:col-span-2 flex items-start space-x-2.5">
+            <div className="w-6 h-6 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 font-bold text-[10px]">7</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900 text-xs truncate">Sustainable Master-Plan Generation</span>
+                <span className="text-[9px] font-bold font-mono text-teal-700 bg-teal-50 px-1.5 py-0.2 rounded">URDPFI Norms</span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-0.5">Automated parametric zoning, 15-minute walkability, green canopy buffers & circular loops</p>
+            </div>
+          </div>
         </div>
       </div>
 

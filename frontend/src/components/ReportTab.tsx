@@ -142,14 +142,14 @@ export const ReportTab: React.FC<ReportTabProps> = ({
             <div>
               <div className="flex items-center space-x-2.5">
                 <span className="text-xl font-black tracking-tight text-slate-900">
-                  TerraCity AI
+                  TerraAI
                 </span>
-                <span className="px-2.5 py-0.5 text-[10px] bg-amber-100 border border-amber-300 text-amber-900 rounded-full font-bold uppercase tracking-wider">
-                  ISRO Multi-Portal Spatial DSS
+                <span className="px-2.5 py-0.5 text-[10px] bg-blue-50 border border-blue-200 text-blue-900 rounded-full font-bold uppercase tracking-wider">
+                  7-Pillar Land Intelligence Platform
                 </span>
               </div>
               <h2 className="text-sm font-bold text-slate-600 mt-1">
-                Greenfield Urban Expansion Site Evaluation & Suitability Report
+                AI-Powered Smart City Planning & Sustainable Site Evaluation Report
               </h2>
             </div>
             <div className="text-right text-[11px] text-slate-500 space-y-0.5">

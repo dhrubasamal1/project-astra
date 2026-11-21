@@ -1,6 +1,7 @@
-# TerraCity AI
+# TerraAI
 
-> **Space-Driven Greenfield Urban Site Screening & Resilience Stress-Testing**  
+> **AI-Powered Smart City Planning & Land Intelligence Platform**  
+> *Tagline: "Designing Sustainable Cities. Intelligence for Tomorrow."*  
 > *ASTRA 2026 Hackathon (ANTERiX, VIT Bhopal — Theme: Space)*
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
@@ -13,55 +14,51 @@
 
 ## Overview
 
-TerraCity AI is an explainable decision-support web platform that empowers state urban planning agencies and infrastructure developers to screen candidate land parcels for new greenfield cities or industrial townships across India. Powered by datasets from **four Indian Earth Observation portals**, TerraCity AI evaluates land capability across 5 pillars, detects fatal spatial deal-breakers, ranks sites with sensitivity weight toggles, and stress-tests water balance and flood risk through the year 2050.
+TerraAI is a unified geospatial intelligence and sustainable urban planning platform that empowers state urban development boards, infrastructure authorities, and master planners to evaluate candidate land parcels for new greenfield cities or industrial townships.
+
+Unifying fragmented land-use analysis into one intelligent platform, TerraAI covers **7 core intelligence pillars**:
+1. **Terrain & Elevation**: CartoDEM 30m slope profiling, buildable share (<=15%), relief, and terrain ruggedness index (TRI).
+2. **Geological & Soil Conditions**: VEDAS lithology, soil bearing stability, and land degradation susceptibility.
+3. **Water Availability & Hydrology**: MOSDAC INSAT-3D precipitation climatology, monsoon variability (CV), surface water proximity, and aquifer recharge prospects.
+4. **Climate Stress & Future Scenarios**: Multi-decade physical water balance simulations and SSP climate stress testing (2026–2050 and 100-year time travel).
+5. **Disaster Risks & Statutory Hard-Stops**: Real Bhuvan flood inundation hazard zonation, CartoDEM HAND hydrologic flood proxy (<2m), BIS IS 1893:2016 seismic zones, and GSI landslide inventories.
+6. **Renewable Energy Potential**: VEDAS solar GHI insolation mapping (4.5–6.5 kWh/m²/day) and rooftop photovoltaic suitability.
+7. **Sustainable Smart City Master Plan Generation**: Parametric land-use zoning (Residential, Commercial, Green buffer, Transit, Solar, Civic, Waste/STP), AI Prompt Assistant ("Increase green cover and reduce road area", "15-minute city walkability"), and live URDPFI compliance KPIs.
 
 ---
 
 ## Four-Portal Space Provenance
 
-TerraCity AI integrates real data from four official Indian space portals:
+TerraAI integrates real data from four official Indian space portals:
 
 ```
 +-----------------------------------------------------------------------------------------+
-|                                    TERRACITY AI                                         |
+|                                        TERRAAI                                          |
 +-------------------+--------------------+--------------------+---------------------------+
 |    BHOONIDHI      |       BHUVAN       |      MOSDAC        |          VEDAS            |
 |   (NRSC/ISRO)     |    (NRSC/ISRO)     |    (SAC/ISRO)      |        (SAC/ISRO)         |
 +-------------------+--------------------+--------------------+---------------------------+
 | CartoDEM 30m DEM  | LULC 1:50k &       | INSAT-3D/3DR Daily | Sentinel-2 Multi-Temporal |
 | Stereo-Derived    | Historical Flood   | Precipitation      | NDVI (10m) Time-Series    |
-| Surface Model     | Hazard Zonation    | Climatology        | & Vegetation Health       |
+| Surface Model     | Hazard Zonation    | Climatology        | & Solar GHI Insolation    |
 +-------------------+--------------------+--------------------+---------------------------+
 | • Mean Slope      | • Land Cover Class | • Annual Mean Rain | • Mean NDVI               |
 | • Buildable Share | • Wetland Overlap  | • Rainfall CV      | • Multi-Year Trend        |
 | • Roughness (TRI) | • Flood Frequency  | • Dry Month Count  | • Ecological Sensitivity  |
-| • HAND Proxy      | • Groundwater Pot. | • Drought Exposure |   (LULC Cross-Validated)  |
+| • HAND Proxy      | • Groundwater Pot. | • Drought Exposure | • Solar GHI Potential     |
 +-------------------+--------------------+--------------------+---------------------------+
 ```
 
 ---
 
-## Key Features
+## 6 Modular Application Views
 
-1. **Hybrid Map Site Selection**:
-   - 1-click **"Load Candidate Sites (A, B, C)"** button per demo region.
-   - Freehand interactive polygon drawing and live shape editing via `@geoman-io/leaflet-geoman-free`.
-2. **Sub-150ms Dynamic Zonal Analysis**:
-   - Live in-memory raster masking (`rasterio.mask` + `shapely` + `numpy`) calculates real zonal metrics for arbitrary custom drawn polygons.
-3. **5-Pillar Multi-Criteria Scorecard**:
-   - *Terrain & Land* (20%), *Water Security* (25%), *Hazard Risk* (30%), *Environmental Impact* (10%), *Infrastructure Access* (15%).
-   - Interactive Planner Priority Presets: **Balanced**, **Climate-Resilient**, and **Infra-First**.
-   - Dynamic weight renormalization if any regional layer is absent.
-4. **Spatial Deal-Breakers**:
-   - Automatic disqualification for hard hazards: >50% high Bhuvan flood inundation, >15% wetland encroachment, >30% slope >30%, or Seismic Zone V + high landslide risk.
-   - Offending raster cells are polygonized and rendered in **translucent red** inside site boundaries on the map canvas.
-5. **Calibrated 2026–2050 Water Stress Simulation**:
-   - Tracks Phase-1 population (150,000) scaling to 500,000 by 2050 against CPHEEO 135 lpcd standard.
-   - Models local rainfall harvesting, catchment runoff (3.0x multiplier), and external canal supply.
-   - Identifies the exact deficit crossing year under *Baseline*, *Moderate Warming*, and *High-Growth + Dry* climate trajectories.
-6. **Printable HTML Reports & GeoJSON Export**:
-   - Standalone `@media print` styled executive report ready for A4 PDF export.
-   - GeoJSON FeatureCollection with all scores, verdicts, and provenance attached for QGIS/ArcGIS.
+1. **Command Center**: Leaflet GIS map with `@geoman-io/leaflet-geoman-free` freehand polygon drawing, 1-click candidate load, 7 toggleable ISRO layers, translucent red deal-breaker rendering, and right analytics drawer.
+2. **Landing Page Overview**: Strategic overview of TerraAI with live mission metrics, 7 intelligence pillars, and one-click quickstart.
+3. **AI City Master-Plan Designer**: Interactive parametric zoning editor across 7 urban sectors, live URDPFI compliance metrics, and conversational Prompt Assistant.
+4. **100-Year Future Simulation**: Interactive time-travel slider (10yr, 20yr, 50yr, 100yr), SSP climate scenarios, demand/supply trajectories, and phased urban directives.
+5. **ISRO Space Data Hub**: Dedicated portal telemetry console for Bhoonidhi, Bhuvan, MOSDAC, and VEDAS with live connectivity, dataset metadata, and query signatures.
+6. **TerraAdvisor**: Floating planning co-pilot assistant available throughout the application with actionable prompt recommendations.
 
 ---
 
@@ -73,20 +70,7 @@ TerraCity AI integrates real data from four official Indian space portals:
 
 ---
 
-## Quickest 1-Click Launch (Unified Server & Web UI)
-
-The frontend is pre-built into `frontend/dist` and directly served by the FastAPI application. You can launch the complete website and backend with a single command:
-
-```powershell
-python start_app.py
-```
-*(Or on Windows, simply double-click **`start_app.bat`**).*
-
-This will start the unified server on **[http://localhost:8000](http://localhost:8000)** and automatically pop open your default web browser to the interactive website!
-
----
-
-## Local Run Instructions (Development Mode)
+## Local Run Instructions
 
 ### Prerequisites
 - Python 3.11+
@@ -150,18 +134,18 @@ Follow this script for a flawless hackathon jury demonstration:
 
 | Time | Segment | Actions to Perform | What to Highlight |
 | :---: | :--- | :--- | :--- |
-| **0:00 - 0:30** | **Load & Draw** | 1. Select **UP Jewar** from the region selector.<br/>2. Click **"Load Candidate Sites (A, B, C)"** in 1 click.<br/>3. Draw a custom polygon freehand on the map canvas using the draw tool. | Show that preset candidate sites load instantly and live custom-drawn polygons run real spatial zonal math dynamically in < 150 ms offline. |
+| **0:00 - 0:30** | **Load & Draw** | 1. Select **UP Jewar** from the region selector in Command Center.<br/>2. Click **"Load Candidate Sites (A, B, C)"** in 1 click.<br/>3. Draw a custom polygon freehand on the map canvas using the draw tool. | Show that preset candidate sites load instantly and live custom-drawn polygons run real spatial zonal math dynamically in < 150 ms offline. |
 | **0:30 - 1:05** | **Scorecard & Provenance** | 1. Click **Analyse All Sites**.<br/>2. Select **Site A** to view its 5-pillar scorecard and Recharts radar gauge.<br/>3. Click on the **Bhoonidhi** and **MOSDAC** indicator source badges. | Point out honest 4-portal provenance metadata: exact dataset name, resolution (30m / 4km), vintage (2021-2024), and confidence tier. |
-| **1:05 - 1:50** | **Compare, Deal-Breakers & Sensitivity** | 1. Switch to the **Compare** tab.<br/>2. Observe **Site B** flagged with a **Red Deal-Breaker Banner** (Severe Flood Hazard).<br/>3. Notice the **translucent red floodplain mask** overlaid on the map.<br/>4. Toggle from **Balanced** to **Climate-Resilient** and **Infra-First** priority presets. | Demonstrate live MCA rank shifts. Point out deterministic "why" explanations generated from top-3 numeric pillar drivers, and the tie-check advisory. |
-| **1:50 - 2:25** | **2026–2050 Stress Test** | 1. Open the **Stress Test** tab.<br/>2. View the 2026–2050 water demand vs supply area chart for Site A under Baseline (< 0.8 stress).<br/>3. Switch scenario to **High Growth + Dry**.<br/>4. Point out the water stress index visibly crossing 1.0 (water deficit year detected). | Explain the calibrated physical water balance: 500,000 × 135 lpcd = 67.5 MLD demand, local rainwater harvest yield, and uncertainty bands. |
-| **2:25 - 3:00** | **Four-Portal Proof & Export** | 1. Open the **Sources** tab to display the 4-portal verification matrix.<br/>2. Optionally switch region to **Dholera** to showcase the transparent **CartoDEM HAND flood proxy fallback**.<br/>3. Click **Print Report** (clean print CSS preview).<br/>4. Click **Download GeoJSON**. | Reiterate that all four Indian space portals supply active indicators. Demonstrate GIS interoperability with instant GeoJSON download. |
+| **1:05 - 1:40** | **Compare, Deal-Breakers & Sensitivity** | 1. Switch to the **Compare** tab.<br/>2. Observe **Site B** flagged with a **Red Deal-Breaker Banner** (Severe Flood Hazard).<br/>3. Notice the **translucent red floodplain mask** overlaid on the map.<br/>4. Toggle from **Balanced** to **Climate-Resilient** and **Infra-First** priority presets. | Demonstrate live MCA rank shifts. Point out deterministic "why" explanations generated from top-3 numeric pillar drivers, and the tie-check advisory. |
+| **1:40 - 2:15** | **Master-Plan Designer & 100-Yr Simulation** | 1. Switch to **Master-Plan Designer** view. Adjust residential vs green buffer sliders or click prompt assistant \"Increase green cover\".<br/>2. Switch to **Future Simulation** view. Drag the time-travel slider to 2050 and 2126. | Showcase the 7th pillar: automated sustainable master-planning with live URDPFI compliance and multi-decade urban stress projections. |
+| **2:15 - 3:00** | **Four-Portal Proof & Export** | 1. Open the **ISRO Space Data Hub** to display the 4-portal live connectivity matrix.<br/>2. Switch to Dholera to showcase transparent **CartoDEM HAND flood proxy fallback**.<br/>3. Click **Print Report** (clean print CSS preview) and **Download GeoJSON**. | Reiterate that all four Indian space portals supply active indicators. Demonstrate GIS interoperability with instant GeoJSON download. |
 
 ---
 
 ## Honest Positioning & Non-Goals
 
 - **Targeted Gap**: Early-stage greenfield site screening across terrain, water, and hazards using Indian satellite data.
-- **Not in Scope**: Master planning, internal zoning, street network design, or 100-year survival predictions.
+- **Not in Scope**: Micro road layout engineering, architectural building plans, or 100-year absolute certainty predictions.
 - **Existing Systems**: We complement—rather than replace—PM GatiShakti (national transport corridor logistics), AMRUT 2.0 (brownfield city master plans), and VEDAS Urban Sprawl (historical sprawl monitoring).
 
 ---

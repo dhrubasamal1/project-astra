@@ -81,15 +81,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div>
             <div className="flex items-center space-x-2.5">
               <h1 className="font-extrabold text-xl tracking-tight text-slate-900 flex items-center gap-1">
-                <span>TerraCity</span>
+                <span>Terra</span>
                 <span className="text-blue-600">AI</span>
               </h1>
-              <span className="px-2.5 py-0.5 text-[11px] font-bold bg-amber-100 text-amber-900 rounded-full border border-amber-200 shadow-xs">
-                ISRO 4-PORTAL
+              <span className="px-2.5 py-0.5 text-[11px] font-bold bg-blue-50 text-blue-800 rounded-full border border-blue-200/80 shadow-xs">
+                7-Pillar Land Intelligence
               </span>
             </div>
             <p className="text-xs text-slate-500 font-medium leading-none mt-0.5">
-              Greenfield Urban Site Screening & Resilience Engine
+              AI-Powered Smart City Planning and Land Intelligence Platform
             </p>
           </div>
         </div>
