@@ -78,15 +78,19 @@ export function App() {
     setIsAnalyzing(true);
 
     try {
-      // Analyze all 3 candidate sites
-      const cardA = await ApiClient.analyzeSite(selectedRegionId, 'A', priorityPreset, assumptions);
-      const cardB = await ApiClient.analyzeSite(selectedRegionId, 'B', priorityPreset, assumptions);
-      const cardC = await ApiClient.analyzeSite(selectedRegionId, 'C', priorityPreset, assumptions);
+      // Analyze all 3 candidate sites (including any custom drawn areas)
+      const siteA = candidateSites.find((s) => s.code === 'A');
+      const siteB = candidateSites.find((s) => s.code === 'B');
+      const siteC = candidateSites.find((s) => s.code === 'C');
+
+      const cardA = await ApiClient.analyzeSite(selectedRegionId, 'A', priorityPreset, assumptions, siteA);
+      const cardB = await ApiClient.analyzeSite(selectedRegionId, 'B', priorityPreset, assumptions, siteB);
+      const cardC = await ApiClient.analyzeSite(selectedRegionId, 'C', priorityPreset, assumptions, siteC);
 
       const newScorecards: Record<string, SiteScorecard> = {
-        [candidateSites.find((s) => s.code === 'A')?.id || 'site_a']: cardA,
-        [candidateSites.find((s) => s.code === 'B')?.id || 'site_b']: cardB,
-        [candidateSites.find((s) => s.code === 'C')?.id || 'site_c']: cardC,
+        [siteA?.id || 'site_a']: cardA,
+        [siteB?.id || 'site_b']: cardB,
+        [siteC?.id || 'site_c']: cardC,
       };
 
       setScorecards(newScorecards);
