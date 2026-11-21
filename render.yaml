@@ -16,7 +16,17 @@ services:
         sync: false
       - key: BHOONIDHI_PASSWORD
         sync: false
+      - key: BHUVAN_USER
+        sync: false
+      - key: BHUVAN_PASSWORD
+        sync: false
+      - key: MOSDAC_USER
+        sync: false
+      - key: MOSDAC_PASSWORD
+        sync: false
       - key: VEDAS_API_KEY
+        sync: false
+      - key: VITE_CARTO_API_KEY
         sync: false
       - key: OFFLINE_MODE
         value: "false"

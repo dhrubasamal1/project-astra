@@ -16,9 +16,12 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install system utilities
+# Install system utilities and GIS shared libraries (libexpat1 for rasterio/GDAL, libgomp1 for OpenMP)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    libexpat1 \
+    libgomp1 \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies (rasterio, shapely, pyproj use precompiled binary wheels)
