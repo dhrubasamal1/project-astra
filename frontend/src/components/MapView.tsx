@@ -41,6 +41,10 @@ L.Icon.Default.mergeOptions({
   shadowUrl,
 });
 
+// CARTO Basemap Key & Endpoint
+const CARTO_KEY = import.meta.env.VITE_CARTO_API_KEY || 'cb1_5djb_1_76786fa00d88e119cfcb6bc4';
+const CARTO_DARK_URL = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png${CARTO_KEY ? `?api_key=${CARTO_KEY}` : ''}`;
+
 interface MapViewProps {
   currentRegion: Region;
   candidateSites: CandidateSite[];
@@ -86,12 +90,13 @@ export const MapView: React.FC<MapViewProps> = ({
     // Add zoom control top-left
     L.control.zoom({ position: 'topleft' }).addTo(map);
 
-    // Default CartoDB Dark Matter basemap (high-contrast space theme)
+    // Default CartoDB Dark Matter basemap with verified API Key
     const darkTileLayer = L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      CARTO_DARK_URL,
       {
         attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap',
-        maxZoom: 19,
+        subdomains: 'abcd',
+        maxZoom: 20,
       }
     ).addTo(map);
 
@@ -193,8 +198,8 @@ export const MapView: React.FC<MapViewProps> = ({
       map.removeLayer((map as any)._baseTileLayer);
     }
 
-    let url = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-    let attr = '&copy; CARTO &copy; OpenStreetMap';
+    let url = CARTO_DARK_URL;
+    let attr = '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap';
 
     if (activeBasemap === 'osm') {
       url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
