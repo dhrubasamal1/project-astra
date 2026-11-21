@@ -12,6 +12,7 @@ import {
   AlertCircle,
   ExternalLink,
   X,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { Region, PriorityPreset, ScenarioPreset } from '../types';
 import { HealthStatus, getApiBase } from '../lib/api';
@@ -71,96 +72,86 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <header className="no-print h-14 bg-slate-950/85 backdrop-blur-xl border-b border-slate-800/80 px-4 flex items-center justify-between z-30 shrink-0 sticky top-0 shadow-2xl">
+      <header className="no-print h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/90 px-6 flex items-center justify-between z-30 shrink-0 sticky top-0 shadow-sm">
         {/* Brand & Mission Title */}
-        <div className="flex items-center space-x-3">
-          <div className="relative flex items-center justify-center">
-            <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-sky-500 via-indigo-500 to-emerald-500 opacity-60 blur-sm animate-pulse"></div>
-            <div className="relative w-9 h-9 rounded-lg bg-slate-900 border border-slate-700/80 flex items-center justify-center shadow-lg">
-              <Satellite className="w-5 h-5 text-sky-400 animate-pulse" />
-            </div>
+        <div className="flex items-center space-x-3.5">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-sky-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 text-white">
+            <Satellite className="w-5 h-5 animate-pulse" />
           </div>
           <div>
-            <div className="flex items-center space-x-2">
-              <h1 className="font-extrabold text-base tracking-tight text-white flex items-center gap-1">
+            <div className="flex items-center space-x-2.5">
+              <h1 className="font-extrabold text-xl tracking-tight text-slate-900 flex items-center gap-1">
                 <span>TerraCity</span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">
-                  AI
-                </span>
+                <span className="text-blue-600">AI</span>
               </h1>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 rounded-full shadow-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                <span>ISRO 4-PORTAL</span>
+              <span className="px-2.5 py-0.5 text-[11px] font-bold bg-amber-100 text-amber-900 rounded-full border border-amber-200 shadow-xs">
+                ISRO 4-PORTAL
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 leading-none">
-              Greenfield Urban Site Screening & 2026–2050 Climate Stress Engine
+            <p className="text-xs text-slate-500 font-medium leading-none mt-0.5">
+              Greenfield Urban Site Screening & Resilience Engine
             </p>
           </div>
         </div>
 
-        {/* Center Context Indicators */}
-        <div className="hidden lg:flex items-center space-x-2.5 text-xs">
-          {/* Active Region */}
-          <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-slate-900/90 border border-slate-800 rounded-lg text-slate-200 shadow-inner">
-            <MapPin className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-            <span className="font-semibold text-slate-100">{currentRegion.name.split(' ')[0]}</span>
-            <span className="text-slate-400 text-[11px]">({currentRegion.state.split(' ')[0]})</span>
+        {/* Center Floating Pill Group (Context Indicators) */}
+        <div className="hidden lg:flex items-center space-x-2 bg-slate-100/80 p-1.5 rounded-full border border-slate-200/80 text-xs shadow-xs">
+          {/* Active Region Pill */}
+          <div className="flex items-center space-x-1.5 px-3 py-1 bg-white rounded-full text-slate-800 font-semibold shadow-xs border border-slate-200/50">
+            <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+            <span>{currentRegion.name.split(' ')[0]}</span>
+            <span className="text-slate-400 font-normal text-[11px]">({currentRegion.state.split(' ')[0]})</span>
           </div>
 
           {/* Priority Preset */}
-          <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-slate-900/90 border border-slate-800 rounded-lg text-slate-200 shadow-inner">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <div className="flex items-center space-x-1 px-3 py-1 rounded-full text-slate-600 font-medium">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
             <span className="text-slate-400">Weight:</span>
-            <span className="font-semibold text-amber-300">{getPresetLabel(priorityPreset)}</span>
+            <span className="font-semibold text-slate-800">{getPresetLabel(priorityPreset)}</span>
           </div>
 
           {/* Scenario */}
-          <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-slate-900/90 border border-slate-800 rounded-lg text-slate-200 shadow-inner">
-            <Layers className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+          <div className="flex items-center space-x-1 px-3 py-1 rounded-full text-slate-600 font-medium">
+            <Layers className="w-3.5 h-3.5 text-blue-500 shrink-0" />
             <span className="text-slate-400">Climate:</span>
-            <span className="font-semibold text-blue-300">{getScenarioLabel(scenarioPreset)}</span>
+            <span className="font-semibold text-slate-800">{getScenarioLabel(scenarioPreset)}</span>
           </div>
 
-          {/* Backend Connection Status Pill (Clickable) */}
+          {/* Backend Connection Status Pill */}
           <button
             onClick={() => setShowBackendModal(true)}
-            className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-[11px] bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 transition-all cursor-pointer shadow-sm group"
+            className="flex items-center space-x-1.5 px-3 py-1 rounded-full text-[11px] bg-white hover:bg-slate-50 border border-slate-200/80 text-slate-700 font-medium shadow-xs transition-all cursor-pointer"
             title="Click to view or connect live cloud backend"
           >
             <span
-              className={`w-2 h-2 rounded-full ring-2 ${
-                health.mode === 'live_backend'
-                  ? 'bg-emerald-400 ring-emerald-400/30'
-                  : 'bg-amber-400 ring-amber-400/30'
+              className={`w-2 h-2 rounded-full ${
+                health.mode === 'live_backend' ? 'bg-emerald-500' : 'bg-amber-500'
               } animate-pulse`}
             ></span>
-            <span className="font-medium group-hover:text-white">
-              {health.mode === 'live_backend' ? 'Live Cloud API' : 'Calibrated Cache'}
-            </span>
-            <Server className="w-3 h-3 text-slate-400 group-hover:text-sky-400" />
+            <span>{health.mode === 'live_backend' ? 'Live Cloud' : 'Calibrated Cache'}</span>
+            <Server className="w-3 h-3 text-slate-400" />
           </button>
         </div>
 
-        {/* Right Actions */}
-        <div className="flex items-center space-x-2">
+        {/* Right Action Buttons */}
+        <div className="flex items-center space-x-2.5">
           {/* Assumptions Drawer Trigger */}
           <button
             onClick={onOpenAssumptions}
-            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-900 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-600 rounded-lg text-slate-200 transition-all shadow-sm active:scale-95"
+            className="flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-full transition-all shadow-xs active:scale-95 cursor-pointer"
             title="Inspect and edit simulation assumptions"
           >
-            <Sliders className="w-3.5 h-3.5 text-sky-400" />
+            <Sliders className="w-3.5 h-3.5 text-slate-500" />
             <span className="hidden sm:inline">Assumptions</span>
           </button>
 
-          {/* Report / Print Button */}
+          {/* Report / Print Button (Inspired by the Data Management pill in screenshot) */}
           <button
             onClick={onOpenReport}
-            className="flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:from-sky-400 hover:to-blue-500 text-white rounded-lg transition-all shadow-lg shadow-blue-500/25 active:scale-95"
+            className="flex items-center space-x-2 px-5 py-2 text-xs font-bold bg-lime-100 hover:bg-lime-200 text-lime-900 border border-lime-300 rounded-full transition-all shadow-xs active:scale-95 cursor-pointer"
             title="Open printable executive report & GeoJSON export"
           >
-            <Printer className="w-3.5 h-3.5" />
+            <FileSpreadsheet className="w-4 h-4 text-lime-800" />
             <span>Executive Dossier</span>
           </button>
         </div>
@@ -168,43 +159,43 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Backend Connection Modal */}
       {showBackendModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in">
-          <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in">
+          <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center space-x-2">
-                <Server className="w-5 h-5 text-sky-400" />
-                <h3 className="font-bold text-slate-100 text-sm">TerraCity Backend Configuration</h3>
+                <Server className="w-5 h-5 text-blue-600" />
+                <h3 className="font-extrabold text-slate-900 text-base">Backend Configuration</h3>
               </div>
               <button
                 onClick={() => setShowBackendModal(false)}
-                className="text-slate-400 hover:text-white rounded-md p-1"
+                className="text-slate-400 hover:text-slate-700 rounded-full p-1"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-3 text-xs text-slate-300">
-              <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800 space-y-1">
-                <div className="text-slate-400 font-semibold">Active Backend Mode:</div>
+            <div className="space-y-3 text-xs text-slate-600">
+              <div className="p-4 rounded-2xl bg-sky-50 border border-sky-100 space-y-1">
+                <div className="text-slate-500 font-semibold">Active Backend Mode:</div>
                 <div className="flex items-center space-x-2">
                   <span
                     className={`w-2.5 h-2.5 rounded-full ${
-                      health.mode === 'live_backend' ? 'bg-emerald-400' : 'bg-amber-400'
+                      health.mode === 'live_backend' ? 'bg-emerald-500' : 'bg-amber-500'
                     }`}
                   ></span>
-                  <span className="font-bold text-white capitalize">
+                  <span className="font-bold text-slate-900 capitalize text-sm">
                     {health.mode === 'live_backend'
                       ? 'Live Cloud / Local Backend'
                       : 'Offline Calibrated Spatial Fixtures'}
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-400 pt-1">
-                  Active Endpoint: <code className="text-sky-300">{getApiBase()}</code>
+                <div className="text-[11px] text-slate-500 pt-1">
+                  Active Endpoint: <code className="text-blue-700 font-semibold">{getApiBase()}</code>
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-200 mb-1">
+                <label className="block font-bold text-slate-800 mb-1.5">
                   Custom Live Backend URL (Render / Railway / Localhost):
                 </label>
                 <input
@@ -212,24 +203,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                   placeholder="https://your-service.onrender.com/api"
                   value={customApiUrl}
                   onChange={(e) => setCustomApiUrl(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-xs focus:outline-none focus:border-blue-600 focus:bg-white transition-all font-mono"
                 />
-                <p className="text-[10px] text-slate-400 mt-1">
-                  Leave blank to use default auto-detection (<code className="text-slate-300">localhost:8000/api</code> or container origin).
+                <p className="text-[11px] text-slate-500 mt-1.5 leading-relaxed">
+                  Leave blank to auto-detect (<code className="text-slate-700">localhost:8000/api</code> or container origin).
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-800">
+            <div className="flex items-center justify-end space-x-2.5 pt-3 border-t border-slate-100">
               <button
                 onClick={() => setShowBackendModal(false)}
-                className="px-3 py-1.5 text-xs text-slate-400 hover:text-white rounded-lg"
+                className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 rounded-full"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveApiUrl}
-                className="px-4 py-1.5 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg shadow-md"
+                className="px-5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-md shadow-blue-500/20"
               >
                 Apply & Connect
               </button>

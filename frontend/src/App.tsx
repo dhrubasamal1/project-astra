@@ -216,9 +216,9 @@ export function App() {
   }
 
   return (
-    <div className="app-container flex flex-col h-screen w-screen bg-[#07111F] text-[#F1F5F9] overflow-hidden font-sans select-none">
-      {/* 1. Top Navigation Bar */}
-      <AppNavbar
+    <div className="app-container flex flex-col h-screen w-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
+      {/* Top Navigation Bar */}
+      <Navbar
         currentRegion={currentRegion}
         regions={regions}
         onSelectRegion={handleSelectRegion}

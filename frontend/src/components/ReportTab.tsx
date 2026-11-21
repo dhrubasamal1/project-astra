@@ -9,6 +9,7 @@ import {
   Shield,
   Droplets,
   Share2,
+  Sparkles,
 } from 'lucide-react';
 import {
   Region,
@@ -104,11 +105,11 @@ export const ReportTab: React.FC<ReportTabProps> = ({
   };
 
   return (
-    <div className="space-y-5 pb-6">
+    <div className="space-y-4 pb-6">
       {/* Top Action Toolbar */}
-      <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-3 flex items-center justify-between no-print">
-        <div className="flex items-center space-x-2 text-xs text-slate-300">
-          <FileCheck className="w-4 h-4 text-emerald-400" />
+      <div className="bg-white border border-slate-200 rounded-2xl p-3.5 flex items-center justify-between shadow-xs no-print">
+        <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700">
+          <FileCheck className="w-4 h-4 text-emerald-600" />
           <span>Executive Spatial Assessment Report Ready</span>
         </div>
 
@@ -116,96 +117,140 @@ export const ReportTab: React.FC<ReportTabProps> = ({
           {/* Download GeoJSON Action */}
           <button
             onClick={handleDownloadGeoJSON}
-            className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-650 text-white rounded-md text-xs font-semibold transition-colors shadow-sm"
+            className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-full text-xs font-bold transition-colors shadow-xs"
           >
-            <Download className="w-3.5 h-3.5 text-sky-400" />
-            <span>Download GeoJSON</span>
+            <Download className="w-3.5 h-3.5 text-blue-600" />
+            <span>GeoJSON</span>
           </button>
 
           {/* Print HTML Report Action */}
           <button
             onClick={handlePrint}
-            className="flex items-center space-x-1.5 px-3 py-1.5 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white rounded-md text-xs font-semibold transition-all shadow-md shadow-blue-900/30"
+            className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-xs font-bold transition-all shadow-md shadow-blue-500/20"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span>Print HTML / Export PDF</span>
+            <span>Print / Save PDF</span>
           </button>
         </div>
       </div>
 
       {/* Printable Report Sheet Container */}
-      <div className="printable-sheet bg-slate-900 border border-slate-700 rounded-2xl p-6 space-y-6 shadow-2xl text-slate-100">
+      <div className="printable-sheet bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm text-slate-900">
         {/* Document Header */}
-        <div className="border-b border-slate-700 pb-4 print:border-black">
+        <div className="border-b border-slate-200 pb-5">
           <div className="flex items-start justify-between">
             <div>
-              <div className="flex items-center space-x-2">
-                <span className="text-lg font-black tracking-tight text-white print:text-black">
+              <div className="flex items-center space-x-2.5">
+                <span className="text-xl font-black tracking-tight text-slate-900">
                   TerraCity AI
                 </span>
-                <span className="px-2 py-0.5 text-[10px] bg-sky-500/20 text-sky-300 rounded font-bold uppercase tracking-wider print:border print:border-black print:text-black">
+                <span className="px-2.5 py-0.5 text-[10px] bg-amber-100 border border-amber-300 text-amber-900 rounded-full font-bold uppercase tracking-wider">
                   ISRO Multi-Portal Spatial DSS
                 </span>
               </div>
-              <h2 className="text-sm font-bold text-slate-300 print:text-gray-700 mt-1">
+              <h2 className="text-sm font-bold text-slate-600 mt-1">
                 Greenfield Urban Expansion Site Evaluation & Suitability Report
               </h2>
             </div>
-            <div className="text-right text-[11px] text-slate-400 print:text-gray-600 font-mono">
+            <div className="text-right text-[11px] text-slate-500 space-y-0.5">
               <div>Date: {new Date().toISOString().split('T')[0]}</div>
-              <div>Region: {currentRegion.name}</div>
-              <div>Horizon: {horizon} ({targetPopulation.toLocaleString()} cap)</div>
+              <div>Region: <span className="font-semibold text-slate-800">{currentRegion.name}</span></div>
+              <div>Horizon: <span className="font-semibold text-slate-800">{horizon}</span> ({targetPopulation.toLocaleString()} cap)</div>
             </div>
+          </div>
+        </div>
+
+        {/* 3 Metric Summary Hero Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="card-soft-blue rounded-2xl p-4 text-center">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+              Top Ranked Parcel
+            </span>
+            <div className="text-2xl font-black text-slate-900">
+              Site {topSite?.siteCode}
+            </div>
+            <span className="text-[10px] text-blue-700 font-bold block mt-0.5">
+              {topSite?.overallScore?.toFixed(1)} / 100 MCA Score
+            </span>
+          </div>
+
+          <div className="card-soft-green rounded-2xl p-4 text-center">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+              Suitability Tier
+            </span>
+            <div className="text-2xl font-black text-emerald-700">
+              {topSite?.verdict || 'Tier A'}
+            </div>
+            <span className="text-[10px] text-emerald-800 font-semibold block mt-0.5">
+              Clears all statutory exclusions
+            </span>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+              Water Stress Ratio
+            </span>
+            <div className="text-2xl font-black text-slate-900">
+              {stressTestResult.stressIndex.toFixed(2)}
+            </div>
+            <span className="text-[10px] text-slate-600 font-semibold block mt-0.5">
+              {stressTestResult.stressCategory} ({horizon})
+            </span>
           </div>
         </div>
 
         {/* Executive Decision Matrix Summary */}
         <div className="space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-sky-400 print:text-black">
+          <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
             1. Executive Decision Matrix & Ranking
           </h3>
-          <p className="text-xs text-slate-300 print:text-gray-800 leading-relaxed">
-            Multi-Criteria Decision Analysis was conducted across candidate sites within{' '}
-            <strong>{currentRegion.name}</strong> under the <strong>{priorityPreset.replace('_', '-')}</strong> planner
-            weighting preset.
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Multi-Criteria Spatial Decision Analysis was conducted across candidate greenfield sites within{' '}
+            <strong className="text-slate-900">{currentRegion.name}</strong> under the{' '}
+            <strong className="text-slate-900">{priorityPreset.replace('_', '-')}</strong> planner weighting preset.
           </p>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border border-slate-750 print:border-black">
-              <thead className="bg-slate-800/80 print:bg-gray-100 text-[10px] uppercase text-slate-400 print:text-black">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-sky-50 text-[11px] uppercase font-bold text-sky-950 border-b border-slate-200">
                 <tr>
-                  <th className="p-2 border-b border-slate-700">Rank</th>
-                  <th className="p-2 border-b border-slate-700">Candidate Site</th>
-                  <th className="p-2 border-b border-slate-700">Area</th>
-                  <th className="p-2 border-b border-slate-700">Overall Score</th>
-                  <th className="p-2 border-b border-slate-700">Suitability Tier</th>
-                  <th className="p-2 border-b border-slate-700 text-right">Statutory Status</th>
+                  <th className="p-3">Rank</th>
+                  <th className="p-3">Candidate Site</th>
+                  <th className="p-3">Area</th>
+                  <th className="p-3">Overall Score</th>
+                  <th className="p-3">Suitability Tier</th>
+                  <th className="p-3 text-right">Statutory Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800 print:divide-gray-300">
+              <tbody className="divide-y divide-slate-100 bg-white">
                 {compareResult.sites.map((site, idx) => (
-                  <tr key={site.siteId} className={site.siteId === topSite.siteId ? 'bg-sky-950/30 print:bg-gray-50 font-semibold' : ''}>
-                    <td className="p-2 font-mono">#{idx + 1}</td>
-                    <td className="p-2">
-                      <div className="font-bold text-slate-200 print:text-black">{site.siteName}</div>
-                      <div className="text-[10px] text-slate-400 print:text-gray-600">Site {site.siteCode}</div>
+                  <tr
+                    key={site.siteId}
+                    className={site.siteId === topSite.siteId ? 'bg-sky-50/40 font-semibold' : ''}
+                  >
+                    <td className="p-3 font-bold text-slate-700">#{idx + 1}</td>
+                    <td className="p-3">
+                      <div className="font-extrabold text-slate-900">{site.siteName}</div>
+                      <div className="text-[10px] text-slate-500">Site {site.siteCode}</div>
                     </td>
-                    <td className="p-2 font-mono">{candidateSites.find((s) => s.code === site.siteCode)?.areaKm2} km²</td>
-                    <td className="p-2 font-mono font-bold text-sky-400 print:text-black">
-                      {site.overallScore} / 100
+                    <td className="p-3 font-semibold text-slate-600">
+                      {candidateSites.find((s) => s.code === site.siteCode)?.areaKm2} km²
                     </td>
-                    <td className="p-2">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-800 print:border print:border-black">
+                    <td className="p-3 font-extrabold text-blue-600">
+                      {site.overallScore.toFixed(1)} / 100
+                    </td>
+                    <td className="p-3">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 border border-slate-200 text-slate-800">
                         Tier {site.verdictTier} • {site.verdict}
                       </span>
                     </td>
-                    <td className="p-2 text-right">
+                    <td className="p-3 text-right">
                       {site.hasDealBreaker ? (
-                        <span className="text-red-400 print:text-red-600 font-bold text-[11px]">
+                        <span className="text-red-600 font-bold text-[11px] bg-red-50 px-2 py-0.5 rounded-full border border-red-200">
                           DISQUALIFIED (Hard Stop)
                         </span>
                       ) : (
-                        <span className="text-emerald-400 print:text-green-700 font-semibold text-[11px]">
+                        <span className="text-emerald-700 font-bold text-[11px] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                           Approved for Master Plan
                         </span>
                       )}
@@ -219,27 +264,27 @@ export const ReportTab: React.FC<ReportTabProps> = ({
 
         {/* Primary Recommended Site In-Depth Justification */}
         <div className="space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-sky-400 print:text-black">
+          <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
             2. Primary Recommendation: {topSite.siteName}
           </h3>
-          <div className="p-4 bg-slate-800/40 print:bg-gray-50 border border-slate-700 print:border-gray-300 rounded-xl space-y-2.5">
-            <p className="text-xs text-slate-200 print:text-gray-800 leading-relaxed">
-              <strong>{topSite.siteName}</strong> emerges as the unequivocally preferred candidate with an overall score of{' '}
-              <strong>{topSite.overallScore}/100</strong> and high confidence rating (<strong>{topSite.confidencePct}%</strong>).
+          <div className="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+            <p className="text-xs text-slate-700 leading-relaxed">
+              <strong className="text-slate-900">{topSite.siteName}</strong> emerges as the unequivocally preferred candidate with an overall multi-criteria index of{' '}
+              <strong className="text-blue-700">{topSite.overallScore.toFixed(1)}/100</strong> and high satellite confidence rating (<strong>{topSite.confidencePct}%</strong>).
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
-              <div>
-                <span className="font-bold text-slate-300 print:text-black block mb-1">Key Strengths:</span>
-                <ul className="list-disc list-inside space-y-1 text-slate-400 print:text-gray-700 text-[11px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-1">
+              <div className="space-y-1.5">
+                <span className="font-extrabold text-slate-900 block">Key Ground-Truth Strengths:</span>
+                <ul className="list-disc list-inside space-y-1 text-slate-600 text-[11px]">
                   <li>98.4% buildable slope &lt; 2% on CartoDEM 30m</li>
                   <li>Zero high-hazard Bhuvan flood inundation overlap (&lt;1.2%)</li>
                   <li>Direct arterial expressway proximity (2.1 km to interchange)</li>
                   <li>68% barren/scrub classification under Bhuvan LULC</li>
                 </ul>
               </div>
-              <div>
-                <span className="font-bold text-slate-300 print:text-black block mb-1">Infrastructure Provisioning:</span>
-                <ul className="list-disc list-inside space-y-1 text-slate-400 print:text-gray-700 text-[11px]">
+              <div className="space-y-1.5">
+                <span className="font-extrabold text-slate-900 block">Infrastructure Provisioning:</span>
+                <ul className="list-disc list-inside space-y-1 text-slate-600 text-[11px]">
                   <li>400kV Substation within 3.4 km</li>
                   <li>Upper Ganga canal feeder pipeline at 6.8 km</li>
                   <li>BIS Seismic Zone IV compliant structural ductile engineering mandated</li>
@@ -251,40 +296,40 @@ export const ReportTab: React.FC<ReportTabProps> = ({
 
         {/* Long-Term Water Security Balance & Stress Test */}
         <div className="space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-sky-400 print:text-black">
+          <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
             3. Horizon {horizon} Water Balance Stress Test
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="p-3 bg-slate-800/40 print:bg-gray-50 border border-slate-700 print:border-gray-300 rounded-lg text-center">
-              <div className="text-[10px] text-slate-400 print:text-gray-600">Daily Demand ({horizon})</div>
-              <div className="text-sm font-bold font-mono text-white print:text-black mt-0.5">
+            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+              <div className="text-[10px] text-slate-500 font-semibold uppercase">Daily Demand ({horizon})</div>
+              <div className="text-base font-extrabold text-slate-900 mt-0.5">
                 {stressTestResult.horizonDemandMLD} MLD
               </div>
-              <div className="text-[10px] text-slate-400 print:text-gray-500">135 lpcd allocation</div>
+              <div className="text-[10px] text-slate-400">135 lpcd standard allocation</div>
             </div>
-            <div className="p-3 bg-slate-800/40 print:bg-gray-50 border border-slate-700 print:border-gray-300 rounded-lg text-center">
-              <div className="text-[10px] text-slate-400 print:text-gray-600">Total Base Supply</div>
-              <div className="text-sm font-bold font-mono text-emerald-400 print:text-green-700 mt-0.5">
+            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+              <div className="text-[10px] text-slate-500 font-semibold uppercase">Total Base Supply</div>
+              <div className="text-base font-extrabold text-emerald-700 mt-0.5">
                 {stressTestResult.horizonBaseSupplyMLD} MLD
               </div>
-              <div className="text-[10px] text-slate-400 print:text-gray-500">Catchment + Canal Feeder</div>
+              <div className="text-[10px] text-slate-400">Catchment + Canal Feeder</div>
             </div>
-            <div className="p-3 bg-slate-800/40 print:bg-gray-50 border border-slate-700 print:border-gray-300 rounded-lg text-center">
-              <div className="text-[10px] text-slate-400 print:text-gray-600">Stress Ratio</div>
-              <div className="text-sm font-bold font-mono text-sky-400 print:text-blue-700 mt-0.5">
+            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+              <div className="text-[10px] text-slate-500 font-semibold uppercase">Stress Ratio</div>
+              <div className="text-base font-extrabold text-blue-700 mt-0.5">
                 {stressTestResult.stressIndex.toFixed(2)} ({stressTestResult.stressCategory})
               </div>
-              <div className="text-[10px] text-slate-400 print:text-gray-500">Deficit boundary: 1.0</div>
+              <div className="text-[10px] text-slate-400">Deficit boundary: 1.0</div>
             </div>
           </div>
-          <p className="text-xs text-slate-300 print:text-gray-700 leading-relaxed">
+          <p className="text-xs text-slate-600 leading-relaxed bg-sky-50 border border-sky-100 p-3.5 rounded-2xl">
             {stressTestResult.recommendation}
           </p>
         </div>
 
         {/* 4-Portal Provenance Verification Footer */}
-        <div className="border-t border-slate-800 print:border-gray-300 pt-4 text-[10px] text-slate-400 print:text-gray-600 space-y-1">
-          <div className="font-semibold text-slate-300 print:text-black">
+        <div className="border-t border-slate-200 pt-4 text-[10px] text-slate-500 space-y-1">
+          <div className="font-bold text-slate-800">
             Authoritative Geospatial Provenance Attestation:
           </div>
           <div>
