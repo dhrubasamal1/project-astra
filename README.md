@@ -66,7 +66,7 @@ TerraAI integrates real data from four official Indian space portals:
 
 - **Backend**: Python 3.11+, FastAPI, Pydantic v2, rasterio, shapely, pyproj, numpy, SQLite analysis store, pyyaml, httpx, pytest (72/72 tests passing).
 - **AI & Planning Intelligence**: Google Gemini 3.8 Flash (`gemini-3.8-flash` via `/api/ai/review`) with rich spatial polygon coordinates & centroid payloads, 15+ satellite indicators, live API Transparency Inspector, and deterministic fallback synthesis for intelligent executive critique, autonomous smart zoning allocation, phased CapEx roadmap (2026–2050), and space-grounded climate resilience countermeasures.
-- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Leaflet + Geoman, Recharts, Lucide Icons.
+- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Dual-Theme (Light & Dark mode with basemap auto-sync), Leaflet + Geoman, Recharts, Lucide Icons.
 - **Data Caching**: Regional COG rasters and GeoJSON vectors stored in `data/cache/regions/` and `data/fixtures/` for 100% offline operation.
 
 ---
