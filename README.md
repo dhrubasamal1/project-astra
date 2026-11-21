@@ -53,7 +53,7 @@ TerraAI integrates real data from four official Indian space portals:
 
 ## 6 Modular Application Views
 
-1. **Command Center**: Leaflet GIS map with `@geoman-io/leaflet-geoman-free` freehand polygon drawing, 1-click candidate load, 7 toggleable ISRO layers, translucent red deal-breaker rendering, and right analytics drawer.
+1. **Command Center**: Leaflet GIS map with interactive location search bar (geocoding & coordinates auto-fly), `@geoman-io/leaflet-geoman-free` freehand polygon drawing, 1-click candidate load, 7 toggleable ISRO layers, translucent red deal-breaker rendering, and right analytics drawer.
 2. **Landing Page Overview**: Strategic overview of TerraAI with live mission metrics, 7 intelligence pillars, and one-click quickstart.
 3. **AI City Master-Plan Designer**: Interactive parametric zoning editor across 7 urban sectors, live URDPFI compliance metrics, and conversational Prompt Assistant.
 4. **100-Year Future Simulation**: Interactive time-travel slider (10yr, 20yr, 50yr, 100yr), SSP climate scenarios, demand/supply trajectories, and phased urban directives.
@@ -64,7 +64,7 @@ TerraAI integrates real data from four official Indian space portals:
 
 ## Architecture & Tech Stack
 
-- **Backend**: Python 3.11+, FastAPI, Pydantic v2, rasterio, shapely, pyproj, numpy, SQLite analysis store, pyyaml, httpx, pytest (67/67 tests passing).
+- **Backend**: Python 3.11+, FastAPI, Pydantic v2, rasterio, shapely, pyproj, numpy, SQLite analysis store, pyyaml, httpx, pytest (70/70 tests passing).
 - **AI & Planning Intelligence**: Google Gemini 2.5 Flash (`/api/ai/review`) with deterministic fallback synthesis for intelligent executive critique, autonomous smart zoning allocation, phased CapEx roadmap (2026–2050), and space-grounded climate resilience countermeasures.
 - **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Leaflet + Geoman, Recharts, Lucide Icons.
 - **Data Caching**: Regional COG rasters and GeoJSON vectors stored in `data/cache/regions/` and `data/fixtures/` for 100% offline operation.
