@@ -78,6 +78,16 @@ export const MapView: React.FC<MapViewProps> = ({
   const [activeBasemap, setActiveBasemap] = useState<'voyager' | 'carto_dark' | 'osm' | 'satellite'>('voyager');
   const [liveCoords, setLiveCoords] = useState<{ lat: number; lng: number } | null>(null);
 
+  // Synchronous refs to prevent stale closure in Leaflet Geoman event callbacks
+  const selectedSiteCodeRef = useRef(selectedSiteCode);
+  selectedSiteCodeRef.current = selectedSiteCode;
+
+  const candidateSitesRef = useRef(candidateSites);
+  candidateSitesRef.current = candidateSites;
+
+  const currentRegionRef = useRef(currentRegion);
+  currentRegionRef.current = currentRegion;
+
   // Initialize Leaflet map and Geoman
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
@@ -148,34 +158,31 @@ export const MapView: React.FC<MapViewProps> = ({
         // Approximate area calculation in km²
         const approxArea = Math.round((coords.length * 5.2) * 10) / 10;
 
-        // Auto-assign code (next available up to 3)
-        const existingCodes = candidateSites.map((s) => s.code);
-        let nextCode: 'A' | 'B' | 'C' = 'A';
-        if (!existingCodes.includes('A')) nextCode = 'A';
-        else if (!existingCodes.includes('B')) nextCode = 'B';
-        else if (!existingCodes.includes('C')) nextCode = 'C';
+        // Target code: user's currently selected site (A, B, or C) from live ref
+        const targetCode = selectedSiteCodeRef.current || 'A';
 
-        const colorMap = {
+        const colorMap: Record<'A' | 'B' | 'C', string> = {
           A: '#2563eb', // Blue
           B: '#059669', // Emerald
           C: '#d97706', // Amber
         };
 
         const newSite: CandidateSite = {
-          id: `site_custom_${Date.now()}`,
-          code: nextCode,
-          name: `Custom Parcel ${nextCode}`,
-          regionId: currentRegion.id,
+          id: `site_custom_${targetCode.toLowerCase()}_${Date.now()}`,
+          code: targetCode,
+          name: `Custom Parcel ${targetCode}`,
+          regionId: currentRegionRef.current.id,
           coordinates: coords,
           areaKm2: approxArea,
-          color: colorMap[nextCode],
-          description: `User-drawn parcel ${nextCode}`,
+          color: colorMap[targetCode],
+          description: `User-drawn parcel ${targetCode}`,
           tag: 'Custom',
         };
 
-        const updated = [...candidateSites.filter((s) => s.code !== nextCode), newSite];
+        const currentSites = candidateSitesRef.current;
+        const updated = [...currentSites.filter((s) => s.code !== targetCode), newSite];
         onUpdateCandidateSites(updated);
-        onSelectSiteCode(nextCode);
+        onSelectSiteCode(targetCode);
 
         // Remove temp drawn layer since our React effect re-renders it cleanly
         map.removeLayer(layer);
@@ -319,7 +326,7 @@ export const MapView: React.FC<MapViewProps> = ({
       {/* Underlying Map Div */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-      {/* Floating Top-Left Telemetry HUD */}
+      {/* Floating Top-Left Telemetry & Draw Target HUD */}
       <div className="absolute top-3 left-14 z-10 hidden sm:flex items-center space-x-2.5 bg-white/95 backdrop-blur-md border border-slate-200/90 px-3.5 py-1.5 rounded-full text-xs text-slate-800 shadow-md">
         <div className="flex items-center space-x-1.5">
           <Crosshair className="w-3.5 h-3.5 text-blue-600 animate-spin-slow" />
@@ -328,8 +335,27 @@ export const MapView: React.FC<MapViewProps> = ({
           </span>
         </div>
         <span className="text-slate-300">|</span>
-        <div className="text-[11px] text-slate-600 font-medium">
-          <span className="text-slate-400">Target:</span> <span className="font-bold text-slate-900">{currentRegion.name.split(' ')[0]}</span>
+        <div className="flex items-center space-x-1.5 text-[11px]">
+          <span className="text-slate-500 font-bold">Draw Target:</span>
+          {(['A', 'B', 'C'] as const).map((code) => {
+            const isTarget = selectedSiteCode === code;
+            const colors = { A: '#2563eb', B: '#059669', C: '#d97706' };
+            return (
+              <button
+                key={code}
+                onClick={() => onSelectSiteCode(code)}
+                className={`px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 transition-all cursor-pointer ${
+                  isTarget
+                    ? 'bg-slate-900 text-white shadow-xs scale-105'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+                title={`Set Site ${code} as the target for your next drawn polygon`}
+              >
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors[code] }}></span>
+                <span>Site {code}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
