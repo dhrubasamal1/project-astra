@@ -538,6 +538,17 @@ export const MapView: React.FC<MapViewProps> = ({
               </button>
             </div>
 
+            {/* Statutory Deal-Breakers Legend Note */}
+            <div className="bg-red-50/90 border border-red-200/80 p-2.5 rounded-xl space-y-1">
+              <div className="flex items-center space-x-1.5 text-red-700 font-bold text-[11px]">
+                <AlertOctagon className="w-3.5 h-3.5 text-red-600 shrink-0" />
+                <span>Statutory Deal-Breakers</span>
+              </div>
+              <p className="text-[10px] text-slate-600 leading-tight">
+                Hazard zones in <strong className="text-red-600">red dashes</strong> denote active floodways and high-slope exclusions.
+              </p>
+            </div>
+
             <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
               {layerOverlays.map((layer) => (
                 <div
@@ -631,19 +642,6 @@ export const MapView: React.FC<MapViewProps> = ({
             </button>
           );
         })}
-      </div>
-
-      {/* Floating Bottom-Left Deal-Breaker Warning Banner */}
-      <div className="absolute bottom-4 left-4 z-10 max-w-[220px] pointer-events-none hidden 2xl:block">
-        <div className="bg-white/95 backdrop-blur-md border border-red-200 p-2.5 rounded-2xl shadow-md text-xs space-y-1 pointer-events-auto">
-          <div className="flex items-center space-x-1.5 text-red-700 font-bold text-[11px]">
-            <AlertOctagon className="w-3.5 h-3.5 text-red-600 shrink-0" />
-            <span>Statutory Deal-Breakers</span>
-          </div>
-          <p className="text-[9.5px] text-slate-600 leading-tight">
-            Hazard zones in <strong className="text-red-600">red dashes</strong> denote active floodways and high-slope exclusions.
-          </p>
-        </div>
       </div>
     </div>
   );
