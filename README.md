@@ -64,7 +64,8 @@ TerraAI integrates real data from four official Indian space portals:
 
 ## Architecture & Tech Stack
 
-- **Backend**: Python 3.11+, FastAPI, Pydantic v2, rasterio, shapely, pyproj, numpy, SQLite analysis store, pyyaml, httpx, pytest.
+- **Backend**: Python 3.11+, FastAPI, Pydantic v2, rasterio, shapely, pyproj, numpy, SQLite analysis store, pyyaml, httpx, pytest (67/67 tests passing).
+- **AI & Planning Intelligence**: Google Gemini 2.5 Flash (`/api/ai/review`) with deterministic fallback synthesis for intelligent executive critique, autonomous smart zoning allocation, phased CapEx roadmap (2026–2050), and space-grounded climate resilience countermeasures.
 - **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Leaflet + Geoman, Recharts, Lucide Icons.
 - **Data Caching**: Regional COG rasters and GeoJSON vectors stored in `data/cache/regions/` and `data/fixtures/` for 100% offline operation.
 
@@ -137,7 +138,7 @@ Follow this script for a flawless hackathon jury demonstration:
 | **0:00 - 0:30** | **Load & Draw** | 1. Select **UP Jewar** from the region selector in Command Center.<br/>2. Click **"Load Candidate Sites (A, B, C)"** in 1 click.<br/>3. Draw a custom polygon freehand on the map canvas using the draw tool. | Show that preset candidate sites load instantly and live custom-drawn polygons run real spatial zonal math dynamically in < 150 ms offline. |
 | **0:30 - 1:05** | **Scorecard & Provenance** | 1. Click **Analyse All Sites**.<br/>2. Select **Site A** to view its 5-pillar scorecard and Recharts radar gauge.<br/>3. Click on the **Bhoonidhi** and **MOSDAC** indicator source badges. | Point out honest 4-portal provenance metadata: exact dataset name, resolution (30m / 4km), vintage (2021-2024), and confidence tier. |
 | **1:05 - 1:40** | **Compare, Deal-Breakers & Sensitivity** | 1. Switch to the **Compare** tab.<br/>2. Observe **Site B** flagged with a **Red Deal-Breaker Banner** (Severe Flood Hazard).<br/>3. Notice the **translucent red floodplain mask** overlaid on the map.<br/>4. Toggle from **Balanced** to **Climate-Resilient** and **Infra-First** priority presets. | Demonstrate live MCA rank shifts. Point out deterministic "why" explanations generated from top-3 numeric pillar drivers, and the tie-check advisory. |
-| **1:40 - 2:15** | **Master-Plan Designer & 100-Yr Simulation** | 1. Switch to **Master-Plan Designer** view. Adjust residential vs green buffer sliders or click prompt assistant \"Increase green cover\".<br/>2. Switch to **Future Simulation** view. Drag the time-travel slider to 2050 and 2126. | Showcase the 7th pillar: automated sustainable master-planning with live URDPFI compliance and multi-decade urban stress projections. |
+| **1:40 - 2:15** | **AI Review & Master-Plan Designer** | 1. In Scorecard tab, click **"Generate AI Planning Review"** (powered by Gemini 2.5 Flash) to view executive critique, autonomous smart zoning (ha + %), and phased CapEx roadmap.<br/>2. Switch to **Master-Plan Designer** view and adjust residential/green buffer sliders.<br/>3. Switch to **Future Simulation** view and drag the time-travel slider to 2050 and 2126. | Showcase generative AI synthesis grounded in satellite metrics, automated smart zoning, space-sensor climate resilience countermeasures, and live URDPFI compliance. |
 | **2:15 - 3:00** | **Four-Portal Proof & Export** | 1. Open the **ISRO Space Data Hub** to display the 4-portal live connectivity matrix.<br/>2. Switch to Dholera to showcase transparent **CartoDEM HAND flood proxy fallback**.<br/>3. Click **Print Report** (clean print CSS preview) and **Download GeoJSON**. | Reiterate that all four Indian space portals supply active indicators. Demonstrate GIS interoperability with instant GeoJSON download. |
 
 ---

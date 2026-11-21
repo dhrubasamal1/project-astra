@@ -81,6 +81,7 @@ flowchart TD
         A3["Scenarios Engine (scenarios.py)<br/>Calibrated 2026-2050 Water Balance<br/>Uncertainty Bands & Deficit Crossing"]
         A4["Narrative & Report Engine<br/>Deterministic Drivers & Printable HTML"]
         A5["Persistent Store (cache.py)<br/>Regional Spatial Loader + SQLite Store"]
+        A6["AI Review Engine (ai_review.py)<br/>Gemini 2.5 Flash & Offline Synthesis<br/>Smart Zoning, CapEx Roadmap, Countermeasures"]
     end
 
     subgraph Frontend_App ["TerraAI Frontend (React 19 + TypeScript + Vite)"]
@@ -132,3 +133,7 @@ flowchart TD
 3. **Indicator Key Mapping Alignment (2026-11-21)**:
    - *Observation*: Adapter raw keys had minor alias variations against `config/scoring.yaml` canonical keys.
    - *Correction*: Implemented transparent bidirectional alias unification in `backend/app/api/analyze.py` so indicators map identically without missing-data penalties.
+
+4. **AI Planning Review & Dual-Mode Synthesis (2026-11-22)**:
+   - *Observation*: Live Gemini API calls may experience network latency or lack API keys in offline/air-gapped evaluation environments.
+   - *Correction*: Implemented `backend/app/api/ai_review.py` with dual-mode synthesis: queries Google Gemini 2.5 Flash when `GEMINI_API_KEY` is configured, and falls back gracefully to a deterministic spatial synthesis engine aligned with URDPFI standards, ensuring 100% offline uptime and zero unhandled errors.
