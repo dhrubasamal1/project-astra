@@ -21,7 +21,21 @@ import {
   generateStressTest,
 } from '../data/mockData';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+export const getApiBase = (): string => {
+  if (typeof window !== 'undefined') {
+    const custom = localStorage.getItem('TERRA_API_BASE');
+    if (custom) return custom.replace(/\/$/, '');
+
+    // If served directly from a full-stack container on Render, Railway, or Google Cloud Run
+    const host = window.location.hostname;
+    if (host.endsWith('.onrender.com') || host.endsWith('.railway.app') || host.endsWith('.run.app')) {
+      return `${window.location.origin}/api`;
+    }
+  }
+  return (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api').replace(/\/$/, '');
+};
+
+const API_BASE = getApiBase();
 
 export interface HealthStatus {
   status: 'healthy' | 'degraded' | 'offline';
@@ -37,7 +51,7 @@ export class ApiClient {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 1200);
-      const res = await fetch(`${API_BASE}/health`, { signal: controller.signal });
+      const res = await fetch(`${getApiBase()}/health`, { signal: controller.signal });
       clearTimeout(timeoutId);
 
       if (res.ok) {
@@ -66,7 +80,7 @@ export class ApiClient {
   static async getRegions(): Promise<Region[]> {
     if (ApiClient.isBackendAvailable) {
       try {
-        const res = await fetch(`${API_BASE}/regions`);
+        const res = await fetch(`${getApiBase()}/regions`);
         if (res.ok) {
           const data = await res.json();
           if (data && data.regions && data.regions.length > 0) {
@@ -83,7 +97,7 @@ export class ApiClient {
   static async getLayers(): Promise<LayerOverlay[]> {
     if (ApiClient.isBackendAvailable) {
       try {
-        const res = await fetch(`${API_BASE}/layers`);
+        const res = await fetch(`${getApiBase()}/layers`);
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
