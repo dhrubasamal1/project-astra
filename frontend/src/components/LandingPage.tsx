@@ -75,17 +75,53 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartPlanning }) => 
   const handleExplorePlatform = () => {
     const featuresEl = document.getElementById('features');
     if (featuresEl) {
-      featuresEl.scrollIntoView({ behavior: 'smooth' });
+      featuresEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col relative overflow-x-hidden selection:bg-cyan-500/30 font-sans">
+    <div
+      id="landing-scroll-container"
+      className="landing-page-root w-full min-h-screen bg-[#030712] text-slate-100 flex flex-col relative overflow-x-hidden selection:bg-cyan-500/30 font-sans scroll-smooth"
+    >
       {/* Background Starfield & Subtle Cosmic Radial Gradients */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[140px]" />
         <div className="absolute bottom-1/3 left-10 w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[130px]" />
       </div>
+
+      {/* Cinematic Orbital Targeting HUD Overlay (During Start Animation) */}
+      {isTargeting && (
+        <div className="fixed inset-0 z-40 pointer-events-none flex flex-col justify-between p-6 sm:p-10 animate-in fade-in duration-300">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/85 border border-cyan-400 text-cyan-300 text-xs font-mono font-bold shadow-xl shadow-cyan-500/30 backdrop-blur-md">
+              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+              <span>PLANETARY ROTATION & TARGET LOCK ACTIVE</span>
+            </div>
+            <div className="text-right text-[11px] font-mono text-cyan-300 bg-slate-950/80 px-3 py-1 rounded-xl border border-cyan-500/30">
+              <div className="font-bold">TARGET: DHOLERA SIR (GUJARAT)</div>
+              <div className="text-slate-400">22.2500°N, 72.1900°E</div>
+            </div>
+          </div>
+
+          <div className="self-center flex flex-col items-center gap-2">
+            <div
+              className="w-48 h-48 sm:w-64 sm:h-64 rounded-full border-2 border-dashed border-cyan-400/70 animate-spin flex items-center justify-center"
+              style={{ animationDuration: '4s' }}
+            >
+              <div className="w-36 h-36 sm:w-48 sm:h-48 rounded-full border border-emerald-400/50" />
+            </div>
+            <span className="text-xs font-mono font-black text-cyan-300 uppercase tracking-widest bg-slate-950/90 px-4 py-1.5 rounded-full border border-cyan-500/50 shadow-lg">
+              Synchronizing Planetary Telemetry...
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 bg-slate-950/80 px-4 py-2 rounded-xl border border-slate-800">
+            <span>Bhoonidhi • Bhuvan • MOSDAC • VEDAS</span>
+            <span className="text-cyan-400 font-bold">ENTERING URBAN PLANNING MATRIX</span>
+          </div>
+        </div>
+      )}
 
       {/* Cross-fade Transition Overlay (satellite radar wipe when transitioning to dashboard) */}
       <div

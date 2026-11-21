@@ -101,7 +101,7 @@ export const MapSearchBar: React.FC<MapSearchBarProps> = ({
   return (
     <div ref={dropdownRef} className={`relative select-none ${className}`}>
       {/* Search Input Box Capsule */}
-      <div className="flex items-center space-x-2 bg-white/95 backdrop-blur-md border border-slate-200/90 hover:border-blue-400 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-500/20 px-3 py-1.5 rounded-full shadow-md text-xs transition-all w-64 sm:w-72 md:w-80">
+      <div className="flex items-center space-x-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 hover:border-blue-400 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-500/20 px-3 py-1.5 rounded-full shadow-md text-xs transition-all w-64 sm:w-72 md:w-80">
         <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
         <input
           ref={inputRef}
@@ -114,13 +114,13 @@ export const MapSearchBar: React.FC<MapSearchBarProps> = ({
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder="Search city, region, or coordinates..."
-          className="flex-1 bg-transparent text-slate-800 placeholder-slate-400 font-medium focus:outline-none text-xs"
+          className="flex-1 bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 font-medium focus:outline-none text-xs"
         />
-        {isLoading && <Loader2 className="w-3.5 h-3.5 text-blue-600 animate-spin shrink-0" />}
+        {isLoading && <Loader2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 animate-spin shrink-0" />}
         {query && !isLoading && (
           <button
             onClick={handleClear}
-            className="p-0.5 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition-colors"
+            className="p-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
             title="Clear search"
           >
             <X className="w-3.5 h-3.5" />
@@ -130,12 +130,12 @@ export const MapSearchBar: React.FC<MapSearchBarProps> = ({
 
       {/* Autocomplete Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-80 sm:w-96 bg-white/98 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-2xl p-2 z-50 text-xs animate-in fade-in slide-in-from-top-1">
+        <div className="absolute top-full left-0 mt-2 w-80 sm:w-96 bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-2 z-50 text-xs animate-in fade-in slide-in-from-top-1">
           {/* Quick Shortcuts (when search box is empty or focused) */}
           {!query.trim() && (
             <div className="p-2 space-y-2">
               <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                <Compass className="w-3 h-3 text-blue-600" />
+                <Compass className="w-3 h-3 text-blue-600 dark:text-blue-400" />
                 <span>Featured Smart City Hubs</span>
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -146,7 +146,7 @@ export const MapSearchBar: React.FC<MapSearchBarProps> = ({
                       setQuery(hub.query);
                       inputRef.current?.focus();
                     }}
-                    className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200/80 transition-colors cursor-pointer"
+                    className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/40 text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-300 border border-slate-200/80 dark:border-slate-700 transition-colors cursor-pointer"
                   >
                     {hub.label}
                   </button>
@@ -166,21 +166,21 @@ export const MapSearchBar: React.FC<MapSearchBarProps> = ({
                     onClick={() => handleSelect(item)}
                     className={`w-full text-left p-2.5 rounded-xl transition-all cursor-pointer flex items-start space-x-2.5 ${
                       isSelected
-                        ? 'bg-blue-50 text-blue-900 border border-blue-200'
-                        : 'hover:bg-slate-50 text-slate-800'
+                        ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-900 dark:text-blue-200 border border-blue-200 dark:border-blue-700'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-800 dark:text-slate-200'
                     }`}
                   >
-                    <div className="w-6 h-6 rounded-lg bg-blue-100/70 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-6 h-6 rounded-lg bg-blue-100/70 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
                       <MapPin className="w-3.5 h-3.5" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs text-slate-900 truncate">{item.name}</span>
-                        <span className="text-[9.5px] font-mono text-slate-400 shrink-0 ml-1">
+                        <span className="font-bold text-xs text-slate-900 dark:text-slate-100 truncate">{item.name}</span>
+                        <span className="text-[9.5px] font-mono text-slate-400 dark:text-slate-500 shrink-0 ml-1">
                           {item.lat.toFixed(2)}°, {item.lon.toFixed(2)}°
                         </span>
                       </div>
-                      <p className="text-[10.5px] text-slate-500 truncate mt-0.5 leading-tight">
+                      <p className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate mt-0.5 leading-tight">
                         {item.display_name}
                       </p>
                     </div>
@@ -192,9 +192,9 @@ export const MapSearchBar: React.FC<MapSearchBarProps> = ({
 
           {/* Empty search results message */}
           {query.trim() && !isLoading && results.length === 0 && (
-            <div className="p-4 text-center text-slate-500 space-y-1">
-              <p className="font-semibold text-xs text-slate-700">No exact location matches found</p>
-              <p className="text-[10px] text-slate-400">
+            <div className="p-4 text-center text-slate-500 dark:text-slate-400 space-y-1">
+              <p className="font-semibold text-xs text-slate-700 dark:text-slate-200">No exact location matches found</p>
+              <p className="text-[10px] text-slate-400 dark:text-slate-500">
                 Try searching for a city name or coordinates (e.g., <strong>28.26, 77.74</strong>).
               </p>
             </div>
