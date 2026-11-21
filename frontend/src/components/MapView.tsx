@@ -13,6 +13,10 @@ import {
   Flame,
   Info,
   CheckCircle,
+  Crosshair,
+  Compass,
+  MapPin,
+  Sparkles,
 } from 'lucide-react';
 import {
   CandidateSite,
@@ -67,6 +71,7 @@ export const MapView: React.FC<MapViewProps> = ({
   const [showLayersMenu, setShowLayersMenu] = useState(false);
   const [showLegend, setShowLegend] = useState(true);
   const [activeBasemap, setActiveBasemap] = useState<'carto_dark' | 'osm' | 'satellite'>('carto_dark');
+  const [liveCoords, setLiveCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   // Initialize Leaflet map and Geoman
   useEffect(() => {
@@ -81,9 +86,9 @@ export const MapView: React.FC<MapViewProps> = ({
     // Add zoom control top-left
     L.control.zoom({ position: 'topleft' }).addTo(map);
 
-    // Default CartoDB Dark Matter basemap
+    // Default CartoDB Dark Matter basemap (high-contrast space theme)
     const darkTileLayer = L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
       {
         attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap',
         maxZoom: 19,
@@ -96,6 +101,11 @@ export const MapView: React.FC<MapViewProps> = ({
     sitesLayerGroupRef.current = L.featureGroup().addTo(map);
     dealBreakersLayerGroupRef.current = L.featureGroup().addTo(map);
     overlayLayersGroupRef.current = L.featureGroup().addTo(map);
+
+    // Track mouse coordinates for live HUD
+    map.on('mousemove', (e: L.LeafletMouseEvent) => {
+      setLiveCoords({ lat: Number(e.latlng.lat.toFixed(4)), lng: Number(e.latlng.lng.toFixed(4)) });
+    });
 
     // Initialize Leaflet Geoman Controls
     const pm = (map as any).pm;
@@ -138,25 +148,31 @@ export const MapView: React.FC<MapViewProps> = ({
         if (!existingCodes.includes('A')) nextCode = 'A';
         else if (!existingCodes.includes('B')) nextCode = 'B';
         else if (!existingCodes.includes('C')) nextCode = 'C';
-        else nextCode = 'C';
 
-        const newSite: CandidateSite = {
-          id: `site_${nextCode.toLowerCase()}_custom`,
-          code: nextCode,
-          name: `User Drawn Site ${nextCode}`,
-          regionId: currentRegion.id,
-          color: nextCode === 'A' ? '#10b981' : nextCode === 'B' ? '#f59e0b' : '#8b5cf6',
-          coordinates: coords,
-          areaKm2: approxArea || 22.0,
-          description: 'Custom user-delineated site polygon created via Geoman freehand tool.',
-          tag: 'User Custom Delineation',
+        const colorMap = {
+          A: '#0284c7', // Sky
+          B: '#0d9488', // Teal
+          C: '#d97706', // Amber
         };
 
-        // Remove the temporary geoman raw layer since we render via state
-        map.removeLayer(layer);
+        const newSite: CandidateSite = {
+          id: `site_custom_${Date.now()}`,
+          code: nextCode,
+          name: `Custom Parcel ${nextCode}`,
+          regionId: currentRegion.id,
+          coordinates: coords,
+          areaKm2: approxArea,
+          color: colorMap[nextCode],
+          description: `User-drawn parcel ${nextCode}`,
+          tag: 'Custom',
+        };
 
-        const updated = candidateSites.filter((s) => s.code !== nextCode);
-        onUpdateCandidateSites([...updated, newSite]);
+        const updated = [...candidateSites.filter((s) => s.code !== nextCode), newSite];
+        onUpdateCandidateSites(updated);
+        onSelectSiteCode(nextCode);
+
+        // Remove temp drawn layer since our React effect re-renders it cleanly
+        map.removeLayer(layer);
       });
     }
 
@@ -177,7 +193,7 @@ export const MapView: React.FC<MapViewProps> = ({
       map.removeLayer((map as any)._baseTileLayer);
     }
 
-    let url = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+    let url = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
     let attr = '&copy; CARTO &copy; OpenStreetMap';
 
     if (activeBasemap === 'osm') {
@@ -220,9 +236,9 @@ export const MapView: React.FC<MapViewProps> = ({
 
       const polygon = L.polygon(site.coordinates, {
         color: polygonColor,
-        weight: isSelected ? 3.5 : 2,
+        weight: isSelected ? 4 : 2,
         fillColor: polygonColor,
-        fillOpacity: isSelected ? 0.35 : 0.22,
+        fillOpacity: isSelected ? 0.38 : 0.22,
         dashArray: hasDealBreaker ? '6, 6' : undefined,
       });
 
@@ -233,200 +249,157 @@ export const MapView: React.FC<MapViewProps> = ({
 
       // Tooltip label
       polygon.bindTooltip(
-        `<div class="px-2 py-1 text-xs font-bold text-slate-900 bg-white/95 rounded shadow-lg border border-slate-300">
+        `<div class="px-2.5 py-1.5 text-xs font-bold text-slate-100 bg-slate-900/95 backdrop-blur-md rounded-lg shadow-xl border border-slate-700">
           <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${polygonColor}"></span>
             <span>Site ${site.code}: ${site.name.split('(')[0]}</span>
           </div>
-          <div class="text-[10px] text-slate-600 font-normal mt-0.5">
-            ${site.areaKm2} km² • ${scorecard ? `Score: ${scorecard.overallScore}/100` : 'Ready to analyze'}
-            ${hasDealBreaker ? '<span class="text-red-600 font-bold ml-1">• HARD STOP</span>' : ''}
-          </div>
+          <div class="text-[10px] text-slate-400 mt-0.5">Area: ${site.areaKm2} km² • Score: ${scorecard?.overallScore?.toFixed(1) || 'Pending'}</div>
         </div>`,
-        { permanent: true, direction: 'center', className: 'leaflet-site-label' }
+        { sticky: true, className: 'leaflet-site-label' }
       );
 
       sitesGroup.addLayer(polygon);
     });
   }, [candidateSites, selectedSiteCode, scorecards]);
 
-  // Render Spatial Deal-Breaker Sub-Polygons (Translucent Red Overlay inside sites)
+  // Render Statutory Dealbreaker Exclusion Zones
   useEffect(() => {
     const dbGroup = dealBreakersLayerGroupRef.current;
     if (!dbGroup) return;
 
     dbGroup.clearLayers();
 
-    // Check if any site in the region has deal-breaker zones
-    const dealBreakerData =
-      currentRegion.id === 'up_jewar' ? JEWAR_DEAL_BREAKER_ZONES : DHOLERA_DEAL_BREAKER_ZONES;
+    const zones = currentRegion.id === 'up_jewar' ? JEWAR_DEAL_BREAKER_ZONES : DHOLERA_DEAL_BREAKER_ZONES;
 
-    dealBreakerData.features.forEach((feature: any) => {
-      const coords = feature.geometry.coordinates[0].map((pt: [number, number]) => [pt[1], pt[0]]);
-
-      const dbPolygon = L.polygon(coords, {
+    const geoJsonLayer = L.geoJSON(zones, {
+      style: {
         color: '#dc2626',
-        weight: 2.5,
-        dashArray: '4, 4',
+        weight: 1.5,
         fillColor: '#ef4444',
-        fillOpacity: 0.65, // Prominent translucent red highlight
-      });
-
-      dbPolygon.bindTooltip(
-        `<div class="p-2 text-xs font-bold text-white bg-red-900/95 rounded shadow-xl border border-red-500 max-w-[240px]">
-          <div class="flex items-center gap-1.5 text-red-200">
-            <span class="text-sm">⚠️</span>
-            <span>SPATIAL DEAL-BREAKER ZONE</span>
-          </div>
-          <p class="text-[11px] font-semibold text-white mt-1">${feature.properties.name}</p>
-          <p class="text-[10px] text-red-200 mt-0.5">Rule: ${feature.properties.rule}</p>
-          <p class="text-[10px] text-red-300 font-mono mt-0.5">Area Inundated: ${feature.properties.areaPct}% (Threshold: &lt;50%)</p>
-        </div>`,
-        { sticky: true }
-      );
-
-      dbGroup.addLayer(dbPolygon);
+        fillOpacity: 0.25,
+        dashArray: '4, 4',
+      },
+      onEachFeature: (feature, layer) => {
+        const name = feature.properties?.name || 'Statutory Exclusion Zone';
+        layer.bindTooltip(
+          `<div class="px-2 py-1 text-xs font-semibold text-red-200 bg-red-950/95 rounded border border-red-500/60 shadow-lg">
+            <div class="flex items-center gap-1">
+              <span class="text-red-400">⚠️</span>
+              <span>${name}</span>
+            </div>
+            <div class="text-[10px] text-red-300/80">Statutory Exclusion Zone</div>
+          </div>`,
+          { sticky: true, className: 'leaflet-site-label' }
+        );
+      },
     });
+
+    dbGroup.addLayer(geoJsonLayer);
   }, [currentRegion]);
 
-  // Render Synthetic Thematic Layer Overlays
-  useEffect(() => {
-    const overlaysGroup = overlayLayersGroupRef.current;
-    if (!overlaysGroup) return;
-
-    overlaysGroup.clearLayers();
-
-    layerOverlays.forEach((layer) => {
-      if (!layer.visible) return;
-
-      const center = currentRegion.center;
-
-      // Realistic spatial thematic rings/swatches for demo visualization
-      if (layer.id === 'terrain') {
-        const contour = L.circle(center, {
-          radius: 8000,
-          color: layer.color,
-          weight: 1,
-          fillColor: layer.color,
-          fillOpacity: 0.08,
-          dashArray: '3, 6',
-        });
-        overlaysGroup.addLayer(contour);
-      }
-
-      if (layer.id === 'flood') {
-        const floodBuffer = L.circle([center[0] - 0.03, center[1] - 0.05], {
-          radius: 5000,
-          color: '#ef4444',
-          weight: 1.5,
-          fillColor: '#ef4444',
-          fillOpacity: 0.15,
-        });
-        overlaysGroup.addLayer(floodBuffer);
-      }
-
-      if (layer.id === 'water') {
-        const waterBuffer = L.circle([center[0] + 0.02, center[1] - 0.04], {
-          radius: 6500,
-          color: '#0284c7',
-          weight: 1.5,
-          fillColor: '#0284c7',
-          fillOpacity: 0.12,
-        });
-        overlaysGroup.addLayer(waterBuffer);
-      }
-
-      if (layer.id === 'ndvi') {
-        const ndviCircle = L.circle([center[0] + 0.04, center[1] + 0.05], {
-          radius: 6000,
-          color: '#22c55e',
-          weight: 1,
-          fillColor: '#22c55e',
-          fillOpacity: 0.12,
-        });
-        overlaysGroup.addLayer(ndviCircle);
-      }
-    });
-  }, [layerOverlays, currentRegion]);
-
-  // Reset / Fit bounds helper
-  const handleFitBounds = () => {
+  const handleFlyToSite = (site: CandidateSite) => {
+    onSelectSiteCode(site.code);
     const map = mapInstanceRef.current;
-    const sitesGroup = sitesLayerGroupRef.current;
-    if (!map || !sitesGroup || candidateSites.length === 0) return;
-
-    const bounds = sitesGroup.getBounds();
-    if (bounds.isValid()) {
-      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 14 });
-    }
+    if (!map || !site.coordinates.length) return;
+    const bounds = L.latLngBounds(site.coordinates);
+    map.fitBounds(bounds, { padding: [60, 60], duration: 0.8 });
   };
 
   return (
-    <div className="relative w-full h-full bg-slate-950 overflow-hidden">
-      {/* Leaflet Map Div */}
+    <div className="w-full h-full relative overflow-hidden bg-slate-950 select-none">
+      {/* Underlying Map Div */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-      {/* Floating Top-Right Toolbars: Layer Switcher & Basemap & Fit */}
+      {/* Floating Top-Left Telemetry HUD */}
+      <div className="absolute top-3 left-14 z-10 hidden sm:flex items-center space-x-2.5 bg-slate-900/85 backdrop-blur-md border border-slate-700/80 px-3 py-1.5 rounded-xl text-xs text-slate-200 shadow-xl">
+        <div className="flex items-center space-x-1.5">
+          <Crosshair className="w-3.5 h-3.5 text-sky-400 animate-spin-slow" />
+          <span className="font-mono text-sky-300 font-semibold text-[11px]">
+            {liveCoords ? `${liveCoords.lat}°N, ${liveCoords.lng}°E` : `${currentRegion.center[0]}°N, ${currentRegion.center[1]}°E`}
+          </span>
+        </div>
+        <span className="text-slate-600">|</span>
+        <div className="text-[11px] text-slate-300">
+          <span className="text-slate-400">Target:</span> <span className="font-semibold text-white">{currentRegion.name.split(' ')[0]}</span>
+        </div>
+      </div>
+
+      {/* Floating Top-Right Map Controls & Layer Overlays */}
       <div className="absolute top-3 right-3 z-10 flex flex-col items-end space-y-2">
-        {/* Quick Toolbar */}
-        <div className="flex items-center space-x-1.5 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 p-1 rounded-lg shadow-xl">
-          {/* Fit Bounds */}
+        <div className="flex items-center space-x-1.5 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 p-1.5 rounded-xl shadow-xl">
+          {/* Basemap Switcher Chips */}
           <button
-            onClick={handleFitBounds}
-            className="p-1.5 hover:bg-slate-800 text-slate-300 hover:text-white rounded transition-colors"
-            title="Fit view to all candidate sites"
+            onClick={() => setActiveBasemap('carto_dark')}
+            className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+              activeBasemap === 'carto_dark'
+                ? 'bg-sky-600 text-white shadow-sm'
+                : 'text-slate-300 hover:text-white hover:bg-slate-800'
+            }`}
           >
-            <Maximize2 className="w-4 h-4" />
+            Dark Matter
+          </button>
+          <button
+            onClick={() => setActiveBasemap('satellite')}
+            className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+              activeBasemap === 'satellite'
+                ? 'bg-sky-600 text-white shadow-sm'
+                : 'text-slate-300 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            Satellite
+          </button>
+          <button
+            onClick={() => setActiveBasemap('osm')}
+            className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+              activeBasemap === 'osm'
+                ? 'bg-sky-600 text-white shadow-sm'
+                : 'text-slate-300 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            Terrain
           </button>
 
-          {/* Toggle Layers Menu */}
+          <span className="w-px h-4 bg-slate-700 mx-1"></span>
+
+          {/* Toggle Layers Menu Button */}
           <button
             onClick={() => setShowLayersMenu(!showLayersMenu)}
-            className={`flex items-center space-x-1.5 px-2.5 py-1.5 text-xs font-semibold rounded transition-all ${
+            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
               showLayersMenu
-                ? 'bg-sky-600 text-white shadow-md'
-                : 'text-slate-200 hover:bg-slate-800'
+                ? 'bg-indigo-600 text-white'
+                : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>Overlays ({layerOverlays.filter((l) => l.visible).length})</span>
+            <span>Overlays</span>
           </button>
-
-          {/* Basemap Switcher */}
-          <select
-            value={activeBasemap}
-            onChange={(e) => setActiveBasemap(e.target.value as any)}
-            className="text-xs bg-slate-800 border border-slate-700 text-slate-200 rounded px-2 py-1 outline-none"
-          >
-            <option value="carto_dark">Carto Light</option>
-            <option value="osm">OpenStreetMap</option>
-            <option value="satellite">Satellite Imagery</option>
-          </select>
         </div>
 
         {/* Floating Overlays Drawer Popover */}
         {showLayersMenu && (
-          <div className="w-72 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-lg shadow-2xl p-3 text-xs space-y-2.5 animate-in fade-in slide-in-from-top-2">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-              <span className="font-semibold text-slate-200 uppercase tracking-wider text-[11px]">
-                Thematic ISRO Overlays
+          <div className="w-80 bg-slate-900/95 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl p-3.5 text-xs space-y-3 animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+              <span className="font-bold text-slate-100 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+                <span>ISRO Thematic Layers</span>
               </span>
               <button
                 onClick={() => setShowLegend(!showLegend)}
-                className="text-[11px] text-sky-400 hover:underline"
+                className="text-[11px] font-semibold text-sky-400 hover:underline"
               >
                 {showLegend ? 'Hide Legends' : 'Show Legends'}
               </button>
             </div>
 
-            <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
+            <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
               {layerOverlays.map((layer) => (
                 <div
                   key={layer.id}
-                  className={`p-2 rounded border transition-all ${
+                  className={`p-2.5 rounded-xl border transition-all ${
                     layer.visible
-                      ? 'bg-slate-800/80 border-slate-600'
-                      : 'bg-slate-850/50 border-slate-800 opacity-70'
+                      ? 'bg-slate-800/90 border-slate-600 shadow-md'
+                      : 'bg-slate-900/50 border-slate-800/60 opacity-60'
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -435,32 +408,32 @@ export const MapView: React.FC<MapViewProps> = ({
                       className="flex items-center space-x-2 text-left flex-1"
                     >
                       <span
-                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        className="w-3 h-3 rounded-full shrink-0 shadow-sm"
                         style={{ backgroundColor: layer.color }}
                       ></span>
                       <div>
-                        <div className="font-medium text-slate-200">{layer.name}</div>
-                        <div className="text-[10px] text-slate-400">{layer.portal}</div>
+                        <div className="font-semibold text-slate-100 text-xs">{layer.name}</div>
+                        <div className="text-[10px] text-slate-400 font-mono">{layer.portal}</div>
                       </div>
                     </button>
                     <button
                       onClick={() => onToggleLayer(layer.id)}
-                      className="text-slate-400 hover:text-white ml-2"
+                      className="p-1 text-slate-400 hover:text-white ml-2 rounded hover:bg-slate-700"
                     >
                       {layer.visible ? (
-                        <Eye className="w-3.5 h-3.5 text-sky-400" />
+                        <Eye className="w-4 h-4 text-sky-400" />
                       ) : (
-                        <EyeOff className="w-3.5 h-3.5" />
+                        <EyeOff className="w-4 h-4" />
                       )}
                     </button>
                   </div>
 
                   {showLegend && layer.visible && (
-                    <div className="mt-2 pt-1.5 border-t border-slate-750 space-y-1">
+                    <div className="mt-2 pt-2 border-t border-slate-700/60 space-y-1">
                       {layer.legend.map((item, idx) => (
-                        <div key={idx} className="flex items-center space-x-1.5 text-[10px] text-slate-300">
+                        <div key={idx} className="flex items-center space-x-2 text-[10px] text-slate-300">
                           <span
-                            className="w-2 h-2 rounded-sm shrink-0"
+                            className="w-2.5 h-2.5 rounded-sm shrink-0"
                             style={{ backgroundColor: item.color }}
                           ></span>
                           <span className="truncate">{item.label}</span>
@@ -475,25 +448,56 @@ export const MapView: React.FC<MapViewProps> = ({
         )}
       </div>
 
-      {/* Floating Bottom-Left Deal-Breaker Warning Banner (if Yamuna/Dholera deal-breaker active) */}
-      <div className="absolute bottom-4 left-4 z-10 max-w-sm pointer-events-none">
-        <div className="bg-red-950/90 backdrop-blur-md border border-red-500/70 p-3 rounded-lg shadow-2xl text-xs space-y-1.5 pointer-events-auto">
-          <div className="flex items-center space-x-2 text-red-300 font-bold">
-            <AlertOctagon className="w-4 h-4 text-red-400 animate-bounce" />
-            <span>Spatial Deal-Breaker Overlay Active</span>
-          </div>
-          <p className="text-[11px] text-red-200 leading-snug">
-            Offending sub-polygons exceeding statutory safety thresholds are shaded in{' '}
-            <strong className="text-red-300 underline">translucent red with dashed borders</strong>.
-            Site B is flagged for automatic exclusion.
-          </p>
-        </div>
+      {/* Floating Bottom-Center Quick Site Selector HUD */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center space-x-2 bg-slate-900/90 backdrop-blur-xl border border-slate-700/80 px-2 py-1.5 rounded-2xl shadow-2xl">
+        {candidateSites.map((site) => {
+          const isSelected = site.code === selectedSiteCode;
+          const card = scorecards[site.id];
+          const hasDb = card?.hasDealBreaker;
+          return (
+            <button
+              key={site.id}
+              onClick={() => handleFlyToSite(site)}
+              className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                isSelected
+                  ? 'bg-sky-600 text-white shadow-lg shadow-sky-600/30 ring-2 ring-sky-400/50'
+                  : 'bg-slate-800/80 hover:bg-slate-800 text-slate-200'
+              }`}
+            >
+              <span
+                className="w-2.5 h-2.5 rounded-full"
+                style={{ backgroundColor: hasDb ? '#ef4444' : site.color }}
+              ></span>
+              <span>Site {site.code}</span>
+              {card && (
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                    hasDb
+                      ? 'bg-red-500/30 text-red-300'
+                      : isSelected
+                      ? 'bg-sky-700/50 text-white'
+                      : 'bg-slate-700 text-sky-300'
+                  }`}
+                >
+                  {hasDb ? 'DEFICIT' : `${card.overallScore.toFixed(1)} pts`}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Floating Geoman Instructions Pill */}
-      <div className="absolute top-3 left-14 z-10 hidden sm:flex items-center space-x-2 bg-slate-900/85 backdrop-blur-sm border border-slate-700/80 px-2.5 py-1 rounded-md text-[11px] text-slate-300">
-        <Info className="w-3.5 h-3.5 text-sky-400" />
-        <span>Use top-left toolbar to draw or edit site boundary polygons</span>
+      {/* Floating Bottom-Left Deal-Breaker Warning Banner */}
+      <div className="absolute bottom-4 left-4 z-10 max-w-xs pointer-events-none hidden md:block">
+        <div className="bg-red-950/90 backdrop-blur-md border border-red-500/70 p-3 rounded-xl shadow-2xl text-xs space-y-1 pointer-events-auto">
+          <div className="flex items-center space-x-1.5 text-red-300 font-bold">
+            <AlertOctagon className="w-4 h-4 text-red-400 animate-pulse" />
+            <span>Statutory Deal-Breaker Layer</span>
+          </div>
+          <p className="text-[10px] text-red-200/90 leading-tight">
+            Hazard zones shaded in <strong className="text-red-300">red dashes</strong> denote active floodways and high-slope exclusion polygons.
+          </p>
+        </div>
       </div>
     </div>
   );
