@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { ChevronRight, SlidersHorizontal } from 'lucide-react';
 import { Navbar } from './components/Navbar';
 import { LeftPanel } from './components/LeftPanel';
 import { MapView } from './components/MapView';
@@ -47,6 +48,7 @@ export function App() {
   const [activeTab, setActiveTab] = useState<RightPanelTab>('scorecard');
   const [isAssumptionsOpen, setIsAssumptionsOpen] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
 
   // Health and connection state
   const [health, setHealth] = useState<HealthStatus>({
@@ -175,27 +177,49 @@ export function App() {
 
       {/* Main 3-Column Layout */}
       <div className="flex flex-1 overflow-hidden relative">
-        {/* Left Column: Parameter & Scenario Controls */}
-        <LeftPanel
-          regions={regions}
-          selectedRegionId={selectedRegionId}
-          onSelectRegion={handleSelectRegion}
-          candidateSites={candidateSites}
-          onLoadCandidateSites={handleLoadPresetSites}
-          targetPopulation={targetPopulation}
-          onChangeTargetPopulation={setTargetPopulation}
-          horizon={horizon}
-          onChangeHorizon={setHorizon}
-          priorityPreset={priorityPreset}
-          onChangePriorityPreset={setPriorityPreset}
-          scenarioPreset={scenarioPreset}
-          onChangeScenarioPreset={setScenarioPreset}
-          onRunAnalysis={executeAnalysis}
-          isAnalyzing={isAnalyzing}
-        />
+        {/* Left Column: Parameter & Scenario Controls (Collapsible) */}
+        <div
+          className={`transition-all duration-300 ease-in-out shrink-0 h-full overflow-hidden ${
+            isLeftPanelCollapsed ? 'w-0 opacity-0 pointer-events-none' : 'w-80 opacity-100'
+          }`}
+        >
+          <LeftPanel
+            isCollapsed={isLeftPanelCollapsed}
+            onToggleCollapse={() => setIsLeftPanelCollapsed(!isLeftPanelCollapsed)}
+            regions={regions}
+            selectedRegionId={selectedRegionId}
+            onSelectRegion={handleSelectRegion}
+            candidateSites={candidateSites}
+            onLoadCandidateSites={handleLoadPresetSites}
+            targetPopulation={targetPopulation}
+            onChangeTargetPopulation={setTargetPopulation}
+            horizon={horizon}
+            onChangeHorizon={setHorizon}
+            priorityPreset={priorityPreset}
+            onChangePriorityPreset={setPriorityPreset}
+            scenarioPreset={scenarioPreset}
+            onChangeScenarioPreset={setScenarioPreset}
+            onRunAnalysis={executeAnalysis}
+            isAnalyzing={isAnalyzing}
+          />
+        </div>
 
         {/* Center Canvas: Leaflet Map with Geoman Drawing & Overlays */}
         <main className="map-container flex-1 h-full relative overflow-hidden">
+          {/* Floating Expand Left Panel Tab Button (When Minimized) */}
+          {isLeftPanelCollapsed && (
+            <button
+              onClick={() => setIsLeftPanelCollapsed(false)}
+              className="absolute top-1/2 -translate-y-1/2 left-0 z-30 bg-white/95 backdrop-blur-md border border-slate-200 border-l-0 py-3.5 px-2 rounded-r-2xl shadow-xl hover:bg-blue-50 text-slate-700 hover:text-blue-600 transition-all cursor-pointer flex flex-col items-center gap-1.5 group"
+              title="Expand Parameters Panel"
+            >
+              <ChevronRight className="w-4 h-4 text-blue-600 group-hover:scale-125 transition-transform" />
+              <span className="text-[10px] font-black uppercase tracking-wider [writing-mode:vertical-rl] text-slate-600 group-hover:text-blue-600">
+                Parameters
+              </span>
+            </button>
+          )}
+
           <MapView
             currentRegion={currentRegion}
             candidateSites={candidateSites}
@@ -205,6 +229,7 @@ export function App() {
             scorecards={scorecards}
             layerOverlays={layerOverlays}
             onToggleLayer={handleToggleLayer}
+            isLeftPanelCollapsed={isLeftPanelCollapsed}
           />
         </main>
 
