@@ -1,6 +1,6 @@
 """
 test_edge_cases.py
-Intensive Bug & Edge-Case Audit Suite for TerraAI:
+Intensive Bug & Edge-Case Audit Suite for TerraCity AI:
 1. Malformed / self-intersecting polygons (returns 422 with clean error message, never unhandled 500).
 2. Micro-parcels (0.001 km2) and large parcels (1500 km2): tests division by zero and numerical stability.
 3. MultiPolygon geometries: verifies multi-part candidate sites.

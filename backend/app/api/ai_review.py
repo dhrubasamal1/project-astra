@@ -321,7 +321,7 @@ async def review_site_analysis(request: AiReviewRequest):
 
     # Prepare comprehensive prompt containing exact coordinates & all data
     prompt_context = f"""
-You are the Chief Urban & Regional Planning Officer for TerraAI, an AI-powered smart city and land intelligence platform.
+You are the Chief Urban & Regional Planning Officer for TerraCity AI, an AI-powered smart city and land intelligence platform.
 Perform a rigorous, professional urban planning review and masterplan synthesis based on the provided ground-truth space and geographic data:
 
 GEOGRAPHIC ANCHORS & BOUNDARY COORDINATES:

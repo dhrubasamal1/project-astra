@@ -606,7 +606,7 @@ export const EarthGlobeIntro: React.FC<EarthGlobeIntroProps> = ({
 
           {/* Subtitle Footer */}
           <div className="flex items-center justify-between text-[11px] text-slate-400">
-            <span>TERRA AI // MULTI-PORTAL LAND INTELLIGENCE</span>
+            <span>TERRACITY AI // MULTI-PORTAL LAND INTELLIGENCE</span>
             <span className="font-mono text-slate-500">CLICK ANYWHERE OR PRESS ESC TO START</span>
           </div>
         </div>

@@ -1,4 +1,4 @@
-# TerraAI — Project Brief
+# TerraCity AI — Project Brief
 
 **AI-Powered Smart City Planning & Land Intelligence Platform**  
 *Tagline: "Designing Sustainable Cities. Intelligence for Tomorrow."*  
@@ -8,7 +8,7 @@
 
 ## 1. Executive Goal & Mandate
 
-TerraAI is a unified geospatial intelligence and sustainable urban planning platform designed for state planning authorities, urban development boards, and infrastructure architects. It bridges fragmented land-use analysis into one explainable, space-driven platform covering **7 core intelligence pillars**:
+TerraCity AI is a unified geospatial intelligence and sustainable urban planning platform designed for state planning authorities, urban development boards, and infrastructure architects. It bridges fragmented land-use analysis into one explainable, space-driven platform covering **7 core intelligence pillars**:
 
 1. **Terrain & Elevation**: High-resolution CartoDEM 30m slope profiling, buildable share (<=15%), relief, and terrain ruggedness index (TRI).
 2. **Geological & Soil Conditions**: VEDAS lithology, soil bearing stability, and land degradation susceptibility.
@@ -22,7 +22,7 @@ TerraAI is a unified geospatial intelligence and sustainable urban planning plat
 
 ## 2. Hackathon Domain Alignment (ASTRA 2026)
 
-TerraAI directly aligns with:
+TerraCity AI directly aligns with:
 
 - **Domain 02 — Earth Observation & Satellite Applications (Primary / Strong)**:
   - Leverages high-resolution digital elevation models, multi-temporal optical imagery, and satellite-derived precipitation indices for land capability analysis and climate resilience.
@@ -35,7 +35,7 @@ TerraAI directly aligns with:
 
 ## 3. Four-Portal Provenance Guarantee
 
-TerraAI ensures all four official Indian geoportal systems supply active, non-missing data to scored indicators in the primary demonstration region:
+TerraCity AI ensures all four official Indian geoportal systems supply active, non-missing data to scored indicators in the primary demonstration region:
 
 | Portal | Operating Agency | Satellite / Sensor Mission | Core Dataset Utilized | Indicators Supplied |
 | :--- | :--- | :--- | :--- | :--- |
@@ -54,8 +54,8 @@ TerraAI ensures all four official Indian geoportal systems supply active, non-mi
 - **AMRUT 2.0 GIS Master Plans**: Develops master planning and utility zoning for existing designated brownfield cities.
 - **VEDAS Urban Sprawl Information System**: Monitors historical urban boundary sprawl and decadal growth trends of existing metropolitan centers.
 
-### The Targeted Gap TerraAI Fills
-TerraAI provides **early-stage greenfield site screening and master plan synthesis**: comparing candidate land parcels for a new township across terrain buildability, water security, disaster risk, and renewable potential using Indian satellite data in one open, explainable platform.
+### The Targeted Gap TerraCity AI Fills
+TerraCity AI provides **early-stage greenfield site screening and master plan synthesis**: comparing candidate land parcels for a new township across terrain buildability, water security, disaster risk, and renewable potential using Indian satellite data in one open, explainable platform.
 
 ---
 
@@ -84,7 +84,7 @@ flowchart TD
         A6["AI Review Engine (ai_review.py)<br/>Gemini 3.8 Flash & Offline Synthesis<br/>Smart Zoning, CapEx Roadmap, Countermeasures"]
     end
 
-    subgraph Frontend_App ["TerraAI Frontend (React 19 + TypeScript + Vite)"]
+    subgraph Frontend_App ["TerraCity AI Frontend (React 19 + TypeScript + Vite)"]
         V1["1. Command Center (Leaflet + Geoman + Overlays)"]
         V2["2. Landing Page Overview (Interactive 3D Earth & Key Metrics)"]
         V3["3. AI Master-Plan Designer (Zoning & Prompt Assistant)"]

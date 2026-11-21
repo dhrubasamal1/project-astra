@@ -69,9 +69,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="TerraAI API",
+    title="TerraCity AI API",
     description=(
-        "TerraAI – AI-Powered Smart City Planning and Land Intelligence Platform. "
+        "TerraCity AI – AI-Powered Smart City Planning and Land Intelligence Platform. "
         "Unifies fragmented land-use analysis into one intelligent platform covering: "
         "1. Terrain & Elevation (CartoDEM 30m), "
         "2. Geological & Soil Conditions (VEDAS Lithology), "
@@ -196,7 +196,7 @@ else:
     @app.get("/")
     async def root():
         return {
-            "name": "TerraAI API Server",
+            "name": "TerraCity AI API Server",
             "tagline": "Designing Sustainable Cities. Intelligence for Tomorrow.",
             "status": "online",
             "version": "1.0.0",

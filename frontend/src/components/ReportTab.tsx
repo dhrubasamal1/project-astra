@@ -142,7 +142,7 @@ export const ReportTab: React.FC<ReportTabProps> = ({
             <div>
               <div className="flex items-center space-x-2.5">
                 <span className="text-xl font-black tracking-tight text-slate-900">
-                  TerraAI
+                  TerraCity AI
                 </span>
                 <span className="px-2.5 py-0.5 text-[10px] bg-blue-50 border border-blue-200 text-blue-900 rounded-full font-bold uppercase tracking-wider">
                   7-Pillar Land Intelligence Platform

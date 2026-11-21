@@ -91,9 +91,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
           <div>
             <div className="flex items-center space-x-2.5">
-              <h1 className="font-extrabold text-xl tracking-tight text-slate-900 flex items-center gap-1">
-                <span>Terra</span>
-                <span className="text-blue-600">AI</span>
+              <h1 className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
+                <span>TerraCity</span>
+                <span className="text-blue-600 dark:text-cyan-400">AI</span>
               </h1>
               <span className="px-2.5 py-0.5 text-[11px] font-bold bg-blue-50 text-blue-800 rounded-full border border-blue-200/80 shadow-xs">
                 7-Pillar Land Intelligence

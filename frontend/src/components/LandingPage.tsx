@@ -145,7 +145,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartPlanning }) => 
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="font-black text-base tracking-tight text-white">TERRA // ASTRA</span>
+              <span className="font-black text-base tracking-tight text-white">TERRACITY AI</span>
               <span className="text-[10px] font-mono font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.5 rounded">
                 v2.4
               </span>
@@ -299,7 +299,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartPlanning }) => 
               Satellite-Ground Truth Fusion for Greenfield Mastery
             </h2>
             <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-              Terra Astra bridges Indian space portal observation feeds directly into deterministic multi-criteria urban suitability models, statutory deal-breaker hazard gates, and climate stress simulations.
+              TerraCity AI bridges Indian space portal observation feeds directly into deterministic multi-criteria urban suitability models, statutory deal-breaker hazard gates, and climate stress simulations.
             </p>
           </div>
 
@@ -409,7 +409,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartPlanning }) => 
 
       {/* Footer */}
       <footer className="relative z-10 py-8 px-4 sm:px-8 border-t border-slate-900 text-center text-xs text-slate-500 font-mono">
-        <p>© 2026 Project Astra · Built for ISRO Space Data Intelligence Challenge · Dholera SIR & Jewar Corridors</p>
+        <p>© 2026 TerraCity AI · Built for ISRO Space Data Intelligence Challenge · Dholera SIR & Jewar Corridors</p>
       </footer>
     </div>
   );

@@ -81,7 +81,7 @@ def test_html_report_generation(sample_scorecards):
     assert "page-break-inside: avoid;" in html_content or "page-break-before: always;" in html_content
 
     # Brand & content checks
-    assert "TERRAAI" in html_content
+    assert "TERRACITY AI" in html_content
     assert "Site A (Upland)" in html_content
     assert "Site B (Floodplain)" in html_content
     assert "CRITICAL HARD-STOP DISQUALIFICATION" in html_content

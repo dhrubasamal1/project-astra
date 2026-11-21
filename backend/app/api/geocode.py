@@ -176,7 +176,7 @@ async def search_locations(q: str = Query(..., min_length=1, description="Locati
     try:
         url = "https://nominatim.openstreetmap.org/search"
         headers = {
-            "User-Agent": "TerraAI-SmartCity-Planner/1.0 (https://project-astra-6p3.pages.dev)"
+            "User-Agent": "TerraCityAI-SmartCity-Planner/1.0 (https://project-astra-6p3.pages.dev)"
         }
         params = {
             "format": "json",
