@@ -72,8 +72,156 @@ By integrating open satellite feeds from **all four official Indian space portal
   - **Report**: Print-ready executive evaluation sheet and standardized GeoJSON export.
 
 ---
+# TerraCity AI – API Architecture
+
+---
+
+In TerraCity AI, the APIs are divided into two complementary groups:
+
+1. **Upstream Data & AI APIs** – Third-party services providing satellite data, mapping, geospatial intelligence, and AI capabilities.
+2. **Platform Backend Endpoints** – Our FastAPI REST APIs responsible for processing data, executing analysis, and serving the frontend application.
+
+## Part 1: Upstream Space, Map & AI APIs
+
+These external APIs provide the core satellite imagery, geospatial datasets, environmental intelligence, and AI capabilities required by TerraCity AI.
+
+| API / Portal | Source / Provider | Purpose in TerraCity AI |
+|---|---|---|
+| **Bhoonidhi API** | NRSC / ISRO | Terrain & Elevation Analysis |
+| **Bhuvan WMS / Geoportal** | NRSC / ISRO | Land Use & Flood Hazards |
+| **MOSDAC API** | SAC / ISRO | Hydrology & Precipitation Climatology |
+| **VEDAS WMS / API** | SAC / ISRO | Vegetation & Solar Energy Potential |
+| **Google Gemini API (gemini-3.8-flash)** | Google AI | AI Urban Planning Co-Pilot & Synthesis |
+| **CARTO Basemap API** | CARTO | Vector GIS Base Cartography |
+| **OpenStreetMap & Overpass API** | OSM Community | Infrastructure Connectivity |
+| **Nominatim Geocoding API** | OpenStreetMap | Map Location Search |
+
+### 1. Bhoonidhi API – Terrain & Elevation Analysis
+
+**Provider:** NRSC / ISRO
+
+- Fetches CartoDEM 30m elevation rasters.
+- Calculates:
+  - Mean slope.
+  - Buildable land share (slope ≤ 15%).
+  - Terrain Ruggedness Index (TRI).
+  - Elevation profiles.
+- Feeds the HAND (Height Above Nearest Drainage) hydrological flood proxy.
+
+### 2. Bhuvan WMS / Geoportal – Land Use & Flood Hazards
+
+**Provider:** NRSC / ISRO
+
+- Queries LULC 1:50K thematic layers.
+- Identifies:
+  - Agricultural land.
+  - Barren land.
+  - Built-up areas.
+  - Wetlands.
+- Evaluates historical flood hazard zonation.
+- Detects statutory hard-stops, such as:
+  - Protected wetlands.
+  - Active floodways.
+  - Restricted ecological zones.
+
+### 3. MOSDAC API – Hydrology & Precipitation Climatology
+
+**Provider:** SAC / ISRO
+
+- Uses INSAT-3D / 3DR daily rainfall and Hydro-Estimator data.
+- Computes:
+  - Annual mean precipitation.
+  - Monsoon coefficient of variation (CV).
+  - Dry months.
+- Drives physical water balance simulations for **2026–2050**.
+
+### 4. VEDAS WMS / API – Vegetation & Solar Energy Potential
+
+**Provider:** SAC / ISRO
+
+- Processes Sentinel-2 (10m) multi-temporal NDVI vegetation index.
+- Evaluates ecological sensitivity.
+- Analyses multi-year vegetation and greenness trends.
+- Extracts Solar Global Horizontal Irradiance (GHI) insolation in kWh/m²/day.
+- Supports rooftop solar energy planning and renewable energy recommendations.
+
+### 5. Google Gemini API – AI Urban Planning Co-Pilot
+
+**Provider:** Google AI
+
+- Ingests:
+  - Exact site polygon coordinates.
+  - Centroid latitude and longitude.
+  - 15+ satellite-derived environmental and geographical metrics.
+- Generates:
+  - Executive planning critiques.
+  - Autonomous smart zoning recommendations (hectares + percentages).
+  - Phased Capital Expenditure (CapEx) roadmaps (2026–2050).
+  - Climate adaptation and mitigation strategies.
+  - Space-sensor-informed climate countermeasures.
+- Powers real-time AI planning Q&A.
+- Uses strict numerical grounding to minimize AI hallucinations.
+
+### 6. CARTO Basemap API – Vector GIS Base Cartography
+
+**Provider:** CARTO
+
+- Delivers high-performance vector map tiles.
+- Provides interactive GIS base maps.
+- Dynamically switches between:
+  - **Carto Voyager:** Light theme.
+  - **Carto Dark Matter:** Dark theme.
+
+### 7. OpenStreetMap & Overpass API – Infrastructure Connectivity
+
+**Provider:** OpenStreetMap Community
+
+- Measures proximity and connectivity to:
+  - Major arterial highways.
+  - Railway lines.
+  - Power transmission grids.
+  - Airports.
+- Helps evaluate infrastructure accessibility and transportation connectivity.
+
+### 8. Nominatim Geocoding API – Map Location Search
+
+**Provider:** OpenStreetMap
+
+- Converts city names and addresses into geographic coordinates.
+- Supports direct latitude/longitude coordinate input.
+- Enables map location search and smooth fly-to animations.
+- Helps users identify and select potential development sites.
+
+## Overall API Integration Workflow
+
+```mermaid
+flowchart TD
+    A[User Selects 500-Acre Site] --> B[Frontend Map Interface]
+    B --> C[Nominatim Geocoding]
+    C --> D[Site Polygon Coordinates]
+    D --> E[FastAPI Backend]
+
+    E --> F[Bhoonidhi - Terrain]
+    E --> G[Bhuvan - Land Use]
+    E --> H[MOSDAC - Rainfall]
+    E --> I[VEDAS - Vegetation & Solar]
+    E --> J[OSM - Infrastructure]
+
+    F --> K[Geospatial Analysis Engine]
+    G --> K
+    H --> K
+    I --> K
+    J --> K
+
+    K --> L[15+ Site Intelligence Metrics]
+    L --> M[Google Gemini AI]
+    M --> N[AI Smart City Master Plan]
+    N --> O[Interactive TerraCity Dashboard]
+```
+---
 
 ## Four-Portal Space Provenance
+---
 
 TerraCity AI integrates real data from four official Indian space portals:
 
