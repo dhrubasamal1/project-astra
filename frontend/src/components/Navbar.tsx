@@ -15,6 +15,7 @@ import {
   FileSpreadsheet,
   Sun,
   Moon,
+  Globe,
 } from 'lucide-react';
 import { Region, PriorityPreset, ScenarioPreset } from '../types';
 import { HealthStatus, getApiBase } from '../lib/api';
@@ -29,6 +30,7 @@ interface NavbarProps {
   onOpenAssumptions: () => void;
   onOpenReport: () => void;
   onOpenAiReview?: () => void;
+  onBackToLanding?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -41,6 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAssumptions,
   onOpenReport,
   onOpenAiReview,
+  onBackToLanding,
 }) => {
   const [showBackendModal, setShowBackendModal] = useState(false);
   const [customApiUrl, setCustomApiUrl] = useState(() => {
@@ -100,6 +103,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               AI-Powered Smart City Planning and Land Intelligence Platform
             </p>
           </div>
+          {onBackToLanding && (
+            <button
+              onClick={onBackToLanding}
+              className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-cyan-50 dark:bg-cyan-950/60 hover:bg-cyan-100 dark:hover:bg-cyan-900/60 border border-cyan-200 dark:border-cyan-800 text-cyan-800 dark:text-cyan-300 transition-all cursor-pointer shadow-xs active:scale-95 ml-2"
+              title="Return to 3D Planetary Overview & Hero"
+            >
+              <Globe className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400 animate-spin-slow" />
+              <span>3D Earth</span>
+            </button>
+          )}
         </div>
 
         {/* Center Floating Pill Group (Context Indicators) */}

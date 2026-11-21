@@ -5,6 +5,7 @@ import { LeftPanel } from './components/LeftPanel';
 import { MapView } from './components/MapView';
 import { RightPanel, RightPanelTab } from './components/RightPanel';
 import { AssumptionsDrawer } from './components/AssumptionsDrawer';
+import { LandingPage } from './components/LandingPage';
 import {
   Region,
   RegionId,
@@ -49,6 +50,13 @@ export function App() {
   const [isAssumptionsOpen, setIsAssumptionsOpen] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+  const [currentView, setCurrentView] = useState<'landing' | 'dashboard'>('landing');
+
+  // Callback to transition from 3D Earth hero to planning dashboard
+  const handleStartPlanning = useCallback(() => {
+    setSelectedRegionId('dholera');
+    setCurrentView('dashboard');
+  }, []);
 
   // Theme Mode State (Dark / Light)
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -205,6 +213,10 @@ export function App() {
     );
   };
 
+  if (currentView === 'landing') {
+    return <LandingPage onStartPlanning={handleStartPlanning} />;
+  }
+
   return (
     <div className="app-container flex flex-col h-screen w-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
       {/* Top Navigation Bar */}
@@ -217,6 +229,7 @@ export function App() {
         onToggleTheme={handleToggleTheme}
         onOpenAssumptions={() => setIsAssumptionsOpen(true)}
         onOpenReport={() => setActiveTab('report')}
+        onBackToLanding={() => setCurrentView('landing')}
         onOpenAiReview={() => {
           setActiveTab('scorecard');
           setTimeout(() => {
