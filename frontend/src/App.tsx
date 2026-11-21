@@ -5,6 +5,7 @@ import { LeftPanel } from './components/LeftPanel';
 import { MapView } from './components/MapView';
 import { RightPanel, RightPanelTab } from './components/RightPanel';
 import { AssumptionsDrawer } from './components/AssumptionsDrawer';
+import { EarthGlobeIntro } from './components/EarthGlobeIntro';
 import {
   Region,
   RegionId,
@@ -49,6 +50,16 @@ export function App() {
   const [isAssumptionsOpen, setIsAssumptionsOpen] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+
+  // 3D Earth Globe Orbital Briefing Intro state
+  const [showIntro, setShowIntro] = useState(() => {
+    return !sessionStorage.getItem('TERRA_INTRO_SEEN');
+  });
+
+  const handleIntroComplete = useCallback(() => {
+    sessionStorage.setItem('TERRA_INTRO_SEEN', 'true');
+    setShowIntro(false);
+  }, []);
 
   // Health and connection state
   const [health, setHealth] = useState<HealthStatus>({
@@ -201,6 +212,7 @@ export function App() {
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }, 150);
         }}
+        onReplayIntro={() => setShowIntro(true)}
       />
 
       {/* Main 3-Column Layout */}
@@ -286,6 +298,13 @@ export function App() {
         onClose={() => setIsAssumptionsOpen(false)}
         assumptions={assumptions}
         onUpdateAssumptions={setAssumptions}
+      />
+
+      {/* 3D Earth Globe Orbital Briefing Intro */}
+      <EarthGlobeIntro
+        isOpen={showIntro}
+        onComplete={handleIntroComplete}
+        currentRegion={currentRegion}
       />
     </div>
   );

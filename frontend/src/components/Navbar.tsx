@@ -13,6 +13,7 @@ import {
   ExternalLink,
   X,
   FileSpreadsheet,
+  Globe,
 } from 'lucide-react';
 import { Region, PriorityPreset, ScenarioPreset } from '../types';
 import { HealthStatus, getApiBase } from '../lib/api';
@@ -25,6 +26,7 @@ interface NavbarProps {
   onOpenAssumptions: () => void;
   onOpenReport: () => void;
   onOpenAiReview?: () => void;
+  onReplayIntro?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -35,6 +37,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAssumptions,
   onOpenReport,
   onOpenAiReview,
+  onReplayIntro,
 }) => {
   const [showBackendModal, setShowBackendModal] = useState(false);
   const [customApiUrl, setCustomApiUrl] = useState(() => {
@@ -146,6 +149,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Sparkles className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
               <span>Gemini Review</span>
+            </button>
+          )}
+
+          {/* Replay 3D Earth Orbital Briefing */}
+          {onReplayIntro && (
+            <button
+              onClick={onReplayIntro}
+              className="flex items-center space-x-1.5 px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200/80 rounded-full transition-all shadow-xs active:scale-95 cursor-pointer"
+              title="Replay 3D Earth Orbital Reconnaissance Briefing"
+            >
+              <Globe className="w-3.5 h-3.5 text-blue-600 animate-spin-slow" />
+              <span className="hidden xl:inline">Orbital View</span>
             </button>
           )}
 
