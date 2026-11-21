@@ -336,13 +336,95 @@ TerraCity AI integrates real data from four official Indian space portals:
 
 ---
 
-## Architecture & Tech Stack
+# Architecture & Tech Stack
 
-- **Backend**: Python 3.11+, FastAPI, Pydantic v2, rasterio, shapely, pyproj, numpy, SQLite analysis store, pyyaml, httpx, pytest (**72/72 tests passing**).
-- **AI & Planning Intelligence**: Google Gemini 3.8 Flash (`gemini-3.8-flash` via `/api/ai/review`) with rich spatial boundary payloads, 15+ satellite indicators, live API Transparency Inspector, and deterministic fallback synthesis for intelligent executive critique, autonomous smart zoning allocation, phased CapEx roadmap (2026–2050), and space-grounded climate resilience countermeasures.
-- **3D Planetary Canvas**: Three.js, `@react-three/fiber`, `@react-three/drei`, realistic 2K satellite textures, dynamic cloud layers, and atmospheric Fresnel shader.
-- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Dual-Theme (Light & Dark mode with basemap auto-sync), Leaflet + Geoman, Recharts, Lucide Icons.
-- **Data Caching**: Regional COG rasters and GeoJSON vectors stored in `data/cache/regions/` and `data/fixtures/` for 100% offline operation.
+---
+## Tools and Platforms Used
+
+TerraCity AI was developed using a combination of AI-powered development tools, research platforms, design tools, and publicly available scientific resources.
+
+### 1. Development – Google Antigravity
+
+**Tool:** Google Antigravity
+
+We used Google Antigravity as our primary AI-powered development environment for building both the frontend and backend of TerraCity AI.
+
+- **Frontend Development:** Building the user interface, dashboard, interactive maps, and user experience.
+- **Backend Development:** Developing backend functionality, API integrations, data processing, and application logic.
+- **Integration:** Connecting frontend components with backend services and APIs.
+
+### 2. 3D Earth Model – NASA Solar System Resources
+
+**Source:** NASA Solar System Exploration
+
+We used a 3D Earth model/resource from NASA's Solar System resources to enhance the visual experience of TerraCity AI.
+
+- Provides a realistic 3D Earth visualization.
+- Enhances the application's geographical and space-related experience.
+- Helps create an engaging interface for exploring potential smart city development locations.
+
+### 3. AI Assistance – Claude
+
+**Tool:** Claude by Anthropic
+
+Claude was used as an AI assistant during the development process.
+
+- Assistance with technical problem-solving.
+- Code-related guidance and improvements.
+- Support for development workflows and project refinement.
+
+### 4. Presentation & Visual Design – Canva
+
+**Tool:** Canva
+
+Canva was used to create the project's presentation materials.
+
+- Designing presentation slides.
+- Creating visual explanations of TerraCity AI.
+- Organizing project features, architecture, and key outcomes.
+- Preparing presentation materials for the hackathon.
+
+### 5. Research & Information Gathering – ChatGPT
+
+**Tool:** ChatGPT by OpenAI
+
+ChatGPT was used for research, technical understanding, and project planning.
+
+- Researching smart city concepts.
+- Understanding geospatial technologies and satellite data.
+- Exploring AI-powered urban planning solutions.
+- Technical guidance and brainstorming.
+- Structuring project documentation.
+
+### 6. Research & Information Verification – Perplexity AI
+
+**Tool:** Perplexity AI
+
+Perplexity was used as an additional research assistant.
+
+- Finding relevant technical resources.
+- Exploring satellite data sources and geospatial APIs.
+- Researching environmental and climate-related information.
+- Cross-checking technical information using available sources.
+
+---
+
+## Summary
+
+| Tool / Platform | Purpose |
+|---|---|
+| Google Antigravity | Frontend and Backend Development |
+| NASA Solar System Resources | 3D Earth Model |
+| Claude | AI-Assisted Development |
+| Canva | Presentation and Visual Design |
+| ChatGPT | Research, Planning, and Technical Guidance |
+| Perplexity AI | Research and Information Verification |
+
+## Acknowledgement
+
+We acknowledge the developers and organizations behind these tools and platforms for providing resources that supported the development of TerraCity AI.
+
+Our goal was to combine AI-assisted development, satellite-based intelligence, geospatial analysis, and modern visualization technologies to explore a smarter and more sustainable approach to future urban planning.
 
 ---
 
@@ -402,19 +484,6 @@ make run-backend
 make run-frontend
 ```
 
----
-
-## 3-Minute Live Demo Script
-
-Follow this script for a hackathon jury demonstration:
-
-| Time | Segment | Actions to Perform | What to Highlight |
-| :---: | :--- | :--- | :--- |
-| **0:00 - 0:35** | **Orbital Entry & Landing** | 1. Open the landing page to showcase the **3D interactive Earth globe** rotating with realistic cloud drift, atmosphere glow, and starfield.<br/>2. Drag the globe with your mouse to demonstrate free orbital interaction.<br/>3. Click **"Start Planning"** to watch the smooth 2.0s eased zoom targeting India and the glowing Dholera marker, cross-fading into the GIS dashboard. | Space-first orbital UX, Three.js performance at 60fps, code-split lazy loading, and seamless navigation. |
-| **0:35 - 1:10** | **Map, Search & Scoring** | 1. Use the **Location Search Bar** to search for "Dholera SIR" or enter coordinates.<br/>2. Click the **Sun/Moon icon** in the navbar to toggle dark mode (notice the map basemap synchronizes between Voyager and Carto Dark Matter with WCAG AAA text contrast).<br/>3. Select **Site A** in the RightPanel to view its 5-pillar scorecard and Recharts radar profile. | Real-time geodesic area calculation, responsive dark mode with synchronized tiles, and honest 4-portal ISRO indicator provenance. |
-| **1:10 - 1:45** | **Compare, Deal-Breakers & Sensitivity** | 1. Switch to the **Compare** tab to view multi-site rankings and winner spotlight.<br/>2. Observe **Site B** flagged with a **Red Deal-Breaker Banner** (Severe Flood Hazard).<br/>3. Toggle priority presets (**Balanced**, **Climate-Resilient**, **Infra-First**) to show live rank sensitivity. | Live MCA rank shifts, deterministic top-3 driver explanations, and tie-check sensitivity alerts. |
-| **1:45 - 2:20** | **Gemini 3.8 Flash AI Review** | 1. In the Scorecard tab, open the **Gemini Urban AI Review** section.<br/>2. Click **"Review Site A"** (powered by Gemini 3.8 Flash) to inspect the executive critique, smart land-use zoning breakdown (Residential, Commercial, Sponge Parks, Microgrid), and 3-stage CapEx roadmap.<br/>3. Click **"Inspect API"** to reveal the live **API Transparency Drawer**, showcasing the raw boundary coordinates, centroid, prompt, and response. | Generative AI grounded directly in satellite geometry and ISRO indicators with zero hallucination and complete auditability. |
-| **2:20 - 3:00** | **Stress Testing & Export** | 1. Switch to the **Stress** tab to demonstrate the 2026–2050 water demand vs. sustainable supply trajectory.<br/>2. Switch to the **Report** tab, click **"Print / Save PDF"** (clean print CSS preview), and click **"Download GeoJSON"** for GIS interoperability. | Dynamic physical water balance modeling and standardized GIS data export (ready for QGIS, ArcGIS, and CAD). |
 
 ---
 
