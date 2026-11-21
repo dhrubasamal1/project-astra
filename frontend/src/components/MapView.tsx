@@ -462,52 +462,18 @@ export const MapView: React.FC<MapViewProps> = ({
       {/* Underlying Map Div */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-      {/* Floating Top Controls: Location Search Bar + Telemetry & Draw Target HUD */}
-      <div className="absolute top-3 left-14 z-20 flex flex-wrap items-center gap-2 max-w-[calc(100%-380px)]">
-        {/* Search Bar for Any Location */}
+      {/* Floating Top-Left Location Search Bar (Independent & Never Overlapped) */}
+      <div className="absolute top-3 left-14 z-30">
         <MapSearchBar onSelectLocation={handleSelectLocation} />
-
-        {/* Telemetry & Draw Target HUD */}
-        <div className="hidden lg:flex items-center space-x-2.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 px-3.5 py-1.5 rounded-full text-xs text-slate-800 dark:text-slate-200 shadow-md">
-          <div className="flex items-center space-x-1.5">
-            <Crosshair className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 animate-spin-slow" />
-            <span className="text-blue-700 dark:text-blue-400 font-extrabold text-[11px] tracking-tight">
-              {liveCoords ? `${liveCoords.lat}°N, ${liveCoords.lng}°E` : `${currentRegion.center[0]}°N, ${currentRegion.center[1]}°E`}
-            </span>
-          </div>
-          <span className="text-slate-300 dark:text-slate-700">|</span>
-          <div className="flex items-center space-x-1.5 text-[11px]">
-            <span className="text-slate-500 dark:text-slate-400 font-bold">Draw Target:</span>
-            {(['A', 'B', 'C'] as const).map((code) => {
-              const isTarget = selectedSiteCode === code;
-              const colors = { A: '#2563eb', B: '#059669', C: '#d97706' };
-              return (
-                <button
-                  key={code}
-                  onClick={() => onSelectSiteCode(code)}
-                  className={`px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 transition-all cursor-pointer ${
-                    isTarget
-                      ? 'bg-slate-900 dark:bg-blue-600 text-white shadow-xs scale-105'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                  title={`Set Site ${code} as the target for your next drawn polygon`}
-                >
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors[code] }}></span>
-                  <span>Site {code}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
       </div>
 
       {/* Floating Top-Right Map Controls & Layer Overlays */}
-      <div className="absolute top-3 right-3 z-10 flex flex-col items-end space-y-2">
-        <div className="flex items-center space-x-1 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 p-1 rounded-full shadow-md">
+      <div className="absolute top-3 right-3 z-20 flex flex-col items-end space-y-2">
+        <div className="flex items-center space-x-1 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 p-1 rounded-full shadow-md text-xs">
           {/* Basemap Switcher Chips */}
           <button
             onClick={() => setActiveBasemap('voyager')}
-            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+            className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
               activeBasemap === 'voyager'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -517,27 +483,29 @@ export const MapView: React.FC<MapViewProps> = ({
           </button>
           <button
             onClick={() => setActiveBasemap('satellite')}
-            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+            className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
               activeBasemap === 'satellite'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
-            Satellite
+            <span className="hidden sm:inline">Satellite</span>
+            <span className="sm:hidden">Sat</span>
           </button>
           <button
             onClick={() => setActiveBasemap('carto_dark')}
-            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+            className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
               activeBasemap === 'carto_dark'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
-            Dark Matter
+            <span className="hidden sm:inline">Dark Matter</span>
+            <span className="sm:hidden">Dark</span>
           </button>
           <button
             onClick={() => setActiveBasemap('osm')}
-            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+            className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
               activeBasemap === 'osm'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -546,12 +514,12 @@ export const MapView: React.FC<MapViewProps> = ({
             Terrain
           </button>
 
-          <span className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1"></span>
+          <span className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-0.5"></span>
 
           {/* Toggle Layers Menu Button */}
           <button
             onClick={() => setShowLayersMenu(!showLayersMenu)}
-            className={`flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all ${
+            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
               showLayersMenu
                 ? 'bg-indigo-600 text-white shadow-sm'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -645,8 +613,20 @@ export const MapView: React.FC<MapViewProps> = ({
         )}
       </div>
 
-      {/* Floating Bottom-Center Quick Site Selector HUD */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center space-x-1.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/90 dark:border-slate-800 px-2 py-1.5 rounded-full shadow-lg">
+      {/* Floating Bottom-Center Quick Site Selector & Live Telemetry HUD */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/90 dark:border-slate-800 px-3 py-1.5 rounded-full shadow-lg max-w-[95%] overflow-x-auto scrollbar-none">
+        {/* Live Cursor Telemetry Coordinates */}
+        <div className="hidden sm:flex items-center space-x-1.5 text-blue-700 dark:text-blue-400 font-extrabold text-[11px] tracking-tight pr-2 border-r border-slate-200 dark:border-slate-700 shrink-0">
+          <Crosshair className="w-3.5 h-3.5 animate-spin-slow shrink-0" />
+          <span className="font-mono">
+            {liveCoords ? `${liveCoords.lat.toFixed(4)}°N, ${liveCoords.lng.toFixed(4)}°E` : `${currentRegion.center[0]}°N, ${currentRegion.center[1]}°E`}
+          </span>
+        </div>
+
+        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 shrink-0 hidden md:inline">
+          Draw Target:
+        </span>
+
         {candidateSites.map((site) => {
           const isSelected = site.code === selectedSiteCode;
           const card = scorecards[site.id];
@@ -654,13 +634,16 @@ export const MapView: React.FC<MapViewProps> = ({
           return (
             <button
               key={site.id}
-              onClick={() => handleFlyToSite(site)}
-              className={`flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+              onClick={() => {
+                handleFlyToSite(site);
+                onSelectSiteCode(site.code);
+              }}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 ${
                 isSelected
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 ring-2 ring-blue-400/40'
                   : 'bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200'
               }`}
-              title={hasDb ? 'Statutory Spatial Deal-Breaker Triggered: Active floodway & high-slope exclusion' : `Fly to Site ${site.code}`}
+              title={hasDb ? `Site ${site.code}: Statutory Spatial Deal-Breaker Triggered (Active Floodway)` : `Target Site ${site.code} for Drawing & Evaluation`}
             >
               <span
                 className="w-2.5 h-2.5 rounded-full shrink-0"
@@ -669,7 +652,7 @@ export const MapView: React.FC<MapViewProps> = ({
               <span>Site {site.code}</span>
               {card && (
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
                     hasDb
                       ? 'bg-red-100 dark:bg-red-950/70 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/60'
                       : isSelected
