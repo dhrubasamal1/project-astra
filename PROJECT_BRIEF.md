@@ -81,7 +81,7 @@ flowchart TD
         A3["Scenarios Engine (scenarios.py)<br/>Calibrated 2026-2050 Water Balance<br/>Uncertainty Bands & Deficit Crossing"]
         A4["Narrative & Report Engine<br/>Deterministic Drivers & Printable HTML"]
         A5["Persistent Store (cache.py)<br/>Regional Spatial Loader + SQLite Store"]
-        A6["AI Review Engine (ai_review.py)<br/>Gemini 2.5 Flash & Offline Synthesis<br/>Smart Zoning, CapEx Roadmap, Countermeasures"]
+        A6["AI Review Engine (ai_review.py)<br/>Gemini 3.8 Flash & Offline Synthesis<br/>Smart Zoning, CapEx Roadmap, Countermeasures"]
     end
 
     subgraph Frontend_App ["TerraAI Frontend (React 19 + TypeScript + Vite)"]
@@ -136,4 +136,4 @@ flowchart TD
 
 4. **AI Planning Review & Dual-Mode Synthesis (2026-11-22)**:
    - *Observation*: Live Gemini API calls may experience network latency or lack API keys in offline/air-gapped evaluation environments.
-   - *Correction*: Implemented `backend/app/api/ai_review.py` with dual-mode synthesis: queries Google Gemini 2.5 Flash when `GEMINI_API_KEY` is configured, and falls back gracefully to a deterministic spatial synthesis engine aligned with URDPFI standards, ensuring 100% offline uptime and zero unhandled errors.
+   - *Correction*: Implemented `backend/app/api/ai_review.py` with dual-mode synthesis: queries Google Gemini 3.8 Flash (`gemini-3.8-flash`) with full polygon geometry and 15+ satellite indicators when `GEMINI_API_KEY` is configured, and falls back gracefully to a deterministic spatial synthesis engine aligned with URDPFI standards, ensuring 100% offline uptime and zero unhandled errors.
