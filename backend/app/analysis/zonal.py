@@ -99,14 +99,23 @@ def polygonize_mask_to_geojson(
     mask_u8 = binary_mask.astype(np.uint8)
     
     try:
+        from shapely.geometry import shape as to_shape, mapping as to_mapping
         for geom_dict, val in shapes(mask_u8, mask=binary_mask, transform=transform):
             if val == 1:
+                s_geom = to_shape(geom_dict)
+                # Filter microscopic single-pixel noise (< 0.00005 deg²)
+                if s_geom.area < 5e-5:
+                    continue
+                # Simplify geometry for smooth frontend rendering
+                simplified_geom = s_geom.simplify(0.0003, preserve_topology=True)
                 feat = {
                     "type": "Feature",
-                    "geometry": geom_dict,
+                    "geometry": to_mapping(simplified_geom),
                     "properties": properties or {"type": "deal_breaker_zone"}
                 }
                 features.append(feat)
+                if len(features) >= 120:  # Cap at 120 polygons to maintain smooth 60 FPS Leaflet rendering
+                    break
     except Exception:
         pass
 

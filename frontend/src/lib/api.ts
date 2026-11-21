@@ -174,6 +174,11 @@ export class ApiClient {
           ApiClient.isBackendAvailable = true;
           const serverCard = await res.json();
 
+          // Synchronize verified backend-calculated geodesic area into custom site
+          if (customSite && serverCard.area_km2) {
+            customSite.areaKm2 = serverCard.area_km2;
+          }
+
           // Dynamically map pillars from backend if present
           let pillars = generateSiteScorecard(regionId, siteCode, preset, assumptions).pillars;
           let radarData = generateSiteScorecard(regionId, siteCode, preset, assumptions).radarData;
@@ -269,6 +274,10 @@ export class ApiClient {
             indicators,
             dealBreakerZones: serverCard.deal_breaker_zones,
           };
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          const errMsg = errData.detail || errData.message || `Server returned ${res.status}`;
+          console.warn(`Live /api/analyze rejected candidate polygon (${res.status}):`, errMsg);
         }
       } catch (err) {
         console.warn('Live /api/analyze failed, using calibrated regional fixture', err);
@@ -339,20 +348,46 @@ export class ApiClient {
         const compData = await res.json();
         const fallback = generateCompareResult(regionId, preset, scenario, assumptions);
 
-        // Update site names in fallback to match user's custom sites
+        const rankings = compData.rankings || [];
+        const topRank = rankings[0];
+        const runnerUpRank = rankings[1];
+
+        // Map live evaluated scorecards from backend rankings if available
         const updatedSites = fallback.sites.map((site) => {
-          const matched = sites.find((cs) => cs.code === site.siteCode);
-          return matched ? { ...site, siteName: matched.name, siteId: matched.id } : site;
+          const matchedCustom = sites.find((cs) => cs.code === site.siteCode);
+          const matchedRank = rankings.find(
+            (r: any) => r.site_id === matchedCustom?.id || r.site_id === `site_${site.siteCode.toLowerCase()}` || r.site_name === matchedCustom?.name
+          );
+          if (matchedRank) {
+            return {
+              ...site,
+              siteName: matchedCustom?.name || matchedRank.site_name || site.siteName,
+              siteId: matchedCustom?.id || matchedRank.site_id || site.siteId,
+              overallScore: Math.round(matchedRank.overall_score * 10) / 10,
+              rank: matchedRank.rank || site.rank,
+              verdict: matchedRank.is_disqualified ? ('Unviable (Hard Stop)' as const) : (matchedRank.verdict || site.verdict),
+              hasDealBreaker: Boolean(matchedRank.is_disqualified),
+            };
+          }
+          return matchedCustom ? { ...site, siteName: matchedCustom.name, siteId: matchedCustom.id } : site;
         });
+
+        // Resolve top site and runner-up codes
+        const topCode = sites.find((s) => s.id === topRank?.site_id)?.code || (topRank?.site_id?.includes('b') ? 'B' : topRank?.site_id?.includes('c') ? 'C' : 'A');
+        const runnerUpCode = sites.find((s) => s.id === runnerUpRank?.site_id)?.code || (runnerUpRank?.site_id?.includes('c') ? 'C' : runnerUpRank?.site_id?.includes('a') ? 'A' : 'B');
+
+        const liveScoreDelta = (topRank && runnerUpRank)
+          ? Math.round(Math.abs(topRank.overall_score - runnerUpRank.overall_score) * 10) / 10
+          : (compData.score_delta ? Math.round(compData.score_delta * 10) / 10 : fallback.scoreDelta);
 
         return {
           regionId,
           scenario,
           preset,
           sites: updatedSites,
-          topSite: updatedSites.find((s) => s.siteCode === (compData.top_site?.site_code || 'A')) || updatedSites[0],
-          runnerUp: updatedSites.find((s) => s.siteCode === (compData.runner_up?.site_code || 'B')) || updatedSites[1],
-          scoreDelta: compData.score_delta ? Math.round(compData.score_delta * 10) / 10 : fallback.scoreDelta,
+          topSite: updatedSites.find((s) => s.siteCode === topCode) || updatedSites[0],
+          runnerUp: updatedSites.find((s) => s.siteCode === runnerUpCode) || updatedSites[1],
+          scoreDelta: liveScoreDelta,
           isTie: Boolean(compData.tie_detected),
           tieCheckNote: compData.tie_note || fallback.tieCheckNote,
           top3Drivers: fallback.top3Drivers,

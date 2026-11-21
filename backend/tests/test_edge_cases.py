@@ -77,6 +77,36 @@ def test_large_parcel_near_limit():
     assert 0 <= data["overall_score"] <= 100
 
 
+def test_macro_regional_large_area_stability():
+    """Verify stability of macro-regional polygon analysis (>1000 km² and <=3000 km² cap)."""
+    macro_poly = {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [77.30, 28.00],
+                [77.70, 28.00],
+                [77.70, 28.35],
+                [77.30, 28.35],
+                [77.30, 28.00]
+            ]
+        ]
+    }
+    payload = {
+        "site": macro_poly,
+        "site_name": "Macro Regional Corridor",
+        "region_id": "up_jewar",
+        "population": 800000,
+        "weight_preset": "balanced"
+    }
+    resp = client.post("/api/analyze", json=payload)
+    assert resp.status_code == 200
+    data = resp.json()
+    assert 1000.0 < data["area_km2"] <= 3000.0
+    assert 0 <= data["overall_score"] <= 100
+    assert "terrain_and_land" in data["pillars"]
+    assert "water_security" in data["pillars"]
+
+
 def test_multipolygon_geometry_support():
     """Verify that MultiPolygon geometries are handled properly."""
     multi_poly = {

@@ -43,7 +43,7 @@ def validate_and_compute_geometry(site_geojson: Dict[str, Any]) -> Tuple[Any, fl
     - GeoJSON Polygon / MultiPolygon structure
     - Self-intersection and topological validity
     - India territorial bounding box
-    - Area constraints (> 0 and <= 2000 km²)
+    - Area constraints (> 0 and <= 3000 km²)
     Returns (shapely_geom, area_km2).
     """
     geom_data = site_geojson.get("geometry", site_geojson)
@@ -106,10 +106,10 @@ def validate_and_compute_geometry(site_geojson: Dict[str, Any]) -> Tuple[Any, fl
             detail="Candidate polygon area is too small (< 0.001 km²)."
         )
 
-    if area_km2 > 2000.0:
+    if area_km2 > 3000.0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Candidate polygon area ({area_km2:.1f} km²) exceeds maximum allowable threshold of 2,000 km²."
+            detail=f"Candidate polygon area ({area_km2:.1f} km²) exceeds maximum allowable threshold of 3,000 km². Recommended smart city parcel scale is 10–250 km²."
         )
 
     return poly_geom, area_km2

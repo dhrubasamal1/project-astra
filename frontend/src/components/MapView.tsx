@@ -48,6 +48,38 @@ const CARTO_KEY = import.meta.env.VITE_CARTO_API_KEY || 'cb1_5djb_1_76786fa00d88
 const CARTO_VOYAGER_URL = `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png${CARTO_KEY ? `?key=${CARTO_KEY}` : ''}`;
 const CARTO_DARK_URL = `https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png${CARTO_KEY ? `?key=${CARTO_KEY}` : ''}`;
 
+/**
+ * Computes geodesic surface area of a polygon in square kilometers
+ * using equirectangular projection scaled by local latitude cosine.
+ */
+export const computePolygonAreaKm2 = (coords: [number, number][]): number => {
+  if (!coords || coords.length < 3) return 0;
+  const lat0 = (coords.reduce((sum, pt) => sum + pt[0], 0) / coords.length) * (Math.PI / 180);
+  const R = 6371.0; // Earth radius in km
+  const x = coords.map((pt) => (pt[1] * Math.PI / 180) * R * Math.cos(lat0));
+  const y = coords.map((pt) => (pt[0] * Math.PI / 180) * R);
+  let areaSum = 0;
+  for (let i = 0; i < coords.length; i++) {
+    const j = (i + 1) % coords.length;
+    areaSum += x[i] * y[j] - x[j] * y[i];
+  }
+  return Math.max(0.1, Math.round(Math.abs(areaSum) / 2 * 10) / 10);
+};
+
+/**
+ * Robustly flattens potentially nested Geoman / Leaflet coordinates array to [lat, lng][]
+ */
+export const extractLatLngArray = (raw: any): [number, number][] => {
+  if (!raw || !Array.isArray(raw)) return [];
+  if (typeof raw[0]?.lat === 'number') {
+    return raw.map((pt: any) => [Number(pt.lat.toFixed(5)), Number(pt.lng.toFixed(5))]);
+  }
+  if (Array.isArray(raw[0])) {
+    return extractLatLngArray(raw[0]);
+  }
+  return [];
+};
+
 interface MapViewProps {
   currentRegion: Region;
   candidateSites: CandidateSite[];
@@ -154,13 +186,20 @@ export const MapView: React.FC<MapViewProps> = ({
       // Handle user drawn polygons
       map.on('pm:create', (e: any) => {
         const layer = e.layer;
-        const latlngs = layer.getLatLngs();
-        const coords: [number, number][] = (Array.isArray(latlngs[0]) ? latlngs[0] : latlngs).map(
-          (ll: any) => [ll.lat, ll.lng]
-        );
+        const coords = extractLatLngArray(layer.getLatLngs());
+        if (coords.length < 3) {
+          map.removeLayer(layer);
+          return;
+        }
 
-        // Approximate area calculation in km²
-        const approxArea = Math.round((coords.length * 5.2) * 10) / 10;
+        // True geodesic area calculation in km²
+        const calculatedArea = computePolygonAreaKm2(coords);
+
+        if (calculatedArea > 3000.0) {
+          alert(`⚠️ Parcel Area Limit Exceeded:\n\nThe drawn polygon covers ${calculatedArea.toFixed(1)} km², which exceeds the maximum allowable threshold of 3,000 km².\n\nPlease draw a candidate site within 10–250 km² for optimal ISRO satellite resolution and urban master-planning.`);
+          map.removeLayer(layer);
+          return;
+        }
 
         // Target code: user's currently selected site (A, B, or C) from live ref
         const targetCode = selectedSiteCodeRef.current || 'A';
@@ -177,7 +216,7 @@ export const MapView: React.FC<MapViewProps> = ({
           name: `Custom Parcel ${targetCode}`,
           regionId: currentRegionRef.current.id,
           coordinates: coords,
-          areaKm2: approxArea,
+          areaKm2: calculatedArea,
           color: colorMap[targetCode],
           description: `User-drawn parcel ${targetCode}`,
           tag: 'Custom',
@@ -276,21 +315,11 @@ export const MapView: React.FC<MapViewProps> = ({
 
       // Synchronize custom vertex editing and dragging directly to state & rescore
       polygon.on('pm:edit pm:dragend', (e: any) => {
-        const latlngs = e.target.getLatLngs();
-        const rawCoords = Array.isArray(latlngs[0]) ? latlngs[0] : latlngs;
-        const coords: [number, number][] = rawCoords.map((ll: any) => [
-          Number(ll.lat.toFixed(5)),
-          Number(ll.lng.toFixed(5)),
-        ]);
+        const coords = extractLatLngArray(e.target.getLatLngs());
+        if (coords.length < 3) return;
 
-        // Calculate polygon area in km² using planar projection
-        let areaSum = 0;
-        for (let i = 0; i < coords.length; i++) {
-          const j = (i + 1) % coords.length;
-          areaSum += coords[i][1] * coords[j][0] - coords[j][1] * coords[i][0];
-        }
-        const degArea = Math.abs(areaSum) / 2;
-        const approxKm2 = Math.max(1.0, Math.round(degArea * 111 * 98 * 10) / 10);
+        // Accurate geodesic area in km²
+        const approxKm2 = computePolygonAreaKm2(coords);
 
         const currentSites = candidateSitesRef.current;
         const updated = currentSites.map((s) =>

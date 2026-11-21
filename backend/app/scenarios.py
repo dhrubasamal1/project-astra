@@ -86,8 +86,12 @@ def compute_physical_water_balance(
     rwh_capture_share = float(p_info.get("rwh_capture_share", 0.0))
 
     # Effective catchment area in m^2
+    # Physically bounded urban catchment envelope (CPHEEO & URDPFI Guidelines:
+    # Municipal harvestable urban catchment is bounded at 150 km² developed envelope;
+    # macro-regional area beyond this drains through natural/agricultural regional sinks)
     site_area_m2 = site_area_km2 * 1_000_000.0
-    effective_catchment = site_area_m2 * catchment_mult
+    max_urban_catchment_m2 = 150_000_000.0 * catchment_mult
+    effective_catchment = min(site_area_m2 * catchment_mult, max_urban_catchment_m2)
 
     total_horizon_years = max(1, horizon_year - start_year)
 

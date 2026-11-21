@@ -172,6 +172,21 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
         </div>
       </div>
 
+      {/* Macro-Regional Scale Advisory for parcels > 250 km² */}
+      {activeSite.areaKm2 > 250 && (
+        <div className="bg-amber-50 border border-amber-200/90 rounded-2xl p-3.5 flex items-start space-x-2.5 text-xs text-amber-900 shadow-xs">
+          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="space-y-0.5">
+            <div className="font-extrabold text-[12px] text-amber-900">
+              Macro-Regional Footprint ({activeSite.areaKm2.toFixed(1)} km² / {(activeSite.areaKm2 * 100).toFixed(0)} ha)
+            </div>
+            <p className="text-[11px] text-amber-800 leading-relaxed">
+              This candidate area exceeds typical urban master-planning parcel scale (URDPFI recommendation: 10–250 km²). Spatial metrics represent macro-regional zonal averages, and municipal water catchments are physically capped at the developable urban envelope.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Deal-Breaker Banner */}
       {scorecard.hasDealBreaker ? (
         <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 shadow-xs space-y-2">
