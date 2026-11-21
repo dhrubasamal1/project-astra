@@ -214,6 +214,20 @@ export interface ResilienceItem {
   space_sensor: string;
 }
 
+export interface ApiDebugInfo {
+  endpoint_url: string;
+  model_requested: string;
+  model_resolved: string;
+  latency_ms: number;
+  coordinates_count: number;
+  coordinates_sample: [number, number][];
+  centroid?: [number, number];
+  data_points_sent: number;
+  prompt_text: string;
+  raw_response_text: string;
+  quota_fallback_used: boolean;
+}
+
 export interface AiReviewResponse {
   status: string;
   model_used: string;
@@ -228,6 +242,7 @@ export interface AiReviewResponse {
   phased_roadmap: RoadmapPhase[];
   climate_resilience_playbook: ResilienceItem[];
   custom_answer?: string | null;
+  api_debug_info?: ApiDebugInfo;
 }
 
 export interface AiReviewRequest {
@@ -235,6 +250,8 @@ export interface AiReviewRequest {
   site_code: string;
   site_name?: string;
   area_km2?: number;
+  coordinates?: [number, number][];
+  centroid?: [number, number];
   overall_score?: number;
   verdict?: string;
   has_dealbreaker?: boolean;

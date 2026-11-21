@@ -71,3 +71,30 @@ def test_ai_review_custom_user_query():
     data = response.json()
     assert data["custom_answer"] is not None
     assert len(data["custom_answer"]) > 10
+
+
+def test_ai_review_coordinates_and_api_debug_info():
+    payload = {
+        "region_id": "up_jewar",
+        "site_code": "A",
+        "site_name": "Jewar Greenfield Core",
+        "area_km2": 24.5,
+        "coordinates": [
+            [28.2608, 77.7420],
+            [28.2800, 77.7420],
+            [28.2800, 77.7700],
+            [28.2608, 77.7700]
+        ],
+        "centroid": [28.2704, 77.7560],
+        "overall_score": 91.0
+    }
+    response = client.post("/api/ai/review", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "api_debug_info" in data
+    debug = data["api_debug_info"]
+    assert debug is not None
+    assert debug["coordinates_count"] == 4
+    assert "gemini" in debug["endpoint_url"].lower()
+    assert debug["latency_ms"] >= 0
+
