@@ -13,6 +13,8 @@ import {
   Droplets,
   Layers,
   Sparkles,
+  ChevronLeft,
+  Minimize2,
 } from 'lucide-react';
 import {
   Region,
@@ -23,6 +25,8 @@ import {
 } from '../types';
 
 interface LeftPanelProps {
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
   regions: Region[];
   selectedRegionId: RegionId;
   onSelectRegion: (id: RegionId) => void;
@@ -41,6 +45,8 @@ interface LeftPanelProps {
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = ({
+  isCollapsed = false,
+  onToggleCollapse,
   regions,
   selectedRegionId,
   onSelectRegion,
@@ -62,7 +68,25 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
 
   return (
     <aside className="left-panel no-print w-80 h-full bg-white border-r border-slate-200 flex flex-col shrink-0 overflow-y-auto z-20 shadow-xs">
-      <div className="p-5 space-y-4">
+      <div className="p-4 space-y-3.5">
+        {/* Panel Minimize / Header Bar */}
+        <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+          <div className="flex items-center space-x-2">
+            <SlidersHorizontal className="w-4 h-4 text-blue-600" />
+            <span className="text-xs font-black text-slate-800 uppercase tracking-wider">Parameters</span>
+          </div>
+          {onToggleCollapse && (
+            <button
+              onClick={onToggleCollapse}
+              className="flex items-center space-x-1 px-2.5 py-1 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full text-xs font-bold transition-all cursor-pointer border border-slate-200/80 shadow-2xs"
+              title="Minimize panel"
+            >
+              <ChevronLeft className="w-3.5 h-3.5 text-slate-600" />
+              <span className="text-[11px]">Minimize</span>
+            </button>
+          )}
+        </div>
+
         {/* 1. Target Region Selector */}
         <div>
           <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">

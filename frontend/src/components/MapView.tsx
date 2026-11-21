@@ -55,6 +55,7 @@ interface MapViewProps {
   scorecards: Record<string, SiteScorecard>;
   layerOverlays: LayerOverlay[];
   onToggleLayer: (layerId: LayerOverlay['id']) => void;
+  isLeftPanelCollapsed?: boolean;
 }
 
 export const MapView: React.FC<MapViewProps> = ({
@@ -66,6 +67,7 @@ export const MapView: React.FC<MapViewProps> = ({
   scorecards,
   layerOverlays,
   onToggleLayer,
+  isLeftPanelCollapsed = false,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -234,6 +236,14 @@ export const MapView: React.FC<MapViewProps> = ({
       easeLinearity: 0.25,
     });
   }, [currentRegion]);
+
+  // Handle smooth map resize when left panel collapses or expands
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      mapInstanceRef.current?.invalidateSize();
+    }, 320);
+    return () => clearTimeout(timer);
+  }, [isLeftPanelCollapsed]);
 
   // Render Candidate Site Polygons
   useEffect(() => {
