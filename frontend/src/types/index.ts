@@ -247,3 +247,12 @@ export interface AiReviewRequest {
   user_query?: string;
   api_key?: string;
 }
+
+export interface GeocodeResult {
+  name: string;
+  display_name: string;
+  lat: number;
+  lon: number;
+  type?: string;
+  boundingbox?: [number, number, number, number];
+}

@@ -23,7 +23,9 @@ import {
   Region,
   LayerOverlay,
   SiteScorecard,
+  GeocodeResult,
 } from '../types';
+import { MapSearchBar } from './MapSearchBar';
 import {
   JEWAR_DEAL_BREAKER_ZONES,
   DHOLERA_DEAL_BREAKER_ZONES,
@@ -366,41 +368,96 @@ export const MapView: React.FC<MapViewProps> = ({
     map.fitBounds(bounds, { padding: [60, 60], duration: 0.8 });
   };
 
+  const searchMarkerRef = useRef<L.Marker | null>(null);
+
+  const handleSelectLocation = (result: GeocodeResult) => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    map.flyTo([result.lat, result.lon], 13.5, {
+      duration: 1.2,
+      easeLinearity: 0.25,
+    });
+
+    if (searchMarkerRef.current) {
+      searchMarkerRef.current.remove();
+      searchMarkerRef.current = null;
+    }
+
+    const searchIcon = L.divIcon({
+      className: 'custom-search-pin',
+      html: `
+        <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px;">
+          <div style="position: absolute; width: 32px; height: 32px; background: rgba(37, 99, 235, 0.3); border-radius: 9999px; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
+          <div style="width: 22px; height: 22px; background: #2563eb; border-radius: 9999px; border: 2.5px solid #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
+            <div style="width: 6px; height: 6px; background: #ffffff; border-radius: 9999px;"></div>
+          </div>
+        </div>
+      `,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -16],
+    });
+
+    const marker = L.marker([result.lat, result.lon], { icon: searchIcon }).addTo(map);
+    searchMarkerRef.current = marker;
+
+    const popupContent = `
+      <div style="padding: 4px; min-width: 180px; font-family: inherit;">
+        <div style="font-weight: 800; font-size: 13px; color: #0f172a; margin-bottom: 2px;">${result.name}</div>
+        <div style="font-size: 11px; color: #64748b; line-height: 1.3; margin-bottom: 6px;">${result.display_name}</div>
+        <div style="font-size: 10px; font-family: monospace; color: #2563eb; font-weight: 700; margin-bottom: 6px;">
+          ${result.lat.toFixed(4)}°N, ${result.lon.toFixed(4)}°E
+        </div>
+        <div style="font-size: 10px; color: #475569; background: #f1f5f9; padding: 6px 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          💡 Click the <strong>Polygon Tool</strong> on the left toolbar to draw and evaluate a candidate parcel here!
+        </div>
+      </div>
+    `;
+    marker.bindPopup(popupContent).openPopup();
+  };
+
   return (
     <div className="w-full h-full relative overflow-hidden bg-slate-100 select-none">
       {/* Underlying Map Div */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-      {/* Floating Top-Left Telemetry & Draw Target HUD */}
-      <div className="absolute top-3 left-14 z-10 hidden sm:flex items-center space-x-2.5 bg-white/95 backdrop-blur-md border border-slate-200/90 px-3.5 py-1.5 rounded-full text-xs text-slate-800 shadow-md">
-        <div className="flex items-center space-x-1.5">
-          <Crosshair className="w-3.5 h-3.5 text-blue-600 animate-spin-slow" />
-          <span className="text-blue-700 font-extrabold text-[11px] tracking-tight">
-            {liveCoords ? `${liveCoords.lat}°N, ${liveCoords.lng}°E` : `${currentRegion.center[0]}°N, ${currentRegion.center[1]}°E`}
-          </span>
-        </div>
-        <span className="text-slate-300">|</span>
-        <div className="flex items-center space-x-1.5 text-[11px]">
-          <span className="text-slate-500 font-bold">Draw Target:</span>
-          {(['A', 'B', 'C'] as const).map((code) => {
-            const isTarget = selectedSiteCode === code;
-            const colors = { A: '#2563eb', B: '#059669', C: '#d97706' };
-            return (
-              <button
-                key={code}
-                onClick={() => onSelectSiteCode(code)}
-                className={`px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 transition-all cursor-pointer ${
-                  isTarget
-                    ? 'bg-slate-900 text-white shadow-xs scale-105'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-                title={`Set Site ${code} as the target for your next drawn polygon`}
-              >
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors[code] }}></span>
-                <span>Site {code}</span>
-              </button>
-            );
-          })}
+      {/* Floating Top Controls: Location Search Bar + Telemetry & Draw Target HUD */}
+      <div className="absolute top-3 left-14 z-20 flex flex-wrap items-center gap-2 max-w-[calc(100%-380px)]">
+        {/* Search Bar for Any Location */}
+        <MapSearchBar onSelectLocation={handleSelectLocation} />
+
+        {/* Telemetry & Draw Target HUD */}
+        <div className="hidden lg:flex items-center space-x-2.5 bg-white/95 backdrop-blur-md border border-slate-200/90 px-3.5 py-1.5 rounded-full text-xs text-slate-800 shadow-md">
+          <div className="flex items-center space-x-1.5">
+            <Crosshair className="w-3.5 h-3.5 text-blue-600 animate-spin-slow" />
+            <span className="text-blue-700 font-extrabold text-[11px] tracking-tight">
+              {liveCoords ? `${liveCoords.lat}°N, ${liveCoords.lng}°E` : `${currentRegion.center[0]}°N, ${currentRegion.center[1]}°E`}
+            </span>
+          </div>
+          <span className="text-slate-300">|</span>
+          <div className="flex items-center space-x-1.5 text-[11px]">
+            <span className="text-slate-500 font-bold">Draw Target:</span>
+            {(['A', 'B', 'C'] as const).map((code) => {
+              const isTarget = selectedSiteCode === code;
+              const colors = { A: '#2563eb', B: '#059669', C: '#d97706' };
+              return (
+                <button
+                  key={code}
+                  onClick={() => onSelectSiteCode(code)}
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 transition-all cursor-pointer ${
+                    isTarget
+                      ? 'bg-slate-900 text-white shadow-xs scale-105'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                  title={`Set Site ${code} as the target for your next drawn polygon`}
+                >
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors[code] }}></span>
+                  <span>Site {code}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 

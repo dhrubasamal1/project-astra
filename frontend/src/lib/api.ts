@@ -13,6 +13,7 @@ import {
   IndicatorValue,
   AiReviewRequest,
   AiReviewResponse,
+  GeocodeResult,
 } from '../types';
 import {
   DEMO_REGIONS,
@@ -600,5 +601,81 @@ export class ApiClient {
         ? `Advisory regarding "${payload.user_query}": Under current spatial parameters on ${siteName}, this intervention is structurally viable provided Phase 1 stormwater and seismic piling standards are met.`
         : null,
     };
+  }
+
+  static async searchLocations(query: string): Promise<GeocodeResult[]> {
+    const q = query.trim();
+    if (!q) return [];
+
+    // Check direct coordinates: "28.2608, 77.742"
+    const coordMatch = q.match(/^\s*([-+]?\d+(?:\.\d+)?)\s*[, ]\s*([-+]?\d+(?:\.\d+)?)\s*$/);
+    if (coordMatch) {
+      const lat = parseFloat(coordMatch[1]);
+      const lon = parseFloat(coordMatch[2]);
+      if (!isNaN(lat) && !isNaN(lon) && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+        return [
+          {
+            name: `Coordinates: ${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`,
+            display_name: `Custom Location [${lat.toFixed(5)}, ${lon.toFixed(5)}]`,
+            lat,
+            lon,
+            type: 'coordinate',
+          },
+        ];
+      }
+    }
+
+    // Call backend API /api/geocode?q=...
+    try {
+      const res = await fetch(`${getApiBase()}/geocode?q=${encodeURIComponent(q)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          return data;
+        }
+      }
+    } catch (err) {
+      console.warn('Backend geocode API call failed, falling back to direct OSM query:', err);
+    }
+
+    // Direct fallback to OpenStreetMap Nominatim
+    try {
+      const osmRes = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(q)}`
+      );
+      if (osmRes.ok) {
+        const osmData = await osmRes.json();
+        if (Array.isArray(osmData) && osmData.length > 0) {
+          return osmData.map((item: any) => ({
+            name: item.name || item.display_name?.split(',')[0] || q,
+            display_name: item.display_name,
+            lat: parseFloat(item.lat),
+            lon: parseFloat(item.lon),
+            type: item.type || item.class || 'location',
+            boundingbox: item.boundingbox ? item.boundingbox.map(Number) : undefined,
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn('OSM Nominatim fetch failed:', err);
+    }
+
+    // Static smart city corridor fallback
+    const staticHubs: GeocodeResult[] = [
+      { name: 'Jewar Greenfield Corridor', display_name: 'Jewar, Gautam Buddha Nagar, Uttar Pradesh, India', lat: 28.2608, lon: 77.7420, type: 'aerotropolis' },
+      { name: 'Dholera SIR', display_name: 'Dholera Special Investment Region, Gujarat, India', lat: 22.2464, lon: 72.1932, type: 'smart_city' },
+      { name: 'Noida', display_name: 'Noida, Uttar Pradesh, India', lat: 28.5706, lon: 77.3272, type: 'city' },
+      { name: 'Greater Noida', display_name: 'Greater Noida, Uttar Pradesh, India', lat: 28.4744, lon: 77.5040, type: 'city' },
+      { name: 'New Delhi', display_name: 'New Delhi, Delhi, India', lat: 28.6139, lon: 77.2090, type: 'capital' },
+      { name: 'Ahmedabad', display_name: 'Ahmedabad, Gujarat, India', lat: 23.0225, lon: 72.5714, type: 'city' },
+      { name: 'GIFT City', display_name: 'GIFT City, Gandhinagar, Gujarat, India', lat: 23.1610, lon: 72.6841, type: 'smart_city' },
+      { name: 'Bengaluru', display_name: 'Bengaluru, Karnataka, India', lat: 12.9716, lon: 77.5946, type: 'tech_hub' },
+      { name: 'Mumbai', display_name: 'Mumbai, Maharashtra, India', lat: 19.0760, lon: 72.8777, type: 'megacity' },
+    ];
+
+    const qLower = q.toLowerCase();
+    return staticHubs.filter(
+      (h) => h.name.toLowerCase().includes(qLower) || h.display_name.toLowerCase().includes(qLower)
+    );
   }
 }
