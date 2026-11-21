@@ -1,4 +1,4 @@
-# TerraCity AI (Project Astra)
+# TerraCity AI
 
 > **AI-Powered Smart City Planning & Land Intelligence Platform**  
 > *Tagline: "Designing Sustainable Cities. Intelligence for Tomorrow."*  
