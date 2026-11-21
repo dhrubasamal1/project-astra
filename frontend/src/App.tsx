@@ -76,14 +76,15 @@ export function App() {
   }, []);
 
   // Recalculate analysis
-  const executeAnalysis = useCallback(async () => {
+  const executeAnalysis = useCallback(async (overrideSites?: CandidateSite[]) => {
     setIsAnalyzing(true);
 
     try {
+      const sitesToUse = overrideSites || candidateSites;
       // Analyze all 3 candidate sites (including any custom drawn areas)
-      const siteA = candidateSites.find((s) => s.code === 'A');
-      const siteB = candidateSites.find((s) => s.code === 'B');
-      const siteC = candidateSites.find((s) => s.code === 'C');
+      const siteA = sitesToUse.find((s) => s.code === 'A');
+      const siteB = sitesToUse.find((s) => s.code === 'B');
+      const siteC = sitesToUse.find((s) => s.code === 'C');
 
       const cardA = await ApiClient.analyzeSite(selectedRegionId, 'A', priorityPreset, assumptions, siteA);
       const cardB = await ApiClient.analyzeSite(selectedRegionId, 'B', priorityPreset, assumptions, siteB);
@@ -93,23 +94,27 @@ export function App() {
         [siteA?.id || 'site_a']: cardA,
         [siteB?.id || 'site_b']: cardB,
         [siteC?.id || 'site_c']: cardC,
+        A: cardA,
+        B: cardB,
+        C: cardC,
       };
 
       setScorecards(newScorecards);
 
-      // Multi-site comparison
-      const comp = await ApiClient.compareSites(selectedRegionId, priorityPreset, scenarioPreset, assumptions);
+      // Multi-site comparison with user's active sites
+      const comp = await ApiClient.compareSites(selectedRegionId, priorityPreset, scenarioPreset, assumptions, sitesToUse);
       setCompareResult(comp);
 
       // Water balance stress test for active site
-      const activeSiteId = candidateSites.find((s) => s.code === selectedSiteCode)?.id || 'site_a';
+      const activeSite = sitesToUse.find((s) => s.code === selectedSiteCode) || siteA;
       const stress = await ApiClient.runStressTest(
-        activeSiteId,
+        activeSite?.id || 'site_a',
         selectedRegionId,
         horizon,
         targetPopulation,
         scenarioPreset,
-        assumptions
+        assumptions,
+        activeSite
       );
       setStressTestResult(stress);
     } catch (err) {
@@ -129,6 +134,12 @@ export function App() {
     targetPopulation,
     horizon,
   ]);
+
+  // Handle immediate update and instant rescore when user draws on the map
+  const handleUpdateCandidateSites = useCallback((updatedSites: CandidateSite[]) => {
+    setCandidateSites(updatedSites);
+    executeAnalysis(updatedSites);
+  }, [executeAnalysis]);
 
   // Run analysis when parameters change
   useEffect(() => {
@@ -223,7 +234,7 @@ export function App() {
           <MapView
             currentRegion={currentRegion}
             candidateSites={candidateSites}
-            onUpdateCandidateSites={setCandidateSites}
+            onUpdateCandidateSites={handleUpdateCandidateSites}
             selectedSiteCode={selectedSiteCode}
             onSelectSiteCode={setSelectedSiteCode}
             scorecards={scorecards}

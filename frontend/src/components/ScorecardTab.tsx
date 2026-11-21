@@ -44,7 +44,7 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const activeSite = candidateSites.find((s) => s.code === selectedSiteCode) || candidateSites[0];
-  const scorecard = scorecards[activeSite?.id] || Object.values(scorecards)[0];
+  const scorecard = scorecards[activeSite?.id] || scorecards[selectedSiteCode] || Object.values(scorecards)[0];
 
   if (!scorecard) {
     return (
@@ -94,7 +94,7 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
       <div className="bg-slate-100/80 p-1 rounded-full border border-slate-200 flex items-center justify-between gap-1 shadow-xs">
         {candidateSites.map((site) => {
           const isSelected = site.code === selectedSiteCode;
-          const siteCard = scorecards[site.id];
+          const siteCard = scorecards[site.id] || scorecards[site.code];
           const hasDb = siteCard?.hasDealBreaker;
           return (
             <button
