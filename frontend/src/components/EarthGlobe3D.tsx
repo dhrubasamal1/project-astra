@@ -166,19 +166,19 @@ function EarthScene({ isTargeting, onCrossFade, onComplete, isMobile }: EarthSce
     []
   );
 
-  // Compute target angles that align Dholera facing the camera
+  // Compute target angles that align Dholera, Gujarat facing the camera directly
   const { targetRotX, targetRotY } = useMemo(() => {
-    const currentAngle = Math.atan2(dholeraPos.x, dholeraPos.z);
-    const tRotY = -currentAngle;
+    const tRotY = Math.atan2(-dholeraPos.x, dholeraPos.z);
     const radiusXZ = Math.sqrt(dholeraPos.x * dholeraPos.x + dholeraPos.z * dholeraPos.z);
-    const tRotX = -Math.atan2(dholeraPos.y, radiusXZ);
+    const tRotX = Math.atan2(dholeraPos.y, radiusXZ);
     return { targetRotX: tRotX, targetRotY: tRotY };
   }, [dholeraPos]);
 
   // Animation timeline state
   const animTimeRef = useRef(0);
+  const isInitialSetRef = useRef(false);
   const initialRotRef = useRef<{ x: number; y: number } | null>(null);
-  const initialCamDistRef = useRef(4.8);
+  const initialCamDistRef = useRef(5.2);
   const crossFadedRef = useRef(false);
   const completedRef = useRef(false);
 
@@ -188,11 +188,21 @@ function EarthScene({ isTargeting, onCrossFade, onComplete, isMobile }: EarthSce
     const markerPulse = markerPulseRef.current;
     if (!earthGroup) return;
 
+    // Immediately point the globe to Dholera, Gujarat on initial screen load
+    if (!isInitialSetRef.current) {
+      isInitialSetRef.current = true;
+      earthGroup.rotation.x = targetRotX;
+      earthGroup.rotation.y = targetRotY;
+      if (cloudsMesh) {
+        cloudsMesh.rotation.y = targetRotY * 1.03;
+      }
+    }
+
     // 1. Idle state: gentle auto-rotation and drifting clouds
     if (!isTargeting) {
-      earthGroup.rotation.y += delta * 0.15;
+      earthGroup.rotation.y += delta * 0.08;
       if (cloudsMesh) {
-        cloudsMesh.rotation.y += delta * 0.18;
+        cloudsMesh.rotation.y += delta * 0.10;
       }
       if (markerPulse) {
         const pulse = (Math.sin(state.clock.elapsedTime * 3.5) + 1) / 2;
@@ -370,7 +380,7 @@ export const EarthGlobe3D: React.FC<{
   return (
     <div className="w-full h-full relative cursor-grab active:cursor-grabbing rounded-full overflow-hidden">
       <Canvas
-        camera={{ position: [0, 0, 6.2], fov: 45 }}
+        camera={{ position: [0, 0, 5.2], fov: 45 }}
         dpr={isMobile ? [1, 1.25] : [1, 2]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >

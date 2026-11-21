@@ -252,7 +252,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartPlanning }) => 
             <div className="absolute w-80 h-80 sm:w-96 sm:h-96 md:w-[520px] md:h-[520px] rounded-full bg-cyan-500/15 blur-[120px] pointer-events-none" />
 
             {/* Circular Orbital Aperture Boundary */}
-            <div className="relative aspect-square w-[340px] sm:w-[440px] md:w-[480px] lg:w-[540px] xl:w-[580px] max-w-full rounded-full p-2 flex items-center justify-center">
+            <div className="relative aspect-square w-[370px] sm:w-[480px] md:w-[540px] lg:w-[600px] xl:w-[660px] max-w-full rounded-full p-2 flex items-center justify-center">
               {/* Outer Decorative Concentric Orbital Rings */}
               <div
                 className="absolute inset-0 rounded-full border border-dashed border-cyan-400/30 pointer-events-none animate-spin"
