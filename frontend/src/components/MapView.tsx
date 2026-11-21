@@ -90,6 +90,7 @@ interface MapViewProps {
   layerOverlays: LayerOverlay[];
   onToggleLayer: (layerId: LayerOverlay['id']) => void;
   isLeftPanelCollapsed?: boolean;
+  theme?: 'light' | 'dark';
 }
 
 export const MapView: React.FC<MapViewProps> = ({
@@ -102,6 +103,7 @@ export const MapView: React.FC<MapViewProps> = ({
   layerOverlays,
   onToggleLayer,
   isLeftPanelCollapsed = false,
+  theme = 'light',
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -266,6 +268,15 @@ export const MapView: React.FC<MapViewProps> = ({
     newLayer.bringToBack();
     (map as any)._baseTileLayer = newLayer;
   }, [activeBasemap]);
+
+  // Synchronize basemap with dark/light mode toggle if user is on default basemaps
+  useEffect(() => {
+    if (theme === 'dark' && activeBasemap === 'voyager') {
+      setActiveBasemap('carto_dark');
+    } else if (theme === 'light' && activeBasemap === 'carto_dark') {
+      setActiveBasemap('voyager');
+    }
+  }, [theme]);
 
   // Center / fly to region when region changes
   useEffect(() => {

@@ -5,7 +5,6 @@ import { LeftPanel } from './components/LeftPanel';
 import { MapView } from './components/MapView';
 import { RightPanel, RightPanelTab } from './components/RightPanel';
 import { AssumptionsDrawer } from './components/AssumptionsDrawer';
-import { EarthGlobeIntro } from './components/EarthGlobeIntro';
 import {
   Region,
   RegionId,
@@ -51,15 +50,26 @@ export function App() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
 
-  // 3D Earth Globe Orbital Briefing Intro state
-  const [showIntro, setShowIntro] = useState(() => {
-    return !sessionStorage.getItem('TERRA_INTRO_SEEN');
+  // Theme Mode State (Dark / Light)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('terra_theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
-  const handleIntroComplete = useCallback(() => {
-    sessionStorage.setItem('TERRA_INTRO_SEEN', 'true');
-    setShowIntro(false);
-  }, []);
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('terra_theme', theme);
+  }, [theme]);
+
+  const handleToggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   // Health and connection state
   const [health, setHealth] = useState<HealthStatus>({
@@ -203,6 +213,8 @@ export function App() {
         priorityPreset={priorityPreset}
         scenarioPreset={scenarioPreset}
         health={health}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
         onOpenAssumptions={() => setIsAssumptionsOpen(true)}
         onOpenReport={() => setActiveTab('report')}
         onOpenAiReview={() => {
@@ -212,7 +224,6 @@ export function App() {
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }, 150);
         }}
-        onReplayIntro={() => setShowIntro(true)}
       />
 
       {/* Main 3-Column Layout */}
@@ -270,6 +281,7 @@ export function App() {
             layerOverlays={layerOverlays}
             onToggleLayer={handleToggleLayer}
             isLeftPanelCollapsed={isLeftPanelCollapsed}
+            theme={theme}
           />
         </main>
 
@@ -298,13 +310,6 @@ export function App() {
         onClose={() => setIsAssumptionsOpen(false)}
         assumptions={assumptions}
         onUpdateAssumptions={setAssumptions}
-      />
-
-      {/* 3D Earth Globe Orbital Briefing Intro */}
-      <EarthGlobeIntro
-        isOpen={showIntro}
-        onComplete={handleIntroComplete}
-        currentRegion={currentRegion}
       />
     </div>
   );

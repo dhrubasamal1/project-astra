@@ -13,7 +13,8 @@ import {
   ExternalLink,
   X,
   FileSpreadsheet,
-  Globe,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { Region, PriorityPreset, ScenarioPreset } from '../types';
 import { HealthStatus, getApiBase } from '../lib/api';
@@ -23,10 +24,11 @@ interface NavbarProps {
   priorityPreset: PriorityPreset;
   scenarioPreset: ScenarioPreset;
   health: HealthStatus;
+  theme?: 'light' | 'dark';
+  onToggleTheme?: () => void;
   onOpenAssumptions: () => void;
   onOpenReport: () => void;
   onOpenAiReview?: () => void;
-  onReplayIntro?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -34,10 +36,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   priorityPreset,
   scenarioPreset,
   health,
+  theme = 'light',
+  onToggleTheme,
   onOpenAssumptions,
   onOpenReport,
   onOpenAiReview,
-  onReplayIntro,
 }) => {
   const [showBackendModal, setShowBackendModal] = useState(false);
   const [customApiUrl, setCustomApiUrl] = useState(() => {
@@ -152,18 +155,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
-          {/* Replay 3D Earth Orbital Briefing */}
-          {onReplayIntro && (
-            <button
-              onClick={onReplayIntro}
-              className="flex items-center space-x-1.5 px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200/80 rounded-full transition-all shadow-xs active:scale-95 cursor-pointer"
-              title="Replay 3D Earth Orbital Reconnaissance Briefing"
-            >
-              <Globe className="w-3.5 h-3.5 text-blue-600 animate-spin-slow" />
-              <span className="hidden xl:inline">Orbital View</span>
-            </button>
-          )}
-
           {/* Assumptions Drawer Trigger */}
           <button
             onClick={onOpenAssumptions}
@@ -183,6 +174,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             <FileSpreadsheet className="w-4 h-4 text-lime-800" />
             <span>Executive Dossier</span>
           </button>
+
+          {/* Dark / Light Mode Toggle Button */}
+          {onToggleTheme && (
+            <button
+              onClick={onToggleTheme}
+              className="flex items-center justify-center w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200/90 text-slate-700 transition-all shadow-xs active:scale-90 cursor-pointer"
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle dark and light theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-4 h-4 text-amber-500 animate-spin-slow" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-700 hover:text-blue-600 transition-colors" />
+              )}
+            </button>
+          )}
         </div>
       </header>
 

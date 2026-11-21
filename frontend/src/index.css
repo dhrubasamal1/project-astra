@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   * {
     border-color: #e2e8f0;
@@ -102,6 +104,178 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 1);
+}
+
+/* ==========================================================================
+   Comprehensive Dark Mode Styles
+   ========================================================================== */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body,
+html.dark #root,
+html.dark .app-container {
+  background-color: #0b1120 !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark header,
+html.dark aside,
+html.dark .left-panel,
+html.dark .right-panel,
+html.dark .bg-white {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+html.dark .bg-white\/95 {
+  background-color: rgba(15, 23, 42, 0.96) !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-slate-50\/50,
+html.dark .bg-slate-50\/70 {
+  background-color: #0b1120 !important;
+}
+
+html.dark .bg-slate-100,
+html.dark .bg-slate-100\/80,
+html.dark .bg-slate-100\/90 {
+  background-color: #1e293b !important;
+}
+
+html.dark .bg-slate-200,
+html.dark .bg-slate-200\/80,
+html.dark .bg-slate-200\/90 {
+  background-color: #334155 !important;
+}
+
+/* Typography in Dark Mode */
+html.dark .text-slate-900,
+html.dark .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+html.dark .text-slate-500 {
+  color: #64748b !important;
+}
+
+html.dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+/* Borders in Dark Mode */
+html.dark *,
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-200\/50,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-200\/90,
+html.dark .border-slate-300 {
+  border-color: #1e293b !important;
+}
+
+/* Colored Metric Cards in Dark Mode */
+html.dark .card-soft-blue,
+html.dark .bg-sky-50,
+html.dark .bg-sky-50\/90,
+html.dark .bg-sky-50\/60,
+html.dark .bg-blue-50 {
+  background-color: #0f2444 !important;
+  border-color: #1e40af !important;
+}
+
+html.dark .card-soft-pink,
+html.dark .bg-pink-50,
+html.dark .bg-pink-50\/90,
+html.dark .bg-rose-50,
+html.dark .bg-rose-50\/90 {
+  background-color: #311124 !important;
+  border-color: #9d174d !important;
+}
+
+html.dark .card-soft-green,
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-50\/90,
+html.dark .bg-emerald-50\/60,
+html.dark .bg-lime-50,
+html.dark .bg-lime-100 {
+  background-color: #06281a !important;
+  border-color: #047857 !important;
+  color: #a7f3d0 !important;
+}
+
+html.dark .card-soft-amber,
+html.dark .bg-amber-50,
+html.dark .bg-amber-50\/90,
+html.dark .bg-amber-100 {
+  background-color: #301a08 !important;
+  border-color: #92400e !important;
+}
+
+html.dark .bg-purple-50,
+html.dark .card-soft-purple {
+  background-color: #27123d !important;
+  border-color: #6b21a8 !important;
+}
+
+/* Inputs, Selects & Sliders in Dark Mode */
+html.dark input[type="text"],
+html.dark input[type="search"],
+html.dark select,
+html.dark textarea {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+/* Leaflet Canvas in Dark Mode */
+html.dark .leaflet-container {
+  background: #090d16 !important;
+}
+
+html.dark .leaflet-pm-toolbar {
+  background: #0f172a !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark .leaflet-pm-action-item {
+  background: #0f172a !important;
+  color: #f1f5f9 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .leaflet-pm-action-item:hover {
+  background: #1e293b !important;
+  color: #60a5fa !important;
+}
+
+html.dark .leaflet-popup-content-wrapper,
+html.dark .leaflet-popup-tip {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.8);
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(51, 65, 85, 0.8);
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 1);
 }
 
 /* Clean Media Print Styles for Report & Dossier Export */
