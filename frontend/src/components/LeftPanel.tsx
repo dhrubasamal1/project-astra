@@ -61,16 +61,16 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
   const waterDemandMLD = ((targetPopulation * 135) / 1000000).toFixed(1);
 
   return (
-    <aside className="left-panel no-print w-80 h-full bg-slate-950/90 backdrop-blur-xl border-r border-slate-800/80 flex flex-col shrink-0 overflow-y-auto z-20 shadow-xl">
-      <div className="p-4 space-y-4">
+    <aside className="left-panel no-print w-80 h-full bg-white border-r border-slate-200 flex flex-col shrink-0 overflow-y-auto z-20 shadow-xs">
+      <div className="p-5 space-y-4">
         {/* 1. Target Region Selector */}
         <div>
-          <label className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center justify-between">
-            <span className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-sky-400" />
+          <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+            <span className="flex items-center gap-1.5 text-slate-700">
+              <MapPin className="w-3.5 h-3.5 text-blue-600" />
               <span>Target Region</span>
             </span>
-            <span className="text-[10px] text-slate-500 font-mono">2 REGIONS CALIBRATED</span>
+            <span className="text-[10px] text-slate-400 font-bold">2 DEMO REGIONS</span>
           </label>
           <div className="space-y-2">
             {regions.map((region) => {
@@ -79,40 +79,40 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
                 <button
                   key={region.id}
                   onClick={() => onSelectRegion(region.id)}
-                  className={`w-full text-left p-3 rounded-xl border transition-all ${
+                  className={`w-full text-left p-3.5 rounded-2xl border transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-sky-950/70 border-sky-500/80 shadow-lg shadow-sky-900/30 ring-1 ring-sky-500/40'
-                      : 'bg-slate-900/80 border-slate-800/80 hover:bg-slate-850 hover:border-slate-700'
+                      ? 'bg-sky-50 border-2 border-blue-600 shadow-xs'
+                      : 'bg-slate-50/70 hover:bg-slate-100/80 border-slate-200/80'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-bold ${isSelected ? 'text-sky-300' : 'text-slate-200'}`}>
+                    <span className={`text-xs font-bold ${isSelected ? 'text-blue-900 font-extrabold' : 'text-slate-800'}`}>
                       {region.name}
                     </span>
-                    {isSelected && <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />}
+                    {isSelected && <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />}
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">{region.badge}</p>
+                  <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{region.badge}</p>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* 2. Candidate Sites (A, B, C) */}
-        <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-800/80 space-y-2.5 shadow-inner">
+        {/* 2. Candidate Parcels Card */}
+        <div className="bg-slate-50/80 p-3.5 rounded-3xl border border-slate-200/80 space-y-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-emerald-600" />
               <span>Candidate Parcels</span>
             </span>
-            <span className="px-2 py-0.5 text-[10px] bg-slate-800 text-slate-300 rounded-full font-mono border border-slate-700">
+            <span className="px-2 py-0.5 text-[10px] bg-white text-slate-700 rounded-full font-bold border border-slate-200">
               {candidateSites.length}/3 Sites
             </span>
           </div>
 
           <button
             onClick={onLoadCandidateSites}
-            className="w-full flex items-center justify-center space-x-2 py-2 px-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-semibold rounded-lg shadow-md shadow-emerald-900/30 transition-all active:scale-95"
+            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-full shadow-xs transition-all active:scale-95 cursor-pointer"
           >
             <FolderOpen className="w-3.5 h-3.5" />
             <span>Reset Demo Sites (A, B, C)</span>
@@ -123,32 +123,32 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
             {candidateSites.map((site) => (
               <div
                 key={site.id}
-                className="flex items-center justify-between text-xs px-2.5 py-1.5 bg-slate-950/70 rounded-lg border border-slate-850 hover:border-slate-750 transition-colors"
+                className="flex items-center justify-between text-xs px-3 py-2 bg-white rounded-xl border border-slate-200/60 shadow-2xs"
               >
                 <div className="flex items-center space-x-2">
                   <span
-                    className="w-2.5 h-2.5 rounded-full shadow-sm"
+                    className="w-2.5 h-2.5 rounded-full shadow-2xs"
                     style={{ backgroundColor: site.color }}
                   ></span>
-                  <span className="font-bold text-slate-200">Site {site.code}</span>
-                  <span className="text-[11px] text-slate-400 truncate max-w-[120px]">
+                  <span className="font-bold text-slate-800">Site {site.code}</span>
+                  <span className="text-[11px] text-slate-500 truncate max-w-[120px]">
                     {site.name.split('(')[0]}
                   </span>
                 </div>
-                <span className="text-[11px] text-slate-400 font-mono">{site.areaKm2} km²</span>
+                <span className="text-[11px] text-slate-500 font-mono font-semibold">{site.areaKm2} km²</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* 3. Target Population & Water Demand HUD */}
-        <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-800/80 space-y-2">
+        {/* 3. Target Population & Water Demand Card */}
+        <div className="bg-sky-50/80 p-4 rounded-3xl border border-sky-100 space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-blue-400" />
+            <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <Users className="w-3.5 h-3.5 text-blue-600" />
               <span>Target Population</span>
             </label>
-            <span className="text-xs font-mono font-bold text-sky-400 bg-sky-950/60 px-2 py-0.5 rounded border border-sky-800/50">
+            <span className="text-xs font-mono font-extrabold text-blue-700 bg-white px-2 py-0.5 rounded-full border border-sky-200 shadow-2xs">
               {targetPopulation.toLocaleString()} cap
             </span>
           </div>
@@ -160,35 +160,35 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
             step={25000}
             value={targetPopulation}
             onChange={(e) => onChangeTargetPopulation(Number(e.target.value))}
-            className="w-full accent-sky-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+            className="w-full accent-blue-600 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
           />
 
-          <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800/60 font-mono">
-            <span className="flex items-center gap-1 text-cyan-400">
-              <Droplets className="w-3 h-3" />
+          <div className="flex items-center justify-between text-[11px] text-slate-600 pt-1 border-t border-sky-200/50 font-medium">
+            <span className="flex items-center gap-1 text-blue-700 font-bold">
+              <Droplets className="w-3 h-3 text-blue-600" />
               <span>{waterDemandMLD} MLD</span>
             </span>
-            <span className="text-[10px] text-slate-500">135 lpcd standard</span>
+            <span className="text-[10px] text-slate-400">135 lpcd standard</span>
           </div>
         </div>
 
-        {/* 4. Planning Horizon Selector */}
+        {/* 4. Planning Horizon Selector Pills */}
         <div>
-          <label className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-amber-400" />
+          <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 text-slate-700">
+            <Calendar className="w-3.5 h-3.5 text-amber-500" />
             <span>Planning Horizon</span>
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="bg-slate-100 p-1 rounded-full border border-slate-200 grid grid-cols-2 gap-1">
             {[2035, 2050].map((yr) => {
               const isSelected = horizon === yr;
               return (
                 <button
                   key={yr}
                   onClick={() => onChangeHorizon(yr as 2035 | 2050)}
-                  className={`py-2 text-xs font-bold rounded-xl border transition-all ${
+                  className={`py-1.5 text-xs font-bold rounded-full transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-amber-500/20 border-amber-500/80 text-amber-300 shadow-sm ring-1 ring-amber-500/30'
-                      : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-850'
+                      ? 'bg-white text-slate-900 shadow-sm border border-slate-200/60'
+                      : 'text-slate-600 hover:text-slate-900 font-semibold'
                   }`}
                 >
                   Horizon {yr}
@@ -200,8 +200,8 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
 
         {/* 5. Priority Weight Presets */}
         <div>
-          <label className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-400" />
+          <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 text-slate-700">
+            <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-600" />
             <span>Pillar Weight Preset</span>
           </label>
           <div className="space-y-1.5">
@@ -213,12 +213,12 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
               },
               {
                 id: 'climate_resilient' as PriorityPreset,
-                name: 'Climate-Resilient (Water/Flood)',
+                name: 'Climate-Resilient',
                 weights: 'Terrain 10 • Water 30 • Hazard 40 • Env 10 • Infra 10',
               },
               {
                 id: 'infra_first' as PriorityPreset,
-                name: 'Infra-First Greenfield Growth',
+                name: 'Infra-First Growth',
                 weights: 'Terrain 25 • Water 15 • Hazard 20 • Env 10 • Infra 30',
               },
             ].map((preset) => {
@@ -227,19 +227,17 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
                 <button
                   key={preset.id}
                   onClick={() => onChangePriorityPreset(preset.id)}
-                  className={`w-full text-left p-2.5 rounded-xl border transition-all ${
+                  className={`w-full text-left p-3 rounded-2xl border transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-emerald-950/60 border-emerald-500/70 text-emerald-200 shadow-sm ring-1 ring-emerald-500/30'
-                      : 'bg-slate-900/80 border-slate-800 hover:bg-slate-850'
+                      ? 'bg-blue-50 border-2 border-blue-600 text-blue-950 font-bold shadow-2xs'
+                      : 'bg-slate-50/70 hover:bg-slate-100/80 border-slate-200/80 text-slate-700'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-bold ${isSelected ? 'text-emerald-300' : 'text-slate-200'}`}>
-                      {preset.name}
-                    </span>
-                    {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
+                    <span className="text-xs font-bold">{preset.name}</span>
+                    {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />}
                   </div>
-                  <div className="text-[10px] text-slate-400 font-mono mt-0.5">{preset.weights}</div>
+                  <div className="text-[10px] text-slate-500 font-medium font-mono mt-0.5">{preset.weights}</div>
                 </button>
               );
             })}
@@ -248,8 +246,8 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
 
         {/* 6. Scenario Preset Selector */}
         <div>
-          <label className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <Compass className="w-3.5 h-3.5 text-purple-400" />
+          <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 text-slate-700">
+            <Compass className="w-3.5 h-3.5 text-purple-600" />
             <span>Climate / Growth Scenario</span>
           </label>
           <div className="space-y-1.5">
@@ -275,39 +273,39 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
                 <button
                   key={scen.id}
                   onClick={() => onChangeScenarioPreset(scen.id)}
-                  className={`w-full text-left px-3 py-2 rounded-xl border text-xs transition-all ${
+                  className={`w-full text-left px-3.5 py-2.5 rounded-2xl border text-xs transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-purple-950/60 border-purple-500/70 text-purple-200 shadow-sm ring-1 ring-purple-500/30 font-bold'
-                      : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:bg-slate-850'
+                      ? 'bg-purple-50 border-2 border-purple-600 text-purple-950 font-extrabold shadow-2xs'
+                      : 'bg-slate-50/70 hover:bg-slate-100/80 border-slate-200/80 text-slate-700'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span>{scen.name}</span>
-                    {isSelected && <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>}
+                    {isSelected && <span className="w-2 h-2 rounded-full bg-purple-600"></span>}
                   </div>
-                  <p className="text-[10px] text-slate-400 font-normal mt-0.5">{scen.badge}</p>
+                  <p className="text-[10px] text-slate-500 font-medium mt-0.5">{scen.badge}</p>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* 7. Primary Analyse Action Button */}
+        {/* 7. Primary Analyse Action Button (Bold Pill Button) */}
         <div className="pt-2">
           <button
             onClick={onRunAnalysis}
             disabled={isAnalyzing}
-            className="w-full relative group overflow-hidden py-3 px-4 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-xl shadow-blue-900/40 transition-all flex items-center justify-center space-x-2 disabled:opacity-60 cursor-pointer active:scale-95"
+            className="w-full py-3 px-5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs rounded-full shadow-md shadow-blue-500/25 transition-all flex items-center justify-center space-x-2 disabled:opacity-60 cursor-pointer active:scale-95"
           >
             {isAnalyzing ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>Computing Spatial Zonal Grids...</span>
+                <span>Extracting Satellite Grids...</span>
               </>
             ) : (
               <>
-                <Play className="w-4 h-4 fill-white" />
-                <span>Run Autonomous Spatial Screening</span>
+                <Play className="w-3.5 h-3.5 fill-white" />
+                <span>Run Spatial Screening</span>
               </>
             )}
           </button>

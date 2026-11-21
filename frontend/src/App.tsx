@@ -158,7 +158,7 @@ export function App() {
   };
 
   return (
-    <div className="app-container flex flex-col h-screen w-screen bg-slate-950 text-slate-100 overflow-hidden font-sans">
+    <div className="app-container flex flex-col h-screen w-screen bg-slate-50 text-slate-900 overflow-hidden font-sans">
       {/* Top Navigation Bar */}
       <Navbar
         currentRegion={currentRegion}

@@ -41,8 +41,9 @@ L.Icon.Default.mergeOptions({
   shadowUrl,
 });
 
-// CARTO Basemap Key & Endpoint
+// CARTO Basemap Key & Endpoints
 const CARTO_KEY = import.meta.env.VITE_CARTO_API_KEY || 'cb1_5djb_1_76786fa00d88e119cfcb6bc4';
+const CARTO_VOYAGER_URL = `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png${CARTO_KEY ? `?key=${CARTO_KEY}` : ''}`;
 const CARTO_DARK_URL = `https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png${CARTO_KEY ? `?key=${CARTO_KEY}` : ''}`;
 
 interface MapViewProps {
@@ -74,7 +75,7 @@ export const MapView: React.FC<MapViewProps> = ({
 
   const [showLayersMenu, setShowLayersMenu] = useState(false);
   const [showLegend, setShowLegend] = useState(true);
-  const [activeBasemap, setActiveBasemap] = useState<'carto_dark' | 'osm' | 'satellite'>('carto_dark');
+  const [activeBasemap, setActiveBasemap] = useState<'voyager' | 'carto_dark' | 'osm' | 'satellite'>('voyager');
   const [liveCoords, setLiveCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   // Initialize Leaflet map and Geoman
@@ -90,9 +91,9 @@ export const MapView: React.FC<MapViewProps> = ({
     // Add zoom control top-left
     L.control.zoom({ position: 'topleft' }).addTo(map);
 
-    // Default CartoDB Dark Matter basemap with verified API Key
-    const darkTileLayer = L.tileLayer(
-      CARTO_DARK_URL,
+    // Default CartoDB Voyager (clean light theme) basemap
+    const baseTileLayer = L.tileLayer(
+      CARTO_VOYAGER_URL,
       {
         attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap',
         subdomains: 'abcd',
@@ -100,7 +101,7 @@ export const MapView: React.FC<MapViewProps> = ({
       }
     ).addTo(map);
 
-    (map as any)._baseTileLayer = darkTileLayer;
+    (map as any)._baseTileLayer = baseTileLayer;
 
     // Feature Groups for organization
     sitesLayerGroupRef.current = L.featureGroup().addTo(map);
@@ -155,8 +156,8 @@ export const MapView: React.FC<MapViewProps> = ({
         else if (!existingCodes.includes('C')) nextCode = 'C';
 
         const colorMap = {
-          A: '#0284c7', // Sky
-          B: '#0d9488', // Teal
+          A: '#2563eb', // Blue
+          B: '#059669', // Emerald
           C: '#d97706', // Amber
         };
 
@@ -198,10 +199,12 @@ export const MapView: React.FC<MapViewProps> = ({
       map.removeLayer((map as any)._baseTileLayer);
     }
 
-    let url = CARTO_DARK_URL;
+    let url = CARTO_VOYAGER_URL;
     let attr = '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap';
 
-    if (activeBasemap === 'osm') {
+    if (activeBasemap === 'carto_dark') {
+      url = CARTO_DARK_URL;
+    } else if (activeBasemap === 'osm') {
       url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
       attr = '&copy; OpenStreetMap contributors';
     } else if (activeBasemap === 'satellite') {
@@ -254,12 +257,12 @@ export const MapView: React.FC<MapViewProps> = ({
 
       // Tooltip label
       polygon.bindTooltip(
-        `<div class="px-2.5 py-1.5 text-xs font-bold text-slate-100 bg-slate-900/95 backdrop-blur-md rounded-lg shadow-xl border border-slate-700">
+        `<div class="px-2.5 py-1.5 text-xs font-bold text-slate-800 bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-slate-200">
           <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${polygonColor}"></span>
             <span>Site ${site.code}: ${site.name.split('(')[0]}</span>
           </div>
-          <div class="text-[10px] text-slate-400 mt-0.5">Area: ${site.areaKm2} km² • Score: ${scorecard?.overallScore?.toFixed(1) || 'Pending'}</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">Area: ${site.areaKm2} km² • Score: ${scorecard?.overallScore?.toFixed(1) || 'Pending'}</div>
         </div>`,
         { sticky: true, className: 'leaflet-site-label' }
       );
@@ -288,12 +291,12 @@ export const MapView: React.FC<MapViewProps> = ({
       onEachFeature: (feature, layer) => {
         const name = feature.properties?.name || 'Statutory Exclusion Zone';
         layer.bindTooltip(
-          `<div class="px-2 py-1 text-xs font-semibold text-red-200 bg-red-950/95 rounded border border-red-500/60 shadow-lg">
+          `<div class="px-2 py-1 text-xs font-semibold text-red-900 bg-red-50/95 rounded-lg border border-red-300 shadow-md">
             <div class="flex items-center gap-1">
-              <span class="text-red-400">⚠️</span>
+              <span class="text-red-500">⚠️</span>
               <span>${name}</span>
             </div>
-            <div class="text-[10px] text-red-300/80">Statutory Exclusion Zone</div>
+            <div class="text-[10px] text-red-600">Statutory Exclusion Zone</div>
           </div>`,
           { sticky: true, className: 'leaflet-site-label' }
         );
@@ -312,68 +315,78 @@ export const MapView: React.FC<MapViewProps> = ({
   };
 
   return (
-    <div className="w-full h-full relative overflow-hidden bg-slate-950 select-none">
+    <div className="w-full h-full relative overflow-hidden bg-slate-100 select-none">
       {/* Underlying Map Div */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Floating Top-Left Telemetry HUD */}
-      <div className="absolute top-3 left-14 z-10 hidden sm:flex items-center space-x-2.5 bg-slate-900/85 backdrop-blur-md border border-slate-700/80 px-3 py-1.5 rounded-xl text-xs text-slate-200 shadow-xl">
+      <div className="absolute top-3 left-14 z-10 hidden sm:flex items-center space-x-2.5 bg-white/95 backdrop-blur-md border border-slate-200/90 px-3.5 py-1.5 rounded-full text-xs text-slate-800 shadow-md">
         <div className="flex items-center space-x-1.5">
-          <Crosshair className="w-3.5 h-3.5 text-sky-400 animate-spin-slow" />
-          <span className="font-mono text-sky-300 font-semibold text-[11px]">
+          <Crosshair className="w-3.5 h-3.5 text-blue-600 animate-spin-slow" />
+          <span className="font-mono text-blue-700 font-bold text-[11px]">
             {liveCoords ? `${liveCoords.lat}°N, ${liveCoords.lng}°E` : `${currentRegion.center[0]}°N, ${currentRegion.center[1]}°E`}
           </span>
         </div>
-        <span className="text-slate-600">|</span>
-        <div className="text-[11px] text-slate-300">
-          <span className="text-slate-400">Target:</span> <span className="font-semibold text-white">{currentRegion.name.split(' ')[0]}</span>
+        <span className="text-slate-300">|</span>
+        <div className="text-[11px] text-slate-600 font-medium">
+          <span className="text-slate-400">Target:</span> <span className="font-bold text-slate-900">{currentRegion.name.split(' ')[0]}</span>
         </div>
       </div>
 
       {/* Floating Top-Right Map Controls & Layer Overlays */}
       <div className="absolute top-3 right-3 z-10 flex flex-col items-end space-y-2">
-        <div className="flex items-center space-x-1.5 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 p-1.5 rounded-xl shadow-xl">
+        <div className="flex items-center space-x-1 bg-white/95 backdrop-blur-md border border-slate-200/90 p-1 rounded-full shadow-md">
           {/* Basemap Switcher Chips */}
           <button
-            onClick={() => setActiveBasemap('carto_dark')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
-              activeBasemap === 'carto_dark'
-                ? 'bg-sky-600 text-white shadow-sm'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800'
+            onClick={() => setActiveBasemap('voyager')}
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+              activeBasemap === 'voyager'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            Dark Matter
+            Voyager
           </button>
           <button
             onClick={() => setActiveBasemap('satellite')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
               activeBasemap === 'satellite'
-                ? 'bg-sky-600 text-white shadow-sm'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
             Satellite
           </button>
           <button
+            onClick={() => setActiveBasemap('carto_dark')}
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+              activeBasemap === 'carto_dark'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            Dark Matter
+          </button>
+          <button
             onClick={() => setActiveBasemap('osm')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
               activeBasemap === 'osm'
-                ? 'bg-sky-600 text-white shadow-sm'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
             Terrain
           </button>
 
-          <span className="w-px h-4 bg-slate-700 mx-1"></span>
+          <span className="w-px h-4 bg-slate-200 mx-1"></span>
 
           {/* Toggle Layers Menu Button */}
           <button
             onClick={() => setShowLayersMenu(!showLayersMenu)}
-            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+            className={`flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all ${
               showLayersMenu
-                ? 'bg-indigo-600 text-white'
-                : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -383,15 +396,15 @@ export const MapView: React.FC<MapViewProps> = ({
 
         {/* Floating Overlays Drawer Popover */}
         {showLayersMenu && (
-          <div className="w-80 bg-slate-900/95 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl p-3.5 text-xs space-y-3 animate-in fade-in slide-in-from-top-2">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-              <span className="font-bold text-slate-100 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+          <div className="w-80 bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-xl p-4 text-xs space-y-3 animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <span className="font-extrabold text-slate-900 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
                 <span>ISRO Thematic Layers</span>
               </span>
               <button
                 onClick={() => setShowLegend(!showLegend)}
-                className="text-[11px] font-semibold text-sky-400 hover:underline"
+                className="text-[11px] font-bold text-blue-600 hover:underline"
               >
                 {showLegend ? 'Hide Legends' : 'Show Legends'}
               </button>
@@ -403,8 +416,8 @@ export const MapView: React.FC<MapViewProps> = ({
                   key={layer.id}
                   className={`p-2.5 rounded-xl border transition-all ${
                     layer.visible
-                      ? 'bg-slate-800/90 border-slate-600 shadow-md'
-                      : 'bg-slate-900/50 border-slate-800/60 opacity-60'
+                      ? 'bg-sky-50/60 border-blue-200 shadow-xs'
+                      : 'bg-slate-50 border-slate-200 opacity-60'
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -413,30 +426,30 @@ export const MapView: React.FC<MapViewProps> = ({
                       className="flex items-center space-x-2 text-left flex-1"
                     >
                       <span
-                        className="w-3 h-3 rounded-full shrink-0 shadow-sm"
+                        className="w-3 h-3 rounded-full shrink-0 shadow-xs"
                         style={{ backgroundColor: layer.color }}
                       ></span>
                       <div>
-                        <div className="font-semibold text-slate-100 text-xs">{layer.name}</div>
-                        <div className="text-[10px] text-slate-400 font-mono">{layer.portal}</div>
+                        <div className="font-bold text-slate-900 text-xs">{layer.name}</div>
+                        <div className="text-[10px] text-slate-500 font-mono">{layer.portal}</div>
                       </div>
                     </button>
                     <button
                       onClick={() => onToggleLayer(layer.id)}
-                      className="p-1 text-slate-400 hover:text-white ml-2 rounded hover:bg-slate-700"
+                      className="p-1 text-slate-400 hover:text-slate-700 ml-2 rounded hover:bg-slate-200/50"
                     >
                       {layer.visible ? (
-                        <Eye className="w-4 h-4 text-sky-400" />
+                        <Eye className="w-4 h-4 text-blue-600" />
                       ) : (
-                        <EyeOff className="w-4 h-4" />
+                        <EyeOff className="w-4 h-4 text-slate-400" />
                       )}
                     </button>
                   </div>
 
                   {showLegend && layer.visible && (
-                    <div className="mt-2 pt-2 border-t border-slate-700/60 space-y-1">
+                    <div className="mt-2 pt-2 border-t border-slate-200/60 space-y-1">
                       {layer.legend.map((item, idx) => (
-                        <div key={idx} className="flex items-center space-x-2 text-[10px] text-slate-300">
+                        <div key={idx} className="flex items-center space-x-2 text-[10px] text-slate-600">
                           <span
                             className="w-2.5 h-2.5 rounded-sm shrink-0"
                             style={{ backgroundColor: item.color }}
@@ -454,7 +467,7 @@ export const MapView: React.FC<MapViewProps> = ({
       </div>
 
       {/* Floating Bottom-Center Quick Site Selector HUD */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center space-x-2 bg-slate-900/90 backdrop-blur-xl border border-slate-700/80 px-2 py-1.5 rounded-2xl shadow-2xl">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center space-x-1.5 bg-white/95 backdrop-blur-xl border border-slate-200/90 px-2 py-1.5 rounded-full shadow-lg">
         {candidateSites.map((site) => {
           const isSelected = site.code === selectedSiteCode;
           const card = scorecards[site.id];
@@ -463,10 +476,10 @@ export const MapView: React.FC<MapViewProps> = ({
             <button
               key={site.id}
               onClick={() => handleFlyToSite(site)}
-              className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                 isSelected
-                  ? 'bg-sky-600 text-white shadow-lg shadow-sky-600/30 ring-2 ring-sky-400/50'
-                  : 'bg-slate-800/80 hover:bg-slate-800 text-slate-200'
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                  : 'bg-slate-50 hover:bg-slate-100 text-slate-700'
               }`}
             >
               <span
@@ -476,12 +489,12 @@ export const MapView: React.FC<MapViewProps> = ({
               <span>Site {site.code}</span>
               {card && (
                 <span
-                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                  className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
                     hasDb
-                      ? 'bg-red-500/30 text-red-300'
+                      ? 'bg-red-100 text-red-700'
                       : isSelected
-                      ? 'bg-sky-700/50 text-white'
-                      : 'bg-slate-700 text-sky-300'
+                      ? 'bg-blue-700/60 text-white'
+                      : 'bg-slate-200 text-slate-700'
                   }`}
                 >
                   {hasDb ? 'DEFICIT' : `${card.overallScore.toFixed(1)} pts`}
@@ -494,13 +507,13 @@ export const MapView: React.FC<MapViewProps> = ({
 
       {/* Floating Bottom-Left Deal-Breaker Warning Banner */}
       <div className="absolute bottom-4 left-4 z-10 max-w-xs pointer-events-none hidden md:block">
-        <div className="bg-red-950/90 backdrop-blur-md border border-red-500/70 p-3 rounded-xl shadow-2xl text-xs space-y-1 pointer-events-auto">
-          <div className="flex items-center space-x-1.5 text-red-300 font-bold">
-            <AlertOctagon className="w-4 h-4 text-red-400 animate-pulse" />
+        <div className="bg-white/95 backdrop-blur-md border border-red-200 p-3 rounded-2xl shadow-md text-xs space-y-1 pointer-events-auto">
+          <div className="flex items-center space-x-1.5 text-red-700 font-bold">
+            <AlertOctagon className="w-4 h-4 text-red-600" />
             <span>Statutory Deal-Breaker Layer</span>
           </div>
-          <p className="text-[10px] text-red-200/90 leading-tight">
-            Hazard zones shaded in <strong className="text-red-300">red dashes</strong> denote active floodways and high-slope exclusion polygons.
+          <p className="text-[10px] text-slate-600 leading-tight">
+            Hazard zones shaded in <strong className="text-red-600">red dashes</strong> denote active floodways and high-slope exclusion polygons.
           </p>
         </div>
       </div>
