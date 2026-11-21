@@ -73,7 +73,20 @@ TerraCity AI integrates real data from four official Indian space portals:
 
 ---
 
-## Local Run Instructions
+## Quickest 1-Click Launch (Unified Server & Web UI)
+
+The frontend is pre-built into `frontend/dist` and directly served by the FastAPI application. You can launch the complete website and backend with a single command:
+
+```powershell
+python start_app.py
+```
+*(Or on Windows, simply double-click **`start_app.bat`**).*
+
+This will start the unified server on **[http://localhost:8000](http://localhost:8000)** and automatically pop open your default web browser to the interactive website!
+
+---
+
+## Local Run Instructions (Development Mode)
 
 ### Prerequisites
 - Python 3.11+
