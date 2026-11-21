@@ -43,7 +43,7 @@ L.Icon.Default.mergeOptions({
 
 // CARTO Basemap Key & Endpoint
 const CARTO_KEY = import.meta.env.VITE_CARTO_API_KEY || 'cb1_5djb_1_76786fa00d88e119cfcb6bc4';
-const CARTO_DARK_URL = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png${CARTO_KEY ? `?api_key=${CARTO_KEY}` : ''}`;
+const CARTO_DARK_URL = `https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png${CARTO_KEY ? `?key=${CARTO_KEY}` : ''}`;
 
 interface MapViewProps {
   currentRegion: Region;
