@@ -63,11 +63,11 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       id: 'compare' as RightPanelTab,
       label: 'Compare',
       icon: GitCompare,
-      badge: compareResult.isTie ? 'Tie Check' : undefined,
+      badge: compareResult.isTie ? 'Tie' : undefined,
     },
     {
       id: 'stress' as RightPanelTab,
-      label: 'Stress Test',
+      label: 'Stress',
       icon: TrendingUp,
       badge: `${stressTestResult.stressIndex.toFixed(2)}`,
     },
@@ -79,7 +79,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
     <aside className="right-panel w-[480px] lg:w-[495px] xl:w-[540px] h-full bg-white border-l border-slate-200 flex flex-col shrink-0 overflow-hidden shadow-sm z-20">
       {/* Floating Pill Tabs Bar */}
       <div className="right-panel-tabs no-print px-3 py-2.5 bg-white border-b border-slate-100 shrink-0">
-        <div className="bg-slate-100/90 p-1 rounded-full border border-slate-200/80 flex items-center justify-between gap-0.5 sm:gap-1 shadow-xs overflow-x-auto scrollbar-none">
+        <div className="bg-slate-100/90 p-1 rounded-full border border-slate-200/80 flex items-center justify-between gap-1 shadow-xs overflow-x-auto scrollbar-none">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -87,41 +87,28 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               <button
                 key={tab.id}
                 onClick={() => onChangeTab(tab.id)}
-                className={`min-w-0 flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 px-1.5 sm:px-2 rounded-full text-[11px] xl:text-xs font-bold transition-all cursor-pointer select-none ${
+                className={`min-w-0 flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 px-1 sm:px-1.5 rounded-full text-[11px] xl:text-xs font-bold transition-all cursor-pointer select-none whitespace-nowrap ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/60 font-semibold'
                 }`}
-                title={tab.label}
+                title={tab.id === 'stress' ? 'Stress Test (Water Balance)' : tab.label}
               >
                 <Icon className="w-3.5 h-3.5 shrink-0" />
-                <span className="truncate">
-                  {tab.id === 'stress' ? (
-                    <>
-                      Stress<span className="hidden sm:inline"> Test</span>
-                    </>
-                  ) : (
-                    tab.label
-                  )}
+                <span className="whitespace-nowrap font-bold">
+                  {tab.label}
                 </span>
                 {tab.badge && (
                   <span
-                    className={`shrink-0 ml-0.5 px-1 sm:px-1.5 py-0.2 text-[8.5px] sm:text-[9px] rounded-full font-mono font-bold leading-tight ${
+                    className={`shrink-0 ml-0.5 px-1.5 py-0.5 text-[8.5px] rounded-full font-mono font-bold leading-none ${
                       isActive
                         ? 'bg-blue-800 text-blue-100'
-                        : tab.badge === 'Tie Check'
-                        ? 'bg-amber-100 text-amber-800'
+                        : tab.badge === 'Tie'
+                        ? 'bg-amber-100 text-amber-800 border border-amber-300/60'
                         : 'bg-slate-200 text-slate-700'
                     }`}
                   >
-                    {tab.badge === 'Tie Check' ? (
-                      <>
-                        <span className="hidden xl:inline">Tie Check</span>
-                        <span className="xl:hidden">Tie</span>
-                      </>
-                    ) : (
-                      tab.badge
-                    )}
+                    {tab.badge}
                   </span>
                 )}
               </button>
