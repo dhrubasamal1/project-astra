@@ -25,6 +25,7 @@ from backend.app.api.scenarios import router as scenarios_router
 from backend.app.api.report import router as report_router
 from backend.app.api.export import router as export_router
 from backend.app.api.ai_review import router as ai_review_router
+from backend.app.api.geocode import router as geocode_router
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 FRONTEND_DIST = PROJECT_ROOT / "frontend" / "dist"
@@ -173,6 +174,7 @@ app.include_router(scenarios_router, prefix="/api")
 app.include_router(report_router, prefix="/api")
 app.include_router(export_router, prefix="/api")
 app.include_router(ai_review_router, prefix="/api")
+app.include_router(geocode_router, prefix="/api")
 
 
 # ---------------------------------------------------------------------------
