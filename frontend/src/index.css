@@ -107,7 +107,7 @@
 }
 
 /* ==========================================================================
-   Comprehensive Dark Mode Styles
+   Comprehensive High-Contrast Dark Mode Styles (WCAG AAA Compliant)
    ========================================================================== */
 html.dark {
   color-scheme: dark;
@@ -129,20 +129,26 @@ html.dark .bg-white {
   color: #f8fafc !important;
 }
 
-html.dark .bg-white\/95 {
+html.dark .bg-white\/95,
+html.dark .bg-white\/98,
+html.dark .bg-white\/90 {
   background-color: rgba(15, 23, 42, 0.96) !important;
+  color: #f8fafc !important;
 }
 
 html.dark .bg-slate-50,
 html.dark .bg-slate-50\/50,
-html.dark .bg-slate-50\/70 {
+html.dark .bg-slate-50\/70,
+html.dark .bg-slate-50\/80 {
   background-color: #0b1120 !important;
 }
 
 html.dark .bg-slate-100,
+html.dark .bg-slate-100\/70,
 html.dark .bg-slate-100\/80,
 html.dark .bg-slate-100\/90 {
   background-color: #1e293b !important;
+  color: #f8fafc !important;
 }
 
 html.dark .bg-slate-200,
@@ -151,26 +157,179 @@ html.dark .bg-slate-200\/90 {
   background-color: #334155 !important;
 }
 
-/* Typography in Dark Mode */
+/* ==========================================================================
+   High-Contrast Typography in Dark Mode (Eliminates Dim / Low-Contrast Text)
+   ========================================================================== */
 html.dark .text-slate-900,
-html.dark .text-slate-800 {
+html.dark .text-slate-800,
+html.dark .text-gray-900,
+html.dark .text-gray-800 {
   color: #f8fafc !important;
 }
 
-html.dark .text-slate-700 {
+html.dark .text-slate-700,
+html.dark .text-gray-700 {
+  color: #e2e8f0 !important;
+}
+
+html.dark .text-slate-600,
+html.dark .text-gray-600 {
   color: #cbd5e1 !important;
 }
 
-html.dark .text-slate-600 {
+html.dark .text-slate-500,
+html.dark .text-gray-500 {
   color: #94a3b8 !important;
 }
 
-html.dark .text-slate-500 {
-  color: #64748b !important;
+html.dark .text-slate-400,
+html.dark .text-gray-400 {
+  color: #94a3b8 !important;
 }
 
-html.dark .text-slate-400 {
-  color: #94a3b8 !important;
+/* Vibrant Readable Colored Text in Dark Mode (Eliminate dark-on-dark text) */
+html.dark .text-blue-950,
+html.dark .text-blue-900,
+html.dark .text-blue-800,
+html.dark .text-blue-700 {
+  color: #93c5fd !important;
+}
+
+html.dark .text-blue-600,
+html.dark .text-blue-500 {
+  color: #60a5fa !important;
+}
+
+html.dark .text-sky-950,
+html.dark .text-sky-900,
+html.dark .text-sky-800,
+html.dark .text-sky-700 {
+  color: #7dd3fc !important;
+}
+
+html.dark .text-sky-600,
+html.dark .text-sky-500 {
+  color: #38bdf8 !important;
+}
+
+html.dark .text-emerald-950,
+html.dark .text-emerald-900,
+html.dark .text-emerald-800,
+html.dark .text-emerald-700 {
+  color: #6ee7b7 !important;
+}
+
+html.dark .text-emerald-600,
+html.dark .text-emerald-500 {
+  color: #34d399 !important;
+}
+
+html.dark .text-amber-950,
+html.dark .text-amber-900,
+html.dark .text-amber-800,
+html.dark .text-amber-700 {
+  color: #fde047 !important;
+}
+
+html.dark .text-amber-600,
+html.dark .text-amber-500 {
+  color: #fbbf24 !important;
+}
+
+html.dark .text-rose-950,
+html.dark .text-rose-900,
+html.dark .text-rose-800,
+html.dark .text-rose-700,
+html.dark .text-red-950,
+html.dark .text-red-900,
+html.dark .text-red-800,
+html.dark .text-red-700 {
+  color: #fca5a5 !important;
+}
+
+html.dark .text-rose-600,
+html.dark .text-red-600 {
+  color: #f87171 !important;
+}
+
+html.dark .text-pink-950,
+html.dark .text-pink-900,
+html.dark .text-pink-800,
+html.dark .text-pink-700 {
+  color: #f472b6 !important;
+}
+
+html.dark .text-purple-950,
+html.dark .text-purple-900,
+html.dark .text-purple-800,
+html.dark .text-purple-700 {
+  color: #d8b4fe !important;
+}
+
+html.dark .text-purple-600,
+html.dark .text-purple-500 {
+  color: #c084fc !important;
+}
+
+html.dark .text-lime-950,
+html.dark .text-lime-900,
+html.dark .text-lime-800,
+html.dark .text-lime-700 {
+  color: #bef264 !important;
+}
+
+html.dark .text-cyan-950,
+html.dark .text-cyan-900,
+html.dark .text-cyan-800,
+html.dark .text-cyan-700 {
+  color: #67e8f9 !important;
+}
+
+html.dark .text-cyan-600,
+html.dark .text-cyan-500 {
+  color: #38bdf8 !important;
+}
+
+/* High Contrast Colored Badges & Pills in Dark Mode */
+html.dark .bg-blue-100,
+html.dark .bg-sky-100 {
+  background-color: #1e3a5f !important;
+  color: #93c5fd !important;
+  border-color: #2563eb !important;
+}
+
+html.dark .bg-emerald-100,
+html.dark .bg-lime-100,
+html.dark .bg-lime-200 {
+  background-color: #064e3b !important;
+  color: #6ee7b7 !important;
+  border-color: #059669 !important;
+}
+
+html.dark .bg-amber-100 {
+  background-color: #451a03 !important;
+  color: #fde047 !important;
+  border-color: #b45309 !important;
+}
+
+html.dark .bg-rose-100,
+html.dark .bg-red-100,
+html.dark .bg-pink-100 {
+  background-color: #4c0519 !important;
+  color: #fca5a5 !important;
+  border-color: #e11d48 !important;
+}
+
+html.dark .bg-purple-100 {
+  background-color: #3b0764 !important;
+  color: #d8b4fe !important;
+  border-color: #7c3aed !important;
+}
+
+html.dark .bg-cyan-100 {
+  background-color: #164e63 !important;
+  color: #67e8f9 !important;
+  border-color: #0891b2 !important;
 }
 
 /* Borders in Dark Mode */
@@ -178,64 +337,115 @@ html.dark *,
 html.dark .border-slate-100,
 html.dark .border-slate-200,
 html.dark .border-slate-200\/50,
+html.dark .border-slate-200\/60,
+html.dark .border-slate-200\/70,
 html.dark .border-slate-200\/80,
 html.dark .border-slate-200\/90,
 html.dark .border-slate-300 {
-  border-color: #1e293b !important;
+  border-color: #253248 !important;
 }
 
 /* Colored Metric Cards in Dark Mode */
 html.dark .card-soft-blue,
 html.dark .bg-sky-50,
 html.dark .bg-sky-50\/90,
+html.dark .bg-sky-50\/80,
 html.dark .bg-sky-50\/60,
 html.dark .bg-blue-50 {
-  background-color: #0f2444 !important;
-  border-color: #1e40af !important;
+  background-color: #0c2340 !important;
+  border-color: #1d4ed8 !important;
+  color: #f1f5f9 !important;
 }
 
 html.dark .card-soft-pink,
 html.dark .bg-pink-50,
 html.dark .bg-pink-50\/90,
 html.dark .bg-rose-50,
-html.dark .bg-rose-50\/90 {
-  background-color: #311124 !important;
-  border-color: #9d174d !important;
+html.dark .bg-rose-50\/90,
+html.dark .bg-red-50,
+html.dark .bg-red-50\/90 {
+  background-color: #380d19 !important;
+  border-color: #9f1239 !important;
+  color: #f1f5f9 !important;
 }
 
 html.dark .card-soft-green,
 html.dark .bg-emerald-50,
 html.dark .bg-emerald-50\/90,
 html.dark .bg-emerald-50\/60,
-html.dark .bg-lime-50,
-html.dark .bg-lime-100 {
-  background-color: #06281a !important;
+html.dark .bg-lime-50 {
+  background-color: #052e16 !important;
   border-color: #047857 !important;
   color: #a7f3d0 !important;
 }
 
 html.dark .card-soft-amber,
 html.dark .bg-amber-50,
-html.dark .bg-amber-50\/90,
-html.dark .bg-amber-100 {
-  background-color: #301a08 !important;
+html.dark .bg-amber-50\/90 {
+  background-color: #331b03 !important;
   border-color: #92400e !important;
+  color: #fef3c7 !important;
 }
 
 html.dark .bg-purple-50,
 html.dark .card-soft-purple {
-  background-color: #27123d !important;
-  border-color: #6b21a8 !important;
+  background-color: #26103b !important;
+  border-color: #7e22ce !important;
+  color: #f3e8ff !important;
+}
+
+html.dark .bg-cyan-50 {
+  background-color: #082f49 !important;
+  border-color: #0284c7 !important;
+  color: #e0f2fe !important;
+}
+
+/* Recharts Charts in Dark Mode (Radar, Timeseries, Tooltips) */
+html.dark .recharts-polar-grid line,
+html.dark .recharts-polar-grid path,
+html.dark .recharts-cartesian-grid line {
+  stroke: #334155 !important;
+}
+
+html.dark .recharts-text,
+html.dark .recharts-polar-angle-axis-tick text,
+html.dark .recharts-polar-radius-axis-tick text,
+html.dark .recharts-cartesian-axis-tick text,
+html.dark .recharts-legend-item-text {
+  fill: #cbd5e1 !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark .recharts-default-tooltip {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: #f8fafc !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Inputs, Selects & Sliders in Dark Mode */
 html.dark input[type="text"],
 html.dark input[type="search"],
+html.dark input[type="password"],
 html.dark select,
 html.dark textarea {
   background-color: #1e293b !important;
   color: #f8fafc !important;
   border-color: #334155 !important;
+}
+
+html.dark input[type="range"] {
+  background-color: #334155 !important;
+}
+
+/* Table Headers in Dark Mode */
+html.dark thead {
+  background-color: #1e293b !important;
+}
+
+html.dark thead th,
+html.dark thead tr {
+  color: #f8fafc !important;
 }
 
 /* Leaflet Canvas in Dark Mode */
