@@ -62,7 +62,7 @@ export const AssumptionsDrawer: React.FC<AssumptionsDrawerProps> = ({
           <div className="space-y-4">
             <h3 className="font-extrabold text-slate-900 uppercase tracking-wider text-[11px] flex items-center justify-between border-b border-slate-100 pb-1.5">
               <span>Water Demand Calibration</span>
-              <span className="text-[10px] text-blue-600 font-mono font-bold bg-blue-50 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] text-blue-600 font-extrabold bg-blue-50 px-2.5 py-0.5 rounded-full">
                 CPHEEO Standard
               </span>
             </h3>
@@ -71,7 +71,7 @@ export const AssumptionsDrawer: React.FC<AssumptionsDrawerProps> = ({
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="text-slate-700 font-bold">Per Capita Consumption (lpcd)</label>
-                <span className="font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
+                <span className="font-extrabold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md">
                   {assumptions.lpcd} L/capita/day
                 </span>
               </div>
@@ -91,7 +91,7 @@ export const AssumptionsDrawer: React.FC<AssumptionsDrawerProps> = ({
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="text-slate-700 font-bold">External Piped Canal Supply</label>
-                <span className="font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
+                <span className="font-extrabold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md">
                   {assumptions.externalSupplyMLD} MLD
                 </span>
               </div>
@@ -111,7 +111,7 @@ export const AssumptionsDrawer: React.FC<AssumptionsDrawerProps> = ({
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="text-slate-700 font-bold">Catchment Area Multiplier</label>
-                <span className="font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
+                <span className="font-extrabold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md">
                   {assumptions.catchmentMultiplier}x
                 </span>
               </div>
@@ -132,7 +132,7 @@ export const AssumptionsDrawer: React.FC<AssumptionsDrawerProps> = ({
           <div className="space-y-4">
             <h3 className="font-extrabold text-slate-900 uppercase tracking-wider text-[11px] flex items-center justify-between border-b border-slate-100 pb-1.5">
               <span>Proximity & Service Buffers</span>
-              <span className="text-[10px] text-emerald-700 font-mono font-bold bg-emerald-50 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] text-emerald-700 font-extrabold bg-emerald-50 px-2.5 py-0.5 rounded-full">
                 URDPFI Norms
               </span>
             </h3>
@@ -141,7 +141,7 @@ export const AssumptionsDrawer: React.FC<AssumptionsDrawerProps> = ({
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="text-slate-700 font-bold">Primary Arterial Road Buffer</label>
-                <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                <span className="font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md">
                   {assumptions.roadBufferM} m
                 </span>
               </div>
@@ -161,7 +161,7 @@ export const AssumptionsDrawer: React.FC<AssumptionsDrawerProps> = ({
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="text-slate-700 font-bold">Hospital & Education Service Radius</label>
-                <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                <span className="font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md">
                   {assumptions.amenityBufferM} m
                 </span>
               </div>
@@ -181,7 +181,7 @@ export const AssumptionsDrawer: React.FC<AssumptionsDrawerProps> = ({
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="text-slate-700 font-bold">High-Voltage Substation Radius</label>
-                <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                <span className="font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md">
                   {assumptions.substationBufferM} m
                 </span>
               </div>

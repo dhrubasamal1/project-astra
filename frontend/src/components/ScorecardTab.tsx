@@ -111,7 +111,7 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
               ></span>
               <span>Site {site.code}</span>
               {siteCard && (
-                <span className={`text-[11px] font-mono font-bold ${hasDb ? 'text-red-600' : 'text-blue-600'}`}>
+                <span className={`text-[11px] font-extrabold ${hasDb ? 'text-red-600' : 'text-blue-600'}`}>
                   ({hasDb ? 'Deficit' : `${siteCard.overallScore.toFixed(0)}`})
                 </span>
               )}
@@ -123,9 +123,9 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
       {/* 3 Top Hero Metric Cards (Direct inspiration from screenshot top row) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {/* Card 1: Total MCA Score (Soft Blue) */}
-        <div className="bg-sky-50/90 border border-sky-100 rounded-3xl p-4 text-center shadow-xs">
+        <div className="bg-sky-50/90 border border-sky-100 rounded-3xl p-4 text-center shadow-xs flex flex-col justify-between">
           <div className="text-xs font-bold text-sky-800 uppercase tracking-wider">MCA Score</div>
-          <div className="text-3xl font-black text-slate-900 mt-1 font-mono">
+          <div className="text-3xl font-black text-slate-900 mt-1">
             {scorecard.overallScore.toFixed(1)}
           </div>
           <div className="text-[11px] text-sky-600 font-semibold mt-0.5">Scale: 0 – 100 Index</div>
@@ -133,7 +133,7 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
 
         {/* Card 2: Planning Verdict (Soft Pink / Rose if deficit, soft emerald if suitable) */}
         <div
-          className={`border rounded-3xl p-4 text-center shadow-xs ${
+          className={`border rounded-3xl p-4 text-center shadow-xs flex flex-col justify-between ${
             scorecard.hasDealBreaker
               ? 'bg-rose-50/90 border-rose-100'
               : 'bg-pink-50/90 border-pink-100'
@@ -142,8 +142,8 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
           <div className={`text-xs font-bold uppercase tracking-wider ${scorecard.hasDealBreaker ? 'text-rose-800' : 'text-pink-800'}`}>
             Suitability Tier
           </div>
-          <div className="text-xl font-extrabold text-slate-900 mt-1.5 truncate">
-            {scorecard.verdict.split('(')[0]}
+          <div className="text-base sm:text-lg font-black text-slate-900 mt-1 leading-snug">
+            {scorecard.verdict.split('(')[0].trim()}
           </div>
           <div className="text-[11px] text-slate-600 font-semibold mt-0.5">
             Tier {scorecard.verdictTier} • Rank #{scorecard.rank}
@@ -151,9 +151,9 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
         </div>
 
         {/* Card 3: ISRO Ground-Truth (Clean White / Slate) */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-4 text-center shadow-xs">
+        <div className="bg-white border border-slate-200 rounded-3xl p-4 text-center shadow-xs flex flex-col justify-between">
           <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">ISRO Confidence</div>
-          <div className="text-3xl font-black text-slate-900 mt-1 font-mono">
+          <div className="text-3xl font-black text-slate-900 mt-1">
             {scorecard.confidencePct}%
           </div>
           <div className="text-[11px] text-emerald-600 font-bold mt-0.5 flex items-center justify-center gap-1">
@@ -199,7 +199,7 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
             <Layers className="w-4 h-4 text-blue-600" />
             <span>5-Pillar Spatial Balance Profile</span>
           </h3>
-          <span className="text-[11px] font-semibold text-slate-500 font-mono">0–100 Normalized</span>
+          <span className="text-[11px] font-bold text-slate-500">0–100 Normalized</span>
         </div>
 
         <div className="w-full h-56">
@@ -230,19 +230,22 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
 
         {/* 5 Pillar Mini-Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
-          {Object.values(scorecard.pillars).map((p) => (
-            <div
-              key={p.pillar}
-              className="bg-slate-50 p-2.5 rounded-2xl border border-slate-200/80 text-center hover:bg-slate-100/60 transition-colors"
-            >
-              <div className="flex items-center justify-center gap-1 text-[10px] text-slate-600 font-bold mb-0.5">
-                {getPillarIcon(p.name)}
-                <span className="truncate">{p.name.split(' ')[0]}</span>
+          {Object.values(scorecard.pillars).map((p) => {
+            const shortName = p.name.includes('Infrastructure') ? 'Infra' : p.name.includes('Environment') ? 'Env' : p.name.split(' ')[0];
+            return (
+              <div
+                key={p.pillar}
+                className="bg-slate-50 p-2.5 rounded-2xl border border-slate-200/80 text-center hover:bg-slate-100/60 transition-colors"
+              >
+                <div className="flex items-center justify-center gap-1 text-[10px] text-slate-600 font-bold mb-0.5">
+                  {getPillarIcon(p.name)}
+                  <span>{shortName}</span>
+                </div>
+                <div className="text-base font-black text-slate-900">{p.rawScore.toFixed(0)}</div>
+                <div className="text-[10px] text-slate-500 font-bold">Wt: {p.weight}%</div>
               </div>
-              <div className="text-base font-black font-mono text-slate-900">{p.rawScore.toFixed(0)}</div>
-              <div className="text-[10px] text-slate-500 font-medium font-mono">Wt: {p.weight}%</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -285,7 +288,7 @@ export const ScorecardTab: React.FC<ScorecardTabProps> = ({
               </div>
 
               <div className="text-right shrink-0 space-y-1">
-                <div className="font-black font-mono text-slate-900">
+                <div className="font-extrabold text-slate-900">
                   {typeof ind.value === 'number' ? ind.value.toLocaleString() : ind.value} {ind.unit}
                 </div>
                 <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${getPortalBadgeColor(ind.source.portal)}`}>

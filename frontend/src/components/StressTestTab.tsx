@@ -70,7 +70,7 @@ export const StressTestTab: React.FC<StressTestTabProps> = ({ stressData }) => {
         {/* Index Pill & Status */}
         <div className="flex items-center space-x-3 shrink-0">
           <div className="text-right">
-            <div className="text-3xl font-black font-mono text-slate-900 leading-none">
+            <div className="text-3xl font-black text-slate-900 leading-none">
               {stressIndex.toFixed(2)}
             </div>
             <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">
@@ -96,7 +96,7 @@ export const StressTestTab: React.FC<StressTestTabProps> = ({ stressData }) => {
             <div className="text-[11px] text-slate-500">Based on Bhuvan flood zonation & 30m HAND terrain elevation</div>
           </div>
         </div>
-        <span className="px-3.5 py-1 text-xs font-bold font-mono bg-sky-100 border border-blue-200 text-blue-800 rounded-full">
+        <span className="px-3.5 py-1 text-xs font-bold bg-sky-100 border border-blue-200 text-blue-800 rounded-full">
           {floodStressBadge?.label || floodStressBadge?.category || 'Low Exposure'}
         </span>
       </div>
@@ -108,7 +108,7 @@ export const StressTestTab: React.FC<StressTestTabProps> = ({ stressData }) => {
             <Droplets className="w-3.5 h-3.5 text-blue-600" />
             <span>2026–{horizon} Physical Supply vs Demand Trajectory (MLD)</span>
           </h3>
-          <span className="text-[10px] text-slate-500 font-mono font-bold bg-slate-100 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] text-slate-500 font-bold bg-slate-100 px-2.5 py-0.5 rounded-full">
             CPHEEO 135 lpcd
           </span>
         </div>

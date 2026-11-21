@@ -119,7 +119,7 @@ export const SourcesTab: React.FC<SourcesTabProps> = ({ provenanceRecords }) => 
             <Database className="w-3.5 h-3.5 text-blue-600" />
             <span>Dataset Provenance Records</span>
           </h3>
-          <span className="text-[10px] text-slate-500 font-mono font-bold bg-slate-100 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] text-slate-500 font-bold bg-slate-100 px-2.5 py-0.5 rounded-full">
             {provenanceRecords.length} Layers Audited
           </span>
         </div>
@@ -132,13 +132,13 @@ export const SourcesTab: React.FC<SourcesTabProps> = ({ provenanceRecords }) => 
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-900">{rec.dataset}</span>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${getPortalBadge(rec.portal)}`}>
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${getPortalBadge(rec.portal)}`}>
                   {rec.portal}
                 </span>
               </div>
               <div className="text-[11px] text-slate-600 flex items-center justify-between">
                 <span>Theme: <strong className="text-slate-800">{rec.theme}</strong></span>
-                <span className="text-[10px] text-slate-500 font-mono">{rec.resolution}</span>
+                <span className="text-[10px] text-slate-500 font-semibold">{rec.resolution}</span>
               </div>
             </div>
           ))}

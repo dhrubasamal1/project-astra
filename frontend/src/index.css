@@ -4,14 +4,23 @@
   * {
     border-color: #e2e8f0;
   }
-  body {
+  html, body {
     background-color: #f8fafc;
     color: #0f172a;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     overflow: hidden;
     user-select: none;
-    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
+}
+
+/* Global Typography: Replace hard-to-read monospaced text with geometric tabular Google Sans */
+.font-mono, [class*="font-mono"], code, pre, kbd {
+  font-family: 'Plus Jakarta Sans', 'DM Sans', system-ui, sans-serif !important;
+  font-feature-settings: "tnum" on, "lnum" on;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 /* Clean Airy Dashboard Utilities */
@@ -45,7 +54,7 @@
   width: 100%;
   height: 100%;
   background: #f1f5f9 !important;
-  font-family: inherit;
+  font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif !important;
 }
 
 /* Leaflet Site Labels */
@@ -121,6 +130,7 @@
     font-size: 11pt !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif !important;
   }
 
   /* Reset outer viewport and flex containers so they expand cleanly */

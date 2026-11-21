@@ -323,7 +323,7 @@ export const MapView: React.FC<MapViewProps> = ({
       <div className="absolute top-3 left-14 z-10 hidden sm:flex items-center space-x-2.5 bg-white/95 backdrop-blur-md border border-slate-200/90 px-3.5 py-1.5 rounded-full text-xs text-slate-800 shadow-md">
         <div className="flex items-center space-x-1.5">
           <Crosshair className="w-3.5 h-3.5 text-blue-600 animate-spin-slow" />
-          <span className="font-mono text-blue-700 font-bold text-[11px]">
+          <span className="text-blue-700 font-extrabold text-[11px] tracking-tight">
             {liveCoords ? `${liveCoords.lat}°N, ${liveCoords.lng}°E` : `${currentRegion.center[0]}°N, ${currentRegion.center[1]}°E`}
           </span>
         </div>
@@ -431,7 +431,7 @@ export const MapView: React.FC<MapViewProps> = ({
                       ></span>
                       <div>
                         <div className="font-bold text-slate-900 text-xs">{layer.name}</div>
-                        <div className="text-[10px] text-slate-500 font-mono">{layer.portal}</div>
+                        <div className="text-[10px] text-slate-500 font-semibold">{layer.portal}</div>
                       </div>
                     </button>
                     <button
@@ -489,7 +489,7 @@ export const MapView: React.FC<MapViewProps> = ({
               <span>Site {site.code}</span>
               {card && (
                 <span
-                  className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
                     hasDb
                       ? 'bg-red-100 text-red-700'
                       : isSelected

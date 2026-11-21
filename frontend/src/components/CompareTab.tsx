@@ -44,13 +44,13 @@ export const CompareTab: React.FC<CompareTabProps> = ({
             <Trophy className="w-4 h-4 text-amber-500" />
             <span>Top Recommended Greenfield Parcel</span>
           </div>
-          <span className="px-3 py-0.5 text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300 rounded-full">
+          <span className="px-3 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 rounded-full">
             Rank #1 Selection
           </span>
         </div>
         <div className="text-slate-900 font-black text-xl flex items-center gap-2">
           <span>{topSite?.siteName || 'Site A'}</span>
-          <span className="text-xs font-mono font-extrabold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
+          <span className="text-xs font-extrabold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
             {topSite?.overallScore?.toFixed(1) || '91.4'} pts
           </span>
         </div>
@@ -136,7 +136,7 @@ export const CompareTab: React.FC<CompareTabProps> = ({
                     <div>
                       <div className="flex items-center space-x-2">
                         <span className="text-xs font-black text-slate-900">{site.siteName}</span>
-                        <span className="px-2 py-0.5 text-[10px] bg-slate-100 text-slate-700 rounded-full font-mono font-bold border border-slate-200">
+                        <span className="px-2 py-0.5 text-[10px] bg-slate-100 text-slate-700 rounded-full font-bold border border-slate-200">
                           Site {site.siteCode}
                         </span>
                       </div>
@@ -147,7 +147,7 @@ export const CompareTab: React.FC<CompareTabProps> = ({
                   {/* Score Pill */}
                   <div className="text-right shrink-0">
                     <div
-                      className={`text-lg font-black font-mono leading-none ${
+                      className={`text-lg font-black leading-none ${
                         hasDealBreaker
                           ? 'text-red-600'
                           : isWinner
@@ -172,26 +172,29 @@ export const CompareTab: React.FC<CompareTabProps> = ({
 
                 {/* Pillar Score Bars */}
                 <div className="grid grid-cols-5 gap-2 mt-3 pt-3 border-t border-slate-200/60 text-center">
-                  {Object.values(site.pillars).map((p) => (
-                    <div key={p.pillar} className="space-y-1">
-                      <div className="text-[9px] text-slate-500 uppercase font-bold truncate">
-                        {p.name.split(' ')[0]}
+                  {Object.values(site.pillars).map((p) => {
+                    const shortName = p.name.includes('Infrastructure') ? 'Infra' : p.name.includes('Environment') ? 'Env' : p.name.split(' ')[0];
+                    return (
+                      <div key={p.pillar} className="space-y-1">
+                        <div className="text-[9px] text-slate-500 uppercase font-bold">
+                          {shortName}
+                        </div>
+                        <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${
+                              p.rawScore >= 80
+                                ? 'bg-emerald-500'
+                                : p.rawScore >= 60
+                                ? 'bg-amber-500'
+                                : 'bg-red-500'
+                            }`}
+                            style={{ width: `${Math.min(p.rawScore, 100)}%` }}
+                          />
+                        </div>
+                        <div className="text-[10px] text-slate-800 font-extrabold">{p.rawScore.toFixed(0)}</div>
                       </div>
-                      <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${
-                            p.rawScore >= 80
-                              ? 'bg-emerald-500'
-                              : p.rawScore >= 60
-                              ? 'bg-amber-500'
-                              : 'bg-red-500'
-                          }`}
-                          style={{ width: `${Math.min(p.rawScore, 100)}%` }}
-                        />
-                      </div>
-                      <div className="text-[10px] font-mono text-slate-700 font-bold">{p.rawScore.toFixed(0)}</div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             );
@@ -226,7 +229,7 @@ export const CompareTab: React.FC<CompareTabProps> = ({
                 </div>
                 <p className="text-[11px] text-slate-600 leading-snug">{driver.description}</p>
               </div>
-              <span className="px-2.5 py-1 text-[10px] font-bold font-mono bg-emerald-100 border border-emerald-300 text-emerald-800 rounded-full whitespace-nowrap shrink-0">
+              <span className="px-2.5 py-1 text-[10px] font-extrabold bg-emerald-100 border border-emerald-300 text-emerald-800 rounded-full whitespace-nowrap shrink-0">
                 {driver.delta}
               </span>
             </div>
@@ -258,24 +261,24 @@ export const CompareTab: React.FC<CompareTabProps> = ({
             <tbody className="divide-y divide-slate-100 text-[11px] bg-white">
               <tr className={priorityPreset === 'balanced' ? 'bg-sky-50/50 font-bold' : ''}>
                 <td className="p-3 text-slate-800">Balanced (20/25/30/10/15)</td>
-                <td className="p-3 font-mono font-bold text-emerald-700">91.4</td>
-                <td className="p-3 font-mono text-red-600">54.2 (Hard Stop)</td>
-                <td className="p-3 font-mono text-slate-600">82.3</td>
-                <td className="p-3 text-right font-bold text-blue-700">Site A</td>
+                <td className="p-3 font-bold text-emerald-700">91.4</td>
+                <td className="p-3 font-bold text-red-600">54.2 (Hard Stop)</td>
+                <td className="p-3 font-semibold text-slate-700">82.3</td>
+                <td className="p-3 text-right font-extrabold text-blue-700">Site A</td>
               </tr>
               <tr className={priorityPreset === 'climate_resilient' ? 'bg-sky-50/50 font-bold' : ''}>
                 <td className="p-3 text-slate-800">Climate-Resilient (10/30/40/10/10)</td>
-                <td className="p-3 font-mono font-bold text-emerald-700">92.0</td>
-                <td className="p-3 font-mono text-red-600">46.5 (Hard Stop)</td>
-                <td className="p-3 font-mono text-slate-600">83.9</td>
-                <td className="p-3 text-right font-bold text-blue-700">Site A</td>
+                <td className="p-3 font-bold text-emerald-700">92.0</td>
+                <td className="p-3 font-bold text-red-600">46.5 (Hard Stop)</td>
+                <td className="p-3 font-semibold text-slate-700">83.9</td>
+                <td className="p-3 text-right font-extrabold text-blue-700">Site A</td>
               </tr>
               <tr className={priorityPreset === 'infra_first' ? 'bg-sky-50/50 font-bold' : ''}>
                 <td className="p-3 text-slate-800">Infra-First (25/15/20/10/30)</td>
-                <td className="p-3 font-mono font-bold text-emerald-700">92.8</td>
-                <td className="p-3 font-mono text-red-600">57.0 (Hard Stop)</td>
-                <td className="p-3 font-mono text-slate-600">80.6</td>
-                <td className="p-3 text-right font-bold text-blue-700">Site A</td>
+                <td className="p-3 font-bold text-emerald-700">92.8</td>
+                <td className="p-3 font-bold text-red-600">57.0 (Hard Stop)</td>
+                <td className="p-3 font-semibold text-slate-700">80.6</td>
+                <td className="p-3 text-right font-extrabold text-blue-700">Site A</td>
               </tr>
             </tbody>
           </table>

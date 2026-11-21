@@ -152,7 +152,7 @@ export const ReportTab: React.FC<ReportTabProps> = ({
                 Greenfield Urban Expansion Site Evaluation & Suitability Report
               </h2>
             </div>
-            <div className="text-right text-[11px] text-slate-500 font-mono space-y-0.5">
+            <div className="text-right text-[11px] text-slate-500 space-y-0.5">
               <div>Date: {new Date().toISOString().split('T')[0]}</div>
               <div>Region: <span className="font-semibold text-slate-800">{currentRegion.name}</span></div>
               <div>Horizon: <span className="font-semibold text-slate-800">{horizon}</span> ({targetPopulation.toLocaleString()} cap)</div>
@@ -190,7 +190,7 @@ export const ReportTab: React.FC<ReportTabProps> = ({
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
               Water Stress Ratio
             </span>
-            <div className="text-2xl font-black text-slate-900 font-mono">
+            <div className="text-2xl font-black text-slate-900">
               {stressTestResult.stressIndex.toFixed(2)}
             </div>
             <span className="text-[10px] text-slate-600 font-semibold block mt-0.5">
@@ -228,15 +228,15 @@ export const ReportTab: React.FC<ReportTabProps> = ({
                     key={site.siteId}
                     className={site.siteId === topSite.siteId ? 'bg-sky-50/40 font-semibold' : ''}
                   >
-                    <td className="p-3 font-mono font-bold text-slate-700">#{idx + 1}</td>
+                    <td className="p-3 font-bold text-slate-700">#{idx + 1}</td>
                     <td className="p-3">
                       <div className="font-extrabold text-slate-900">{site.siteName}</div>
                       <div className="text-[10px] text-slate-500">Site {site.siteCode}</div>
                     </td>
-                    <td className="p-3 font-mono text-slate-600">
+                    <td className="p-3 font-semibold text-slate-600">
                       {candidateSites.find((s) => s.code === site.siteCode)?.areaKm2} km²
                     </td>
-                    <td className="p-3 font-mono font-extrabold text-blue-600">
+                    <td className="p-3 font-extrabold text-blue-600">
                       {site.overallScore.toFixed(1)} / 100
                     </td>
                     <td className="p-3">
@@ -302,21 +302,21 @@ export const ReportTab: React.FC<ReportTabProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-center">
               <div className="text-[10px] text-slate-500 font-semibold uppercase">Daily Demand ({horizon})</div>
-              <div className="text-base font-extrabold font-mono text-slate-900 mt-0.5">
+              <div className="text-base font-extrabold text-slate-900 mt-0.5">
                 {stressTestResult.horizonDemandMLD} MLD
               </div>
               <div className="text-[10px] text-slate-400">135 lpcd standard allocation</div>
             </div>
             <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-center">
               <div className="text-[10px] text-slate-500 font-semibold uppercase">Total Base Supply</div>
-              <div className="text-base font-extrabold font-mono text-emerald-700 mt-0.5">
+              <div className="text-base font-extrabold text-emerald-700 mt-0.5">
                 {stressTestResult.horizonBaseSupplyMLD} MLD
               </div>
               <div className="text-[10px] text-slate-400">Catchment + Canal Feeder</div>
             </div>
             <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-center">
               <div className="text-[10px] text-slate-500 font-semibold uppercase">Stress Ratio</div>
-              <div className="text-base font-extrabold font-mono text-blue-700 mt-0.5">
+              <div className="text-base font-extrabold text-blue-700 mt-0.5">
                 {stressTestResult.stressIndex.toFixed(2)} ({stressTestResult.stressCategory})
               </div>
               <div className="text-[10px] text-slate-400">Deficit boundary: 1.0</div>

@@ -123,19 +123,19 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
             {candidateSites.map((site) => (
               <div
                 key={site.id}
-                className="flex items-center justify-between text-xs px-3 py-2 bg-white rounded-xl border border-slate-200/60 shadow-2xs"
+                className="flex items-center justify-between text-xs px-3 py-2 bg-white rounded-xl border border-slate-200/60 shadow-2xs gap-2"
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 min-w-0 flex-1">
                   <span
-                    className="w-2.5 h-2.5 rounded-full shadow-2xs"
+                    className="w-2.5 h-2.5 rounded-full shadow-2xs shrink-0"
                     style={{ backgroundColor: site.color }}
                   ></span>
-                  <span className="font-bold text-slate-800">Site {site.code}</span>
-                  <span className="text-[11px] text-slate-500 truncate max-w-[120px]">
-                    {site.name.split('(')[0]}
+                  <span className="font-extrabold text-slate-800 shrink-0">Site {site.code}</span>
+                  <span className="text-[11px] text-slate-500 truncate" title={site.name}>
+                    {site.name.split('(')[0].trim()}
                   </span>
                 </div>
-                <span className="text-[11px] text-slate-500 font-mono font-semibold">{site.areaKm2} km²</span>
+                <span className="text-[11px] text-slate-700 font-bold shrink-0">{site.areaKm2} km²</span>
               </div>
             ))}
           </div>
@@ -148,7 +148,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
               <Users className="w-3.5 h-3.5 text-blue-600" />
               <span>Target Population</span>
             </label>
-            <span className="text-xs font-mono font-extrabold text-blue-700 bg-white px-2 py-0.5 rounded-full border border-sky-200 shadow-2xs">
+            <span className="text-xs font-extrabold text-blue-700 bg-white px-2.5 py-0.5 rounded-full border border-sky-200 shadow-2xs">
               {targetPopulation.toLocaleString()} cap
             </span>
           </div>
