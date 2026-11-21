@@ -1,71 +1,161 @@
 @import "tailwindcss";
 
 @layer base {
-  * {
-    border-color: #1e293b;
+  :root {
+    --bg-primary: #07111F;
+    --bg-secondary: #0D1928;
+    --bg-card: #111F30;
+    --bg-elevated: #17283A;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-highlight: rgba(34, 211, 238, 0.25);
+    --accent-cyan: #22D3EE;
+    --accent-emerald: #34D399;
+    --accent-blue: #60A5FA;
+    --accent-amber: #FBBF24;
+    --accent-coral: #F87171;
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
   }
+
+  html.light {
+    --bg-primary: #F8FAFC;
+    --bg-secondary: #F1F5F9;
+    --bg-card: #FFFFFF;
+    --bg-elevated: #F8FAFC;
+    --border-color: #E2E8F0;
+    --border-highlight: rgba(14, 165, 233, 0.35);
+    --accent-cyan: #0891B2;
+    --accent-emerald: #059669;
+    --accent-blue: #2563EB;
+    --accent-amber: #D97706;
+    --accent-coral: #DC2626;
+    --text-primary: #0F172A;
+    --text-secondary: #64748B;
+  }
+
+  * {
+    border-color: var(--border-color);
+  }
+
   body {
-    background-color: #030712;
-    color: #f8fafc;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
     overflow: hidden;
-    user-select: none;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', Helvetica, Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-heading {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  code,
+  pre,
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
-/* Futuristic Space & Spatial Telemetry Utilities */
+/* Glass Panels with refined dark-first palette */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(17, 31, 48, 0.78);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.glass-panel-elevated {
-  background: rgba(15, 23, 42, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(14, 165, 233, 0.1);
+html.light .glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid #E2E8F0;
 }
 
+.glass-panel-elevated {
+  background: rgba(23, 40, 58, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(34, 211, 238, 0.08);
+}
+
+html.light .glass-panel-elevated {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+}
+
+/* Restrained accent glows */
 .glow-cyan {
-  box-shadow: 0 0 20px -3px rgba(14, 165, 233, 0.45);
+  box-shadow: 0 0 18px -3px rgba(34, 211, 238, 0.35);
 }
 
 .glow-emerald {
-  box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 18px -3px rgba(52, 211, 153, 0.35);
 }
 
 .glow-amber {
-  box-shadow: 0 0 20px -3px rgba(245, 158, 11, 0.45);
+  box-shadow: 0 0 18px -3px rgba(251, 191, 36, 0.35);
 }
 
-.glow-rose {
-  box-shadow: 0 0 20px -3px rgba(244, 63, 94, 0.45);
+.glow-coral {
+  box-shadow: 0 0 18px -3px rgba(248, 113, 113, 0.35);
 }
 
-.scanline-overlay {
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.25) 50%
-  ), linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.03),
-    rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.03)
-  );
-  background-size: 100% 2px, 3px 100%;
-  pointer-events: none;
+/* Orbit visual animation */
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* Leaflet Container & Dark Satellite Theme Overrides */
+.animate-orbit {
+  animation: orbit-spin 24s linear infinite;
+}
+
+.animate-orbit-reverse {
+  animation: orbit-spin 36s linear infinite reverse;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(7, 17, 31, 0.7);
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 211, 238, 0.6);
+}
+
+/* Leaflet Container & Theming */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background: #020617 !important;
+  background: #07111F !important;
   font-family: inherit;
+}
+
+html.light .leaflet-container {
+  background: #F1F5F9 !important;
 }
 
 /* Leaflet Site Labels */
@@ -75,48 +165,33 @@
   box-shadow: none !important;
   padding: 0 !important;
 }
+
 .leaflet-site-label::before {
   display: none !important;
 }
 
 /* Leaflet Geoman Controls Styling in Dark Theme */
 .leaflet-pm-toolbar {
-  background: rgba(15, 23, 42, 0.9) !important;
+  background: rgba(17, 31, 48, 0.95) !important;
   backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  border: 1px solid rgba(34, 211, 238, 0.3) !important;
   border-radius: 10px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), 0 0 15px rgba(14, 165, 233, 0.15) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 15px rgba(34, 211, 238, 0.12) !important;
   overflow: hidden;
 }
 
 .leaflet-pm-action-item {
-  background: #0f172a !important;
-  color: #f8fafc !important;
-  border-color: #334155 !important;
+  background: #111F30 !important;
+  color: #F1F5F9 !important;
+  border-color: #17283A !important;
 }
 
 .leaflet-pm-action-item:hover {
-  background: #1e293b !important;
-  color: #38bdf8 !important;
+  background: #17283A !important;
+  color: #22D3EE !important;
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: rgba(3, 7, 18, 0.7);
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(71, 85, 105, 0.5);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(56, 189, 248, 0.6);
-}
-
-/* Clean Media Print Styles for Report & Dossier Export */
+/* Clean Media Print Styles for Dossier / Report */
 @media print {
   @page {
     size: A4 portrait;
@@ -131,105 +206,35 @@
     overflow: visible !important;
     height: auto !important;
     width: 100% !important;
-    font-size: 11pt !important;
+    font-size: 10pt !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* Reset outer viewport and flex containers so they expand cleanly */
-  .app-container,
-  #root,
-  #root > div,
-  .app-container > div {
-    background: #ffffff !important;
-    background-color: #ffffff !important;
-    height: auto !important;
-    width: 100% !important;
-    overflow: visible !important;
-    display: block !important;
-    position: static !important;
-    color: #0f172a !important;
-  }
-
-  /* Hide interactive UI, navigation, sidebars, and maps */
-  header,
-  nav,
-  main,
   .no-print,
-  .left-panel,
+  nav,
+  header,
+  aside,
+  .leaflet-control-container,
   .map-container,
-  .right-panel-tabs,
-  .leaflet-container,
-  .leaflet-control-container {
+  button,
+  .floating-assistant {
     display: none !important;
   }
 
-  /* Unfold right panel to occupy the entire printed page width */
-  .right-panel {
+  .printable-sheet {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
-    height: auto !important;
-    overflow: visible !important;
     background: #ffffff !important;
-    background-color: #ffffff !important;
+    color: #0f172a !important;
     border: none !important;
     box-shadow: none !important;
-    position: static !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  /* Printable Dossier Sheet Styling */
-  .printable-sheet {
-    display: block !important;
-    background: #ffffff !important;
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: none !important;
-    border-radius: 4px !important;
-    padding: 24px !important;
-    margin: 0 !important;
-    width: 100% !important;
-    page-break-inside: auto !important;
   }
 
   .printable-sheet * {
     color: #0f172a !important;
     background-color: transparent !important;
     border-color: #cbd5e1 !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-  }
-
-  .printable-sheet h1,
-  .printable-sheet h2,
-  .printable-sheet h3 {
-    color: #0369a1 !important;
-    font-weight: 800 !important;
-  }
-
-  .printable-sheet table {
-    width: 100% !important;
-    border-collapse: collapse !important;
-    border: 1px solid #94a3b8 !important;
-    margin-top: 12px !important;
-    margin-bottom: 12px !important;
-  }
-
-  .printable-sheet th {
-    background-color: #f1f5f9 !important;
-    color: #0f172a !important;
-    border: 1px solid #94a3b8 !important;
-    padding: 6px 10px !important;
-    font-weight: 700 !important;
-    font-size: 10pt !important;
-  }
-
-  .printable-sheet td {
-    border: 1px solid #cbd5e1 !important;
-    padding: 6px 10px !important;
-    font-size: 10pt !important;
   }
 }
