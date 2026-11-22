@@ -489,6 +489,23 @@ make run-frontend
 
 ---
 
+---
+
+## Sample Screenshots
+
+### 1. Landing Page
+<img width="1887" height="901" alt="image" src="https://github.com/user-attachments/assets/43261467-eddd-48b7-bfd6-3235b445517d" />
+
+### 2. Planning Dashboard
+<img width="1901" height="907" alt="image" src="https://github.com/user-attachments/assets/4f2621df-bab5-4e12-9e65-be74f5d9acbd" />
+
+
+### 4. AI Analysis
+<img width="1905" height="906" alt="image" src="https://github.com/user-attachments/assets/6e907c4e-1a2e-4d2c-a2ed-efa46787ed56" />
+
+
+---
+
 ## License
 
 Built for the **ASTRA 2026 Hackathon**. Open-source under the [MIT License](LICENSE).
