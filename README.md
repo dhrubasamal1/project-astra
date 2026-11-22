@@ -45,7 +45,7 @@ By integrating open satellite feeds from **all four official Indian space portal
   - Code-split lazy loading with an orbital radar ring fallback component (`EarthFallback`).
 
 ### 2. Google Gemini 3.8 Flash Spatial Audit & API Inspector
-- Powered by `gemini-3.8-flash` (with automated fallback to `gemini-2.5-flash`).
+- Powered by `gemini-3.8-flash`
 - Dispatches exact polygon boundary coordinates ($N$-point coordinates array), centroid, parcel area (in $\text{km}^2$ and hectares), and $15+$ satellite indicators across all 4 space portals.
 - **Live API Transparency Inspector Drawer**: Inspect raw HTTP latency, exact JSON spatial payloads sent, full prompt text, raw Gemini response JSON, and custom API key configuration.
 
